@@ -6,16 +6,9 @@
   "rules": {
     "prettier/prettier": "error",
     "camelcase": "warn",
+    "import/prefer-default-export": "warn",
     "import/no-extraneous-dependencies": "warn",
     "prefer-object-spread": "warn",
-    "spaced-comment": "off",
-    "react/prop-types": "off",
-    "import/prefer-default-export": "off",
-    "no-console": "off",
-    "max-len": "off",
-    "require-jsdoc": "off",
-    "no-invalid-this": "off",
-    "no-plusplus": "off",
-    "babel/no-invalid-this": "off"
+    "spaced-comment": "off"
   }
 }

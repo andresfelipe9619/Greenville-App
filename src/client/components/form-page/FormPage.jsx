@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -9,43 +9,40 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
-import Dropzone from '../dropzone/Dropzone';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import {Formik} from 'formik';
-import server from '../../server';
+import { Formik } from 'formik';
+import Dropzone from '../dropzone/Dropzone';
+import server from '../../utils/server';
 import useStyles from './styles';
 import {
   SUPPORTED_FORMATS,
   validationSchema,
   initialValues,
 } from './form-settings';
-import {getFile} from '../utils';
+import { getFile } from '../utils';
 
 export default function FormPage(props) {
   const classes = useStyles();
-  const {openAlert} = props;
+  const { openAlert } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState(null);
-  const {searchPerson, registerPerson, createPonenciaFile} = server;
+  const { createHouseFile } = server;
 
-  const onSubmit = useCallback(async (values, {setSubmitting, resetForm}) => {
-    const {archivo_ponencia, numero_documento, ...formData} = values;
+  const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
+    const { archivo_ponencia, numero_documento, ...formData } = values;
     setSubmitting(true);
     try {
       setIsLoading(true);
       const fileString = await getFile(archivo_ponencia);
-      const fileFromDrive = await createPonenciaFile(
-        numero_documento,
-        fileString
-      );
+      const fileFromDrive = await createHouseFile(numero_documento, fileString);
       const person = JSON.stringify({
         ...formData,
         numero_documento,
         archivo_ponencia: fileFromDrive.url,
       });
-      await registerPerson(person);
+      console.log(person);
       onSuccess(resetForm);
     } catch (error) {
       onError(error);
@@ -55,7 +52,7 @@ export default function FormPage(props) {
     }
   }, []);
 
-  const onSuccess = (resetForm) => {
+  const onSuccess = resetForm => {
     setIsSuccess(true);
     openAlert({
       variant: 'success',
@@ -67,7 +64,7 @@ export default function FormPage(props) {
     }, 5000);
   };
 
-  const onError = (error) => {
+  const onError = error => {
     setError(error);
     openAlert({
       variant: 'error',
@@ -76,10 +73,6 @@ export default function FormPage(props) {
     console.error('Error trying to sumbit form:', error);
   };
 
-  useEffect(() => {
-    searchPerson('123').then((data) => console.log('data', data));
-  }, []);
-
   return (
     <div>
       <Formik
@@ -87,7 +80,7 @@ export default function FormPage(props) {
         initialValues={initialValues}
         validationSchema={validationSchema}
       >
-        {(formikProps) => {
+        {formikProps => {
           const {
             values,
             touched,
@@ -122,7 +115,7 @@ export default function FormPage(props) {
                         value={values.tipo_documento}
                         required
                         fullWidth
-                        className={{
+                        classes={{
                           root: classes.root,
                           select: classes.select,
                         }}
@@ -305,7 +298,7 @@ export default function FormPage(props) {
                       <Select
                         required
                         fullWidth
-                        className={{
+                        classes={{
                           root: classes.root,
                           select: classes.select,
                         }}

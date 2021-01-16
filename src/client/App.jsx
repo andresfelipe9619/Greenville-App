@@ -1,7 +1,7 @@
 import React from 'react';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import GlobalState from './context/GlobalState';
 import AppRouter from './AppRouter';
-import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   palette: {

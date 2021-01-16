@@ -1,17 +1,17 @@
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   grow: {
     flexGrow: 1,
     marginBottom: 40,
   },
   toolBar: {
-    'display': 'flex',
-    'justifyContent': 'start',
+    display: 'flex',
+    justifyContent: 'start',
     '& img': {
-      'flexBasis': '100px',
-      'maxWidth': '100%',
-      'height': '170px',
+      flexBasis: '100px',
+      maxWidth: '100%',
+      height: '170px',
     },
   },
 }));

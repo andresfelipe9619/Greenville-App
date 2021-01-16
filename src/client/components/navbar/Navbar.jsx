@@ -1,8 +1,8 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import { withRouter } from 'react-router-dom';
 import useStyles from './styles';
-import {withRouter} from 'react-router-dom';
 
 function Navbar() {
   const classes = useStyles();
