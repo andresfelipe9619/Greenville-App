@@ -30,6 +30,27 @@ export default function FormPage(props) {
   const [error, setError] = useState(null);
   const { createHouseFile } = server;
 
+  const onSuccess = useCallback(resetForm => {
+    setIsSuccess(true);
+    openAlert({
+      variant: 'success',
+      message: 'Formulario Enviado Satisfactoriamente',
+    });
+    setTimeout(() => {
+      setIsSuccess(false);
+      resetForm(initialValues);
+    }, 5000);
+  }, []);
+
+  const onError = useCallback(e => {
+    setError(e);
+    openAlert({
+      variant: 'error',
+      message: 'Algo Fue Mal Enviando El Formulario',
+    });
+    console.error('Error trying to sumbit form:', e);
+  }, []);
+
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
     const { archivo_ponencia, numero_documento, ...formData } = values;
     setSubmitting(true);
@@ -44,34 +65,13 @@ export default function FormPage(props) {
       });
       console.log(person);
       onSuccess(resetForm);
-    } catch (error) {
-      onError(error);
+    } catch (e) {
+      onError(e);
     } finally {
       setIsLoading(false);
       setSubmitting(false);
     }
   }, []);
-
-  const onSuccess = resetForm => {
-    setIsSuccess(true);
-    openAlert({
-      variant: 'success',
-      message: 'Formulario Enviado Satisfactoriamente',
-    });
-    setTimeout(() => {
-      setIsSuccess(false);
-      resetForm(initialValues);
-    }, 5000);
-  };
-
-  const onError = error => {
-    setError(error);
-    openAlert({
-      variant: 'error',
-      message: 'Algo Fue Mal Enviando El Formulario',
-    });
-    console.error('Error trying to sumbit form:', error);
-  };
 
   return (
     <div>
