@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
 import Alert from './components/alert/Alert';
 import CreateHomeForm from './components/form-page/CreateHomeForm';
@@ -14,7 +14,7 @@ export default function AppRouter() {
     AlertContext
   );
   return (
-    <BrowserRouter>
+    <HashRouter>
       <CssBaseline />
       <Navbar />
       <Container maxWidth="lg">
@@ -49,6 +49,6 @@ export default function AppRouter() {
           />
         </Switch>
       </Container>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
