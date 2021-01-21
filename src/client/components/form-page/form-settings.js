@@ -1,80 +1,53 @@
 import * as Yup from 'yup';
+
 const FILE_SIZE = 160 * 1024;
 const SUPPORTED_FORMATS = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
 const testValues = {
-  numero_documento: '1144093949',
-  tipo_documento: '',
-  nombre: 'ANDRES',
-  apellidos: 'SUAREZ',
-  universidad: 'UNIVALLE',
-  email: 'andresfelipe9619@gmail.com',
-  direccion: 'Mariano Ramos',
-  telefono: '2222',
-  ciudad: 'Cali',
-  celular: '333333',
-  archivo_ponencia: undefined,
-  tematica_ponencia: '',
-  descripcion_ponencia: 'AWESOME',
-  importancia_tema: 'ITS AWESOME',
-  motivos_interes: 'AWESOMENESS',
+  model: '',
+  builder: '',
+  zone: '',
+  lastName: 'SUAREZ',
+  address: 'Mariano Ramos',
+  drywallFootage: '2222',
+  footGarage: '2222',
+  footHouse: '2222',
+  footExterior: '2222',
+  houseFile: undefined,
 };
 
 const initialValues = {
-  numero_documento: '',
-  tipo_documento: '',
-  nombre: '',
-  apellidos: '',
-  universidad: '',
-  email: '',
-  direccion: '',
-  telefono: '',
-  ciudad: '',
-  celular: '',
-  archivo_ponencia: undefined,
-  tematica_ponencia: '',
-  descripcion_ponencia: '',
-  importancia_tema: '',
-  motivos_interes: '',
+  model: '',
+  builder: '',
+  zone: '',
+  lastName: '',
+  address: '',
+  drywallFootage: '',
+  footGarage: '',
+  footHouse: '',
+  footExterior: '',
+  houseFile: undefined,
 };
 
 const validationSchema = Yup.object().shape({
-  numero_documento: Yup.number().required('Campo Obligatorio'),
-  telefono: Yup.number().required('Campo Obligatorio'),
-  tipo_documento: Yup.string().required('Campo Obligatorio'),
-  nombre: Yup.string().required('Campo Obligatorio'),
-  apellidos: Yup.string().required('Campo Obligatorio'),
-  universidad: Yup.string().required('Campo Obligatorio'),
-  direccion: Yup.string().required('Campo Obligatorio'),
-  ciudad: Yup.string().required('Campo Obligatorio'),
-  celular: Yup.string().required('Campo Obligatorio'),
-  email: Yup.string()
-    .required('Campo Obligatorio')
-    .email('Ingrese un correo válido'),
-  tematica_ponencia: Yup.string().required('Campo Obligatorio'),
-  descripcion_ponencia: Yup.string()
-    .required('Campo Obligatorio')
-    .max(300, 'Limite de 300 caracteres'),
-  importancia_tema: Yup.string()
-    .required('Campo Obligatorio')
-    .max(500, 'Limite de 500 caracteres'),
-  motivos_interes: Yup.string()
-    .required('Campo Obligatorio')
-    .max(300, 'Limite de 300 caracteres'),
-  archivo_ponencia: Yup.mixed()
-    .required('Es requerido el archivo')
+  drywallFootage: Yup.number().required('Obligatory field'),
+  footGarage: Yup.number().required('Obligatory field'),
+  footHouse: Yup.number().required('Obligatory field'),
+  footExterior: Yup.number().required('Obligatory field'),
+  model: Yup.string().required('Obligatory field'),
+  builder: Yup.string().required('Obligatory field'),
+  zone: Yup.string().required('Obligatory field'),
+  lastName: Yup.string().required('Obligatory field'),
+  address: Yup.string().required('Obligatory field'),
+  houseFile: Yup.mixed()
+    .required('The file is required')
     .test(
       'fileSize',
-      'Archivo muy grande',
-      (value) => value && value.size <= FILE_SIZE
-    )
-    .test(
-      'fileFormat',
-      'Formato no soportado',
-      (value) => value && SUPPORTED_FORMATS.includes(value.type)
+      'File too big!',
+      value => value && value.size <= FILE_SIZE
     ),
 });
 
-export {validationSchema, initialValues, testValues, SUPPORTED_FORMATS};
+export { validationSchema, initialValues, testValues, SUPPORTED_FORMATS };

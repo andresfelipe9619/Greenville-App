@@ -1,8 +1,10 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import Thumb from './Thumb';
+
 export default function CustomDropzone({
   error,
+  field,
   accept,
   values,
   disabled,
@@ -10,28 +12,27 @@ export default function CustomDropzone({
   helperText,
 }) {
   const [loading, setLoading] = useState(false);
-  const file = values.archivo_ponencia;
-  const onDrop = useCallback((acceptedFiles) => {
+  const file = values[field];
+  const onDrop = useCallback(acceptedFiles => {
     if (!acceptedFiles.length) return;
     setLoading(true);
-    setFieldValue('archivo_ponencia', acceptedFiles[0]);
+    setFieldValue(field, acceptedFiles[0]);
     setLoading(false);
   }, []);
 
+  let borderColor = 'black';
+  if (error) borderColor = 'red';
+  if (disabled) borderColor = 'gray';
   const style = {
+    borderColor,
     borderStyle: 'dashed',
-    borderColor: error ? 'red' : disabled ? 'gray' : 'black',
   };
 
   return (
     <Dropzone onDrop={onDrop} accept={accept} disabled={disabled}>
-      {({getRootProps, getInputProps, isDragActive}) => (
+      {({ getRootProps, getInputProps, isDragActive }) => (
         <div style={style} {...getRootProps()}>
-          <input
-            id="archivo_ponencia"
-            name="archivo_ponencia"
-            {...getInputProps()}
-          />
+          <input id="houseFile" name="houseFile" {...getInputProps()} />
           {error && <p>{helperText}</p>}
           {isDragActive && !error && <p>Arrastra los archivos acá ...</p>}
           {!file && !error && (

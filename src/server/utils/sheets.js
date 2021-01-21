@@ -11,14 +11,14 @@ function normalizeString(value) {
     .toLowerCase();
 }
 
-export function getSheetFromSpreadSheet(url, sheet) {
-  const Spreedsheet = SpreadsheetApp.openByUrl(url);
-  if (url && sheet) return Spreedsheet.getSheetByName(sheet);
+export function getSheetFromSpreadSheet(sheet) {
+  const Spreedsheet = SpreadsheetApp.openByUrl(GENERAL_DB);
+  if (sheet) return Spreedsheet.getSheetByName(sheet);
   return null;
 }
 
-export function getRawDataFromSheet(url, sheet) {
-  const mSheet = getSheetFromSpreadSheet(url, sheet);
+export function getRawDataFromSheet(sheet) {
+  const mSheet = getSheetFromSpreadSheet(sheet);
   if (mSheet) {
     return mSheet.getSheetValues(
       1,
@@ -72,19 +72,13 @@ function addHeadings(people, headings) {
   });
 }
 
-function sheetValuesToObject(sheetValues, headers) {
+export function sheetValuesToObject(sheetValues, headers) {
   const headings = headers || sheetValues[0].map(normalizeString);
   let people = null;
   if (sheetValues) people = headers ? sheetValues : sheetValues.slice(1);
   const peopleWithHeadings = addHeadings(people, headings);
 
   return peopleWithHeadings;
-}
-
-function getPeriods() {
-  const rawPeriods = getRawDataFromSheet(GENERAL_DB, 'PERIODOS');
-  const periods = sheetValuesToObject(rawPeriods);
-  return periods;
 }
 
 export function getHeadersFromSheet(sheet) {
