@@ -14,7 +14,7 @@ export function isAdmin() {
 
 function createHtmlTemplate(filename) {
   return HtmlService.createHtmlOutputFromFile(filename)
-    .setTitle('Encuentro Colombiano')
+    .setTitle('HR Drywall')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT);
 }
 
@@ -161,11 +161,11 @@ export function createHouse(formString) {
     avoidCollisionsInConcurrentAccessess();
     Logger.log('Data for registering');
     Logger.log(form);
-    const filesResult = global.uploadHouseFiles(form.num_doc, form.files);
-    Logger.log('Files Result');
-    Logger.log(filesResult);
-    const folderUrl = (filesResult || {}).folder;
-    form.url_documentos = folderUrl;
+    // const filesResult = global.uploadHouseFiles(form.num_doc, form.files);
+    // Logger.log('Files Result');
+    // Logger.log(filesResult);
+    // const folderUrl = (filesResult || {}).folder;
+    // form.url_documentos = folderUrl;
     const response = registerHouse(form);
     Logger.log('Response');
     Logger.log(response);
