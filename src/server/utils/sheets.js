@@ -8,6 +8,7 @@ const getActiveSheetName = () => SpreadsheetApp.getActive().getSheetName();
 function normalizeString(value) {
   return String(value || '')
     .trim()
+    .replace(/ +/g, '')
     .toLowerCase();
 }
 
