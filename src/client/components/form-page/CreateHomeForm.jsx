@@ -23,7 +23,6 @@ export default function FormPage(props) {
   const { openAlert } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState(null);
   const { createHouseFile } = server;
 
   const onSuccess = useCallback(resetForm => {
@@ -39,27 +38,26 @@ export default function FormPage(props) {
   }, []);
 
   const onError = useCallback(e => {
-    setError(e);
     openAlert({
       variant: 'error',
-      message: 'Algo Fue Mal Enviando El Formulario',
+      message: 'Algo Salio Mal Enviando El Formulario',
     });
     console.error('Error trying to sumbit form:', e);
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
-    const { houseFile, houseId, ...formData } = values;
+    const { houseFile, ...formData } = values;
     try {
       setSubmitting(true);
       setIsLoading(true);
-      const fileString = await getFile(houseFile);
-      const fileFromDrive = await createHouseFile(houseId, fileString);
-      const person = JSON.stringify({
+      console.log('houseFile', houseFile);
+      // const fileString = await getFile(houseFile);
+      // const fileFromDrive = await createHouseFile(houseId, fileString);
+      const house = JSON.stringify({
         ...formData,
-        houseId,
-        houseFile: fileFromDrive.url,
+        // houseFile: fileFromDrive.url,
       });
-      console.log(person);
+      console.log('HOUSE', house);
       onSuccess(resetForm);
     } catch (e) {
       onError(e);
@@ -86,13 +84,13 @@ export default function FormPage(props) {
             handleSubmit,
             setFieldValue,
           } = formikProps;
-          const selectProps = {
+          const inputProps = {
             classes,
-            error,
             errors,
             touched,
             values,
             handleChange,
+            handleBlur,
             isLoading,
           };
           return (
@@ -103,114 +101,62 @@ export default function FormPage(props) {
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={8}>
                   <Grid item xs={12} sm={12}>
-                    <TextField
-                      value={values.address}
-                      onChange={handleChange}
-                      disabled={isLoading || error}
-                      onBlur={handleBlur}
-                      helperText={touched.address && errors.address}
-                      error={!!(touched.address && errors.address)}
-                      required
-                      id="address"
+                    <CustomTextField
                       name="address"
                       label="Address"
-                      fullWidth
+                      {...inputProps}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      value={values.lastName}
-                      onChange={handleChange}
-                      disabled={isLoading || error}
-                      onBlur={handleBlur}
-                      helperText={touched.lastName && errors.lastName}
-                      error={!!(touched.lastName && errors.lastName)}
-                      required
-                      id="lastName"
+                    <CustomTextField
                       name="lastName"
                       label="Last Name"
-                      fullWidth
+                      {...inputProps}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <CustomSelect name="model" label="Model" {...selectProps} />
+                    <CustomSelect name="model" label="Model" {...inputProps} />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <CustomSelect
                       name="builder"
                       label="Builder"
-                      {...selectProps}
+                      {...inputProps}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <CustomSelect name="zone" label="Zone" {...selectProps} />
+                    <CustomSelect name="zone" label="Zone" {...inputProps} />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      value={values.drywallFootage}
-                      onChange={handleChange}
-                      disabled={isLoading || error}
-                      onBlur={handleBlur}
-                      helperText={
-                        touched.drywallFootage && errors.drywallFootage
-                      }
-                      error={
-                        !!(touched.drywallFootage && errors.drywallFootage)
-                      }
-                      required
+                    <CustomTextField
                       type="number"
-                      id="drywallFootage"
                       name="drywallFootage"
                       label="Drywall Footage"
-                      fullWidth
+                      {...inputProps}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      value={values.footHouse}
-                      onChange={handleChange}
-                      disabled={isLoading || error}
-                      onBlur={handleBlur}
-                      helperText={touched.footHouse && errors.footHouse}
-                      error={!!(touched.footHouse && errors.footHouse)}
-                      required
+                    <CustomTextField
                       type="number"
-                      id="footHouse"
                       name="footHouse"
                       label="Foot House"
-                      fullWidth
+                      {...inputProps}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      value={values.footGarage}
-                      onChange={handleChange}
-                      disabled={isLoading || error}
-                      onBlur={handleBlur}
-                      helperText={touched.footGarage && errors.footGarage}
-                      error={!!(touched.footGarage && errors.footGarage)}
-                      required
+                    <CustomTextField
                       type="number"
-                      id="footGarage"
                       name="footGarage"
                       label="Foot Garage"
-                      fullWidth
+                      {...inputProps}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      value={values.footExterior}
-                      onChange={handleChange}
-                      disabled={isLoading || error}
-                      onBlur={handleBlur}
-                      helperText={touched.footExterior && errors.footExterior}
-                      error={!!(touched.footExterior && errors.footExterior)}
-                      required
+                    <CustomTextField
                       type="number"
-                      id="footExterior"
                       name="footExterior"
                       label="Foot Exterior"
-                      fullWidth
+                      {...inputProps}
                     />
                   </Grid>
 
@@ -232,7 +178,7 @@ export default function FormPage(props) {
                     <Grid item xs={8}>
                       <Dropzone
                         field={'houseFile'}
-                        disabled={isLoading || error}
+                        disabled={isLoading}
                         setFieldValue={setFieldValue}
                         values={values}
                         // accept={SUPPORTED_FORMATS}
@@ -244,7 +190,7 @@ export default function FormPage(props) {
                   <Divider variant="middle" />
                   <Grid item xs={12}>
                     <Button
-                      disabled={error || isLoading}
+                      disabled={isLoading}
                       className={classes.button}
                       variant="contained"
                       type="submit"
@@ -269,11 +215,37 @@ export default function FormPage(props) {
   );
 }
 
+const CustomTextField = ({
+  values,
+  name,
+  label,
+  type,
+  touched,
+  errors,
+  isLoading,
+  handleChange,
+  handleBlur,
+}) => (
+  <TextField
+    value={values[name]}
+    onChange={handleChange}
+    disabled={isLoading}
+    onBlur={handleBlur}
+    helperText={touched[name] && errors[name]}
+    error={!!(touched[name] && errors[name])}
+    required
+    type={type}
+    id={name}
+    name={name}
+    label={label}
+    fullWidth
+  />
+);
+
 const CustomSelect = ({
   name,
   label,
   classes,
-  error,
   errors,
   touched,
   values,
@@ -295,7 +267,7 @@ const CustomSelect = ({
       }}
       value={values[name]}
       onChange={handleChange}
-      disabled={isLoading || error}
+      disabled={isLoading}
       inputProps={{
         name,
         id: name,

@@ -6,14 +6,11 @@ import AppRouter from './AppRouter';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#C3181F',
+      main: '#ffab91',
     },
     secondary: {
-      main: '#ffebee',
+      main: '#ffe0b2',
     },
-  },
-  status: {
-    danger: 'orange',
   },
 });
 const App = () => (

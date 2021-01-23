@@ -12,6 +12,16 @@ export function isAdmin() {
   return isGuessAdmin;
 }
 
+function createHtmlTemplate(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename)
+    .setTitle('Encuentro Colombiano')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT);
+}
+
+export function doGet() {
+  return createHtmlTemplate('index.html');
+}
+
 export function doPost(request) {
   Logger.log('request');
   Logger.log(request);
@@ -32,35 +42,25 @@ export function getHouses() {
   return houses;
 }
 
-function registerHouse(data, house) {
-  Logger.log('=============Registering In GENERAL DB===========');
-  const inscritossheet = global.getSheetFromSpreadSheet('HOUSES');
-  const headers = global.getHeadersFromSheet(inscritossheet);
-  const personValues = global.jsonToSheetValues(data, headers);
-  Logger.log('PERSON VALUES');
-  Logger.log(personValues);
+function registerHouse(data) {
+  Logger.log('=============Registering HOUSE===========');
+  const housesSheet = global.getSheetFromSpreadSheet('HOUSES');
+  const headers = global.getHeadersFromSheet(housesSheet);
+  const houseValues = global.jsonToSheetValues(data, headers);
+  Logger.log('HOUSE VALUES');
+  Logger.log(houseValues);
 
   let response = 'Error!';
 
-  if (house && house.index) {
-    const inscritoRange = inscritossheet.getRange(
-      Number(house.index),
-      1,
-      1,
-      inscritossheet.getLastColumn()
-    );
-    inscritoRange.setValues([personValues]);
-    response = 'exito';
-  } else {
-    const lastRow = inscritossheet.getLastRow();
-    inscritossheet.appendRow(personValues);
-    const lastRowRes = inscritossheet.getLastRow();
+  const rowsBefore = housesSheet.getLastRow();
+  housesSheet.appendRow(houseValues);
+  const rowsAfter = housesSheet.getLastRow();
 
-    if (lastRowRes > lastRow) {
-      response = 'exito';
-    }
+  if (rowsAfter > rowsBefore) {
+    response = 'exito';
   }
-  Logger.log('=============END Registering In General DB===========');
+
+  Logger.log('=============END Registering HOUSE===========');
   return response;
 }
 
@@ -76,15 +76,15 @@ function registerHouse(data, house) {
 
 // function editEstudentGeneral(student, studentIndex) {
 //   try {
-//     const inscritossheet = getSheetFromSpreadSheet('HOUSES');
-//     const headers = getHeadersFromSheet(inscritossheet);
+//     const housesSheet = getSheetFromSpreadSheet('HOUSES');
+//     const headers = getHeadersFromSheet(housesSheet);
 //     Logger.log('GENERAL PERIOD');
 //     Logger.log(student);
-//     const studentRange = inscritossheet.getRange(
+//     const studentRange = housesSheet.getRange(
 //       Number(studentIndex),
 //       1,
 //       1,
-//       inscritossheet.getLastColumn()
+//       housesSheet.getLastColumn()
 //     );
 //     const studentData = jsonToSheetValues(student, headers);
 //     studentRange.setValues([studentData]);

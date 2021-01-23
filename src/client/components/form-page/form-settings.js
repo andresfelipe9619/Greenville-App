@@ -41,13 +41,13 @@ const validationSchema = Yup.object().shape({
   zone: Yup.string().required('Obligatory field'),
   lastName: Yup.string().required('Obligatory field'),
   address: Yup.string().required('Obligatory field'),
-  houseFile: Yup.mixed()
-    .required('The file is required')
-    .test(
-      'fileSize',
-      'File too big!',
-      value => value && value.size <= FILE_SIZE
-    ),
+  // houseFile: Yup.mixed()
+  //   .required('The file is required')
+  //   .test(
+  //     'fileSize',
+  //     'File too big!',
+  //     value => value && value.size <= FILE_SIZE
+  //   ),
 });
 
 export { validationSchema, initialValues, testValues, SUPPORTED_FORMATS };

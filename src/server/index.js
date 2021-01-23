@@ -1,10 +1,9 @@
 import * as publicSheetFunctions from './utils/sheets';
 import * as publicDriveFunctions from './utils/drive';
-import doGet from './utils/html';
 import * as publicMainFunction from './app';
 
 // Expose public functions by attaching to `global`
-global.doGet = doGet;
+global.doGet = publicMainFunction.doGet;
 global.doPost = publicMainFunction.doPost;
 
 global.isAdmin = publicMainFunction.isAdmin;
