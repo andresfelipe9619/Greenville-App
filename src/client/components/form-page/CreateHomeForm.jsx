@@ -15,15 +15,17 @@ import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
 import server from '../../utils/server';
 import useStyles from './styles';
-import { validationSchema, initialValues } from './form-settings';
+import { validationSchema, testValues as initialValues } from './form-settings';
 import { getFile } from '../utils';
+
+const { serverFunctions } = server;
 
 export default function FormPage(props) {
   const classes = useStyles();
   const { openAlert } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { createHouseFile } = server;
+  const { createHouse } = serverFunctions;
 
   const onSuccess = useCallback(resetForm => {
     setIsSuccess(true);
@@ -58,6 +60,7 @@ export default function FormPage(props) {
         // houseFile: fileFromDrive.url,
       });
       console.log('HOUSE', house);
+      await createHouse(house);
       onSuccess(resetForm);
     } catch (e) {
       onError(e);

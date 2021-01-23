@@ -6,9 +6,9 @@ const SUPPORTED_FORMATS = [
 ];
 
 const testValues = {
-  model: '',
-  builder: '',
-  zone: '',
+  model: 'A',
+  builder: 'B',
+  zone: 'C',
   lastName: 'SUAREZ',
   address: 'Mariano Ramos',
   drywallFootage: '2222',
