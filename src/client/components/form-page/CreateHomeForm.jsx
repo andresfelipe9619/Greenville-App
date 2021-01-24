@@ -1,31 +1,27 @@
 import React, { useCallback, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
-import Select from '@material-ui/core/Select';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
 import server from '../../utils/server';
 import useStyles from './styles';
 import { validationSchema, testValues as initialValues } from './form-settings';
+import { CustomSelect, CustomTextField } from './inputs';
 import { getFile } from '../utils';
 
 const { serverFunctions } = server;
+const { createHouse } = serverFunctions;
 
-export default function FormPage(props) {
+export default function CreateHomeForm(props) {
   const classes = useStyles();
   const { openAlert } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { createHouse } = serverFunctions;
 
   const onSuccess = useCallback(resetForm => {
     setIsSuccess(true);
@@ -217,71 +213,3 @@ export default function FormPage(props) {
     </div>
   );
 }
-
-const CustomTextField = ({
-  values,
-  name,
-  label,
-  type,
-  touched,
-  errors,
-  isLoading,
-  handleChange,
-  handleBlur,
-}) => (
-  <TextField
-    value={values[name]}
-    onChange={handleChange}
-    disabled={isLoading}
-    onBlur={handleBlur}
-    helperText={touched[name] && errors[name]}
-    error={!!(touched[name] && errors[name])}
-    required
-    type={type}
-    id={name}
-    name={name}
-    label={label}
-    fullWidth
-  />
-);
-
-const CustomSelect = ({
-  name,
-  label,
-  classes,
-  errors,
-  touched,
-  values,
-  handleChange,
-  isLoading,
-}) => (
-  <FormControl
-    className={classes.formControl}
-    fullWidth
-    error={!!(touched[name] && errors[name])}
-  >
-    <InputLabel htmlFor={name}>{label}</InputLabel>
-    <Select
-      required
-      fullWidth
-      classes={{
-        root: classes.root,
-        select: classes.select,
-      }}
-      value={values[name]}
-      onChange={handleChange}
-      disabled={isLoading}
-      inputProps={{
-        name,
-        id: name,
-      }}
-    >
-      <MenuItem value={'A'}>A</MenuItem>
-      <MenuItem value={'B'}>B</MenuItem>
-      <MenuItem value={'C'}>C</MenuItem>
-    </Select>
-    <FormHelperText>
-      {touched.tematica_ponencia && errors.tematica_ponencia}
-    </FormHelperText>
-  </FormControl>
-);
