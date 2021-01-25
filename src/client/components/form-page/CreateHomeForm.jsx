@@ -10,7 +10,10 @@ import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
 import server from '../../utils/server';
 import useStyles from './styles';
-import { validationSchema, testValues as initialValues } from './form-settings';
+import {
+  createValidationSchema,
+  testValues as initialValues,
+} from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
 import { getFile } from '../utils';
 
@@ -71,7 +74,7 @@ export default function CreateHomeForm(props) {
       <Formik
         onSubmit={onSubmit}
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={createValidationSchema}
       >
         {formikProps => {
           const {
@@ -94,7 +97,7 @@ export default function CreateHomeForm(props) {
           };
           return (
             <Paper className={classes.paper}>
-              <Typography variant="h3" gutterBottom>
+              <Typography component="h1" variant="h4" gutterBottom>
                 Create New House
               </Typography>
               <form onSubmit={handleSubmit}>

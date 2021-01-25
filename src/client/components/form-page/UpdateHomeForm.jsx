@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import InputLabel from '@material-ui/core/InputLabel';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -16,33 +15,25 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
 import server from '../../utils/server';
-import { validationSchema, testValues as initialValues } from './form-settings';
+import { updateValidationSchema, initialValues } from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
 import { getFile } from '../utils';
+import useStyles from './styles';
 
 const { serverFunctions } = server;
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-  formControl: {
-    margin: theme.spacing(3),
-  },
-}));
 
 export default function UpdateHomeForm(props) {
   const classes = useStyles();
   const { openAlert } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const { createHouse } = serverFunctions;
+  const { updateHouse } = serverFunctions;
   const [state, setState] = useState({
     gilad: true,
     jason: false,
     antoine: false,
   });
-
+  console.log('props', props);
   const handleChangeCheck = event => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -98,7 +89,7 @@ export default function UpdateHomeForm(props) {
       <Formik
         onSubmit={onSubmit}
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={updateValidationSchema}
       >
         {formikProps => {
           const {
@@ -121,8 +112,8 @@ export default function UpdateHomeForm(props) {
           };
           return (
             <Paper className={classes.paper}>
-              <Typography variant="h3" gutterBottom>
-                Create New House
+              <Typography component="h1" variant="h4" gutterBottom>
+                Update House
               </Typography>
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={8}>

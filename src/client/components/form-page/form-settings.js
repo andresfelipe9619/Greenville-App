@@ -31,7 +31,7 @@ const initialValues = {
   houseFile: undefined,
 };
 
-const validationSchema = Yup.object().shape({
+const defaultSchema = {
   drywallFootage: Yup.number().required('Obligatory field'),
   footGarage: Yup.number().required('Obligatory field'),
   footHouse: Yup.number().required('Obligatory field'),
@@ -40,6 +40,14 @@ const validationSchema = Yup.object().shape({
   builder: Yup.string().required('Obligatory field'),
   zone: Yup.string().required('Obligatory field'),
   lastName: Yup.string().required('Obligatory field'),
+};
+
+const updateValidationSchema = Yup.object().shape({
+  ...defaultSchema,
+});
+
+const createValidationSchema = Yup.object().shape({
+  ...defaultSchema,
   address: Yup.string().required('Obligatory field'),
   // houseFile: Yup.mixed()
   //   .required('The file is required')
@@ -50,4 +58,10 @@ const validationSchema = Yup.object().shape({
   //   ),
 });
 
-export { validationSchema, initialValues, testValues, SUPPORTED_FORMATS };
+export {
+  initialValues,
+  testValues,
+  SUPPORTED_FORMATS,
+  createValidationSchema,
+  updateValidationSchema,
+};

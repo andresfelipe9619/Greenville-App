@@ -42,7 +42,7 @@ export default function AppRouter() {
           <Route
             exact
             strict
-            path="/update"
+            path="/update/:houseId"
             render={props => (
               <UpdateHomeForm openAlert={openAlert} {...props} />
             )}

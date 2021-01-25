@@ -75,10 +75,18 @@ export default function Navbar() {
 }
 
 export function SearchBox({ classes }) {
-  const [houses, setHouses] = useState([]);
+  const history = useHistory();
+  const [houses, setHouses] = useState([{ id: 10, address: 'mariano ramos' }]);
   const fetchHouses = async () => {
     const response = await getHouses();
     setHouses(response);
+  };
+
+  const handleChange = (_, value, reason) => {
+    console.log('{e,reason}', { value, reason });
+    if (reason === 'select-option') {
+      history.push(`/update/${value.id}`);
+    }
   };
 
   useEffect(() => {
@@ -91,6 +99,7 @@ export function SearchBox({ classes }) {
       className={classes.search}
       options={houses}
       getOptionLabel={option => option.address}
+      onChange={handleChange}
       style={{ width: 300 }}
       renderInput={params => (
         <TextField
