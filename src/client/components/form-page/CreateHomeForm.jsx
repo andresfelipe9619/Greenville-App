@@ -10,10 +10,7 @@ import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
 import server from '../../utils/server';
 import useStyles from './styles';
-import {
-  createValidationSchema,
-  testValues as initialValues,
-} from './form-settings';
+import { createValidationSchema, initialValues } from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
 import { getFile } from '../utils';
 

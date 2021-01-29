@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -13,11 +12,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
-import Dropzone from '../dropzone/Dropzone';
 import server from '../../utils/server';
 import { updateValidationSchema, initialValues } from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
-import { getFile } from '../utils';
 import useStyles from './styles';
 
 const { serverFunctions } = server;
@@ -99,7 +96,6 @@ export default function UpdateHomeForm(props) {
             handleBlur,
             handleChange,
             handleSubmit,
-            setFieldValue,
           } = formikProps;
           const inputProps = {
             classes,
