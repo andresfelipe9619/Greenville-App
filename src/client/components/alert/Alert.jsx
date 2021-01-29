@@ -9,7 +9,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import WarningIcon from '@material-ui/icons/Warning';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import { useAlert } from './context/Alert';
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -18,7 +19,7 @@ const variantIcon = {
   info: InfoIcon,
 };
 
-const styles1 = (theme) => ({
+const styles1 = theme => ({
   success: {
     backgroundColor: green[600],
   },
@@ -46,7 +47,7 @@ const styles1 = (theme) => ({
 });
 
 function AlertContent(props) {
-  const {classes, className, message, onClose, variant, ...other} = props;
+  const { classes, className, message, onClose, variant, ...other } = props;
   const Icon = variantIcon[variant];
   return (
     <SnackbarContent
@@ -80,14 +81,11 @@ function AlertContent(props) {
 
 const SnackbarContentWrapper = withStyles(styles1)(AlertContent);
 
-export default function Alert({
-  open,
-  variant,
-  message,
-  duration,
-  position,
-  handleClose,
-}) {
+export default function Alert() {
+  const [
+    { open, message, variant, position, duration },
+    { closeAlert: handleClose },
+  ] = useAlert();
   return (
     <Snackbar
       anchorOrigin={{

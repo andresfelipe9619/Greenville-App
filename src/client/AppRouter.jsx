@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import { HashRouter, Route, Switch } from 'react-router-dom';
@@ -6,24 +6,15 @@ import Navbar from './components/navbar/Navbar';
 import Alert from './components/alert/Alert';
 import CreateHomeForm from './components/form-page/CreateHomeForm';
 import UpdateHomeForm from './components/form-page/UpdateHomeForm';
-import AlertContext from './context/alert-context';
 import Dashboard from './components/dashboard/Dashboard';
 
 export default function AppRouter() {
-  const { open, message, variant, closeAlert, openAlert } = useContext(
-    AlertContext
-  );
   return (
     <HashRouter>
       <CssBaseline />
       <Navbar />
       <Container maxWidth="lg">
-        <Alert
-          open={open}
-          message={message}
-          variant={variant}
-          handleClose={closeAlert}
-        />
+        <Alert />
         <Switch>
           <Route
             exact
@@ -35,17 +26,13 @@ export default function AppRouter() {
             exact
             strict
             path="/create"
-            render={props => (
-              <CreateHomeForm openAlert={openAlert} {...props} />
-            )}
+            render={props => <CreateHomeForm {...props} />}
           />
           <Route
             exact
             strict
             path="/update/:houseId"
-            render={props => (
-              <UpdateHomeForm openAlert={openAlert} {...props} />
-            )}
+            render={props => <UpdateHomeForm {...props} />}
           />
         </Switch>
       </Container>
