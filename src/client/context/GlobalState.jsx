@@ -1,28 +1,14 @@
-import React, {useState} from 'react';
-import AlertContext, {initialState as initialAlert} from './alert-context';
+import React from 'react';
+import { AlertContext } from './Alert';
+import { HouseContext } from './House';
 
-export default function GlobalState(props) {
-  const [alertState, setAlert] = useState(initialAlert);
-
-  const openAlert = ({message, variant}) => {
-    setAlert({...alertState, open: true, message, variant});
-  };
-
-  const closeAlert = () => {
-    setAlert({...alertState, open: false, message: ''});
-  };
-
+function GlobalState({ children }) {
   return (
-    <AlertContext.Provider
-      value={{
-        open: alertState.open,
-        message: alertState.message,
-        variant: alertState.variant,
-        closeAlert,
-        openAlert,
-      }}
-    >
-      {props.children}
-    </AlertContext.Provider>
+    <>
+      <AlertContext>
+        <HouseContext>{children}</HouseContext>
+      </AlertContext>
+    </>
   );
 }
+export default React.memo(GlobalState);
