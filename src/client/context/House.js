@@ -1,7 +1,7 @@
 import React, { useReducer, useContext, useCallback } from 'react';
 
 const initialState = {
-  houses: [],
+  houses: [{ address: 'Mariano', houseid: 190 }],
   house: null,
   houseSelected: null,
 };
@@ -16,6 +16,13 @@ function HouseReducer(state, { type, houses, houseSelected, house }) {
     }
     case 'select': {
       return { ...state, houseSelected };
+    }
+    case 'update': {
+      const houseIndex = state.houses.findIndex(h => h.houseid);
+      if (houseIndex === -1) return state;
+      const newHouses = [...state.houses];
+      newHouses[houseIndex] = house;
+      return { ...state, houses: newHouses };
     }
     case 'add': {
       return {
@@ -44,7 +51,11 @@ function HouseContext({ children }) {
     []
   );
   const setHouseSelected = useCallback(
-    house => dispatch({ type: 'select', house }),
+    houseSelected => dispatch({ type: 'select', houseSelected }),
+    []
+  );
+  const getHouseSelected = useCallback(
+    () => dispatch({ type: 'get-select' }),
     []
   );
   const addHouse = useCallback(house => dispatch({ type: 'add', house }), []);
@@ -70,6 +81,7 @@ function HouseContext({ children }) {
           setHouses,
           addHouse,
           removeHouse,
+          getHouseSelected,
           setHouseSelected,
         }}
       >

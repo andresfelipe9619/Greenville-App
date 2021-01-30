@@ -13,6 +13,7 @@ import { useHistory } from 'react-router-dom';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import useStyles from './styles';
 import server from '../../utils/server';
+import { useHouse } from '../../context/House';
 
 const { serverFunctions } = server;
 const { getHouses } = serverFunctions;
@@ -76,7 +77,7 @@ export default function Navbar() {
 
 export function SearchBox({ classes }) {
   const history = useHistory();
-  const [houses, setHouses] = useState([{ id: 10, address: 'mariano ramos' }]);
+  const [{ houses }, { setHouses, setHouseSelected }] = useHouse();
   const fetchHouses = async () => {
     const response = await getHouses();
     setHouses(response);
@@ -85,7 +86,9 @@ export function SearchBox({ classes }) {
   const handleChange = (_, value, reason) => {
     console.log('{e,reason}', { value, reason });
     if (reason === 'select-option') {
-      history.push(`/update/${value.id}`);
+      const id = value.houseid;
+      setHouseSelected(value);
+      history.push(`/update/${id}`);
     }
   };
 

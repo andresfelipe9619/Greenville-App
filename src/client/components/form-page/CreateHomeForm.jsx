@@ -8,39 +8,38 @@ import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
-import server from '../../utils/server';
 import useStyles from './styles';
-import { createValidationSchema, initialValues } from './form-settings';
+import {
+  createValidationSchema,
+  testValues as initialValues,
+} from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
 import { getFile } from '../utils';
+import API from '../../api';
+import { useAlertDispatch } from '../../context/Alert';
+import { useHouseDispatch } from '../../context/House';
 
-const { serverFunctions } = server;
-const { createHouse } = serverFunctions;
-
-export default function CreateHomeForm(props) {
+export default function CreateHomeForm() {
   const classes = useStyles();
-  const { openAlert } = props;
+  const HouseContext = useHouseDispatch();
+  const { openAlert } = useAlertDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const onSuccess = useCallback(resetForm => {
-    setIsSuccess(true);
     openAlert({
       variant: 'success',
-      message: 'Formulario Enviado Satisfactoriamente',
+      message: 'House Created Successfully!',
     });
-    setTimeout(() => {
-      setIsSuccess(false);
-      resetForm(initialValues);
-    }, 5000);
+    resetForm(initialValues);
   }, []);
 
   const onError = useCallback(e => {
+    const message = 'Something went wrong creating the house';
     openAlert({
+      message,
       variant: 'error',
-      message: 'Algo Salio Mal Enviando El Formulario',
     });
-    console.error('Error trying to sumbit form:', e);
+    console.error(`${message}: `, e);
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
@@ -56,7 +55,9 @@ export default function CreateHomeForm(props) {
         // houseFile: fileFromDrive.url,
       });
       console.log('HOUSE', house);
-      await createHouse(house);
+      HouseContext.addHouse(formData);
+      const result = await API.createHouse(house);
+      console.log('result', result);
       onSuccess(resetForm);
     } catch (e) {
       onError(e);
@@ -197,11 +198,6 @@ export default function CreateHomeForm(props) {
                     >
                       Enviar
                     </Button>
-                    {isSuccess && (
-                      <Typography variant="h4">
-                        The house was created!
-                      </Typography>
-                    )}
                     {isLoading && <LinearProgress />}
                   </Grid>
                 </Grid>

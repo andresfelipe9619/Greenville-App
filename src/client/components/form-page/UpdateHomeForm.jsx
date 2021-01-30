@@ -1,61 +1,81 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import Link from '@material-ui/core/Link';
 import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
-import server from '../../utils/server';
 import { updateValidationSchema, initialValues } from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
 import useStyles from './styles';
+import { useAlertDispatch } from '../../context/Alert';
+import { updateHouse } from '../../api';
+import { useHouse } from '../../context/House';
 
-const { serverFunctions } = server;
-
+const statuses = [
+  { label: 'DRYWALL', value: 'drywall' },
+  { label: 'PRIMEWALLS', value: 'primewalls' },
+  { label: 'FINISH PAINTING', value: 'finish-painting' },
+  { label: 'PAINT TOUCH UP', value: 'paint-touch-up' },
+  { label: 'EXTERIOR PAINT', value: 'exterior-paint' },
+];
 export default function UpdateHomeForm(props) {
   const classes = useStyles();
-  const { openAlert } = props;
+  const { openAlert } = useAlertDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const { updateHouse } = serverFunctions;
-  const [state, setState] = useState({
-    gilad: true,
-    jason: false,
-    antoine: false,
-  });
-  console.log('props', props);
-  const handleChangeCheck = event => {
-    setState({ ...state, [event.target.name]: event.target.checked });
-  };
+  const [state, setState] = useState({});
+  const [{ houseSelected }] = useHouse();
+  console.log('houseSelected', houseSelected);
 
-  const { gilad, jason, antoine } = state;
-  const error = [gilad, jason, antoine].filter(v => v).length !== 2;
+  console.log('props', props);
+
+  useEffect(() => {
+    const checkState = statuses.reduce((acc, status) => {
+      if (!houseSelected) {
+        acc[status.value] = false;
+        return acc;
+      }
+      const found = (houseSelected.statuses || []).find(
+        s => s.value === status.value
+      );
+      if (found) {
+        acc[status.value] = true;
+      } else {
+        acc[status.value] = false;
+      }
+      return acc;
+    }, {});
+    setState(checkState);
+  }, []);
+
+  const handleChangeCheck = useCallback(event => {
+    setState(prevState => ({
+      ...prevState,
+      [event.target.name]: event.target.checked,
+    }));
+  }, []);
 
   const onSuccess = useCallback(resetForm => {
-    setIsSuccess(true);
     openAlert({
       variant: 'success',
-      message: 'Formulario Enviado Satisfactoriamente',
+      message: 'House Created Successfully!',
     });
-    setTimeout(() => {
-      setIsSuccess(false);
-      resetForm(initialValues);
-    }, 5000);
+    resetForm(initialValues);
   }, []);
 
   const onError = useCallback(e => {
+    const message = 'Something went wrong creating the house';
     openAlert({
+      message,
       variant: 'error',
-      message: 'Algo Salio Mal Enviando El Formulario',
     });
-    console.error('Error trying to sumbit form:', e);
+    console.error(`${message}: `, e);
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
@@ -85,7 +105,7 @@ export default function UpdateHomeForm(props) {
     <div>
       <Formik
         onSubmit={onSubmit}
-        initialValues={initialValues}
+        initialValues={houseSelected}
         validationSchema={updateValidationSchema}
       >
         {formikProps => {
@@ -167,82 +187,84 @@ export default function UpdateHomeForm(props) {
                   </Grid>
 
                   <Divider variant="middle" />
-                  <Grid
-                    container
-                    item
-                    spacing={8}
-                    xs={12}
-                    alignItems="center"
-                    justify="center"
-                  >
-                    <Grid item xs={12}>
-                      <Typography variant="h4">HOUSE STATUS </Typography>
-                      <FormControl
-                        required
-                        error={error}
-                        component="fieldset"
-                        className={classes.formControl}
-                      >
-                        <FormLabel component="legend">Pick two</FormLabel>
-                        <FormGroup>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" component="h2">
+                      Files
+                    </Typography>
+                    <Link href="#">Link to Documents!</Link>
+                    <Button
+                      disabled={isLoading}
+                      className={classes.button}
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Update
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" component="h2">
+                      House Status
+                    </Typography>
+                    <FormControl
+                      required
+                      component="fieldset"
+                      className={classes.formControl}
+                    >
+                      <FormGroup row>
+                        {statuses.map(status => (
                           <FormControlLabel
+                            key={status.value}
                             control={
                               <Checkbox
-                                checked={gilad}
+                                checked={state[status.value] || false}
                                 onChange={handleChangeCheck}
-                                name="gilad"
+                                name={status.value}
                               />
                             }
-                            label="Gilad Gray"
+                            label={status.label}
                           />
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={jason}
-                                onChange={handleChangeCheck}
-                                name="jason"
-                              />
-                            }
-                            label="Jason Killian"
-                          />
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={antoine}
-                                onChange={handleChangeCheck}
-                                name="antoine"
-                              />
-                            }
-                            label="Antoine Llorca"
-                          />
-                        </FormGroup>
-                        <FormHelperText>
-                          You can display an error
-                        </FormHelperText>
-                      </FormControl>
-                    </Grid>
-                    <Divider variant="middle" />
+                        ))}
+                      </FormGroup>
+                    </FormControl>
+                  </Grid>
+                  <Divider variant="middle" />
 
-                    <Grid item xs={12}>
-                      <Typography>Update Process...</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Button
-                        disabled={isLoading}
-                        className={classes.button}
-                        variant="contained"
-                        type="submit"
-                        color="primary"
-                      >
-                        Enviar
-                      </Button>
-                      {isSuccess && (
-                        <Typography variant="h4">
-                          The house was created!
-                        </Typography>
-                      )}
-                      {isLoading && <LinearProgress />}
-                    </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" component="h2" paragraph>
+                      Update Process...
+                    </Typography>
+                    <CustomTextField
+                      type="text"
+                      name="newUpdate"
+                      label="New Update"
+                      multiline
+                      rows={3}
+                      rowsMax={6}
+                      variant="outlined"
+                      {...inputProps}
+                    />
+                    <Button
+                      disabled={isLoading}
+                      className={classes.button}
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Attachments
+                    </Button>
+                  </Grid>
+                  <Divider variant="middle" />
+
+                  <Grid item xs={12}>
+                    <Button
+                      disabled={isLoading}
+                      className={classes.button}
+                      variant="contained"
+                      type="submit"
+                      color="primary"
+                    >
+                      SAVE CHANGES
+                    </Button>
+                    {isLoading && <LinearProgress />}
                   </Grid>
                 </Grid>
               </form>

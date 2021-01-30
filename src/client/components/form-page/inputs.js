@@ -16,9 +16,10 @@ export const CustomTextField = ({
   isLoading,
   handleChange,
   handleBlur,
+  ...props
 }) => (
   <TextField
-    value={values[name]}
+    value={values[name] || ''}
     onChange={handleChange}
     disabled={isLoading}
     onBlur={handleBlur}
@@ -30,6 +31,7 @@ export const CustomTextField = ({
     name={name}
     label={label}
     fullWidth
+    {...props}
   />
 );
 
@@ -56,7 +58,7 @@ export const CustomSelect = ({
         root: classes.root,
         select: classes.select,
       }}
-      value={values[name]}
+      value={values[name] || ''}
       onChange={handleChange}
       disabled={isLoading}
       inputProps={{
