@@ -44,22 +44,23 @@ export function getHouses() {
 
 function registerHouse(data) {
   Logger.log('=============Registering HOUSE===========');
+  const response = { ok: false, data: null };
   const housesSheet = global.getSheetFromSpreadSheet('HOUSES');
   const headers = global.getHeadersFromSheet(housesSheet);
-  const houseValues = global.jsonToSheetValues(data, headers);
+  const rowsBefore = housesSheet.getLastRow();
+  const lastRowId = housesSheet.getRange(rowsBefore, 1, 1, 1);
+  const houseJson = { ...data, idhouse: lastRowId + 1 };
+  const houseValues = global.jsonToSheetValues(houseJson, headers);
   Logger.log('HOUSE VALUES');
   Logger.log(houseValues);
 
-  let response = 'Error!';
-
-  const rowsBefore = housesSheet.getLastRow();
-  const lastRowId = housesSheet.getRange(rowsBefore, 1, 1, 1);
-  housesSheet.unshift(lastRowId + 1);
   housesSheet.appendRow(houseValues);
+
   const rowsAfter = housesSheet.getLastRow();
 
   if (rowsAfter > rowsBefore) {
-    response = 'exito';
+    response.ok = true;
+    response.data = houseJson;
   }
 
   Logger.log('=============END Registering HOUSE===========');
@@ -96,6 +97,7 @@ export function searchHouse(houseId) {
 
 export function updateHouse(serializedData) {
   try {
+    const response = { ok: false, data: null };
     const form = JSON.parse(serializedData);
     const { data, index } = searchHouse(form.houseId);
     if (!index) throw new Error('House does not exists');
@@ -105,10 +107,13 @@ export function updateHouse(serializedData) {
     const houseData = global.jsonToSheetValues(data, headers);
 
     homeRange.setValues([houseData]);
-    return 'exito';
+
+    response.ok = true;
+    response.data = houseData;
+    return response;
   } catch (error) {
     Logger.log(error);
-    throw new Error('Error editing student on General DB');
+    throw new Error('Error updating house');
   }
 }
 
