@@ -61,6 +61,15 @@ export const setActiveSheet = sheetName => {
   return getSheetsData();
 };
 
+export function findText({ sheet, text }) {
+  let index;
+  const textFinder = sheet.createTextFinder(text);
+  const textFound = textFinder.findNext();
+  if (textFound) index = textFound.getRow();
+  const data = textFound || null;
+  return { index, data };
+}
+
 function addHeadings(people, headings) {
   return people.map(personAsArray => {
     const personAsObj = {};

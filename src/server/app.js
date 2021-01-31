@@ -53,6 +53,8 @@ function registerHouse(data) {
   let response = 'Error!';
 
   const rowsBefore = housesSheet.getLastRow();
+  const lastRowId = housesSheet.getRange(rowsBefore, 1, 1, 1);
+  housesSheet.unshift(lastRowId + 1);
   housesSheet.appendRow(houseValues);
   const rowsAfter = housesSheet.getLastRow();
 
@@ -64,74 +66,55 @@ function registerHouse(data) {
   return response;
 }
 
-// function editStudent(serializedData) {
-//   const form = JSON.parse(serializedData);
-//   const house = validateHouse(form.num_doc);
-//   console.log('form', form);
-//   const newData = getDataForRegistering(form, house);
-
-//   editEstudentGeneral(newData, house.index);
-//   // editStudentActualPeriod( newData );
-// }
-
-// function editEstudentGeneral(student, studentIndex) {
-//   try {
-//     const housesSheet = getSheetFromSpreadSheet('HOUSES');
-//     const headers = getHeadersFromSheet(housesSheet);
-//     Logger.log('GENERAL PERIOD');
-//     Logger.log(student);
-//     const studentRange = housesSheet.getRange(
-//       Number(studentIndex),
-//       1,
-//       1,
-//       housesSheet.getLastColumn()
-//     );
-//     const studentData = jsonToSheetValues(student, headers);
-//     studentRange.setValues([studentData]);
-//     return 'exito';
-//   } catch (error) {
-//     Logger.log(error);
-//     throw 'Error editing student on General DB';
-//   }
-// }
-
-export function validateHouse(cedula) {
-  Logger.log('=============Validating Person===========');
+export function searchHouse(houseId) {
+  Logger.log('=============Searching House===========');
   const sheet = global.getSheetFromSpreadSheet('HOUSES');
   const result = {
-    state: 'no esta',
     index: -1,
     data: null,
   };
-  const currentPeriod = global.getCurrentPeriod().periodo;
-  const textFinder = sheet.createTextFinder(cedula);
-  const studentFound = textFinder.findNext();
-  const studentIndex = studentFound ? studentFound.getRow() : -1;
-  if (studentIndex <= -1) return result;
+  const { index: homeIndex } = global.findText({ sheet, text: houseId });
+  if (homeIndex <= -1) return result;
 
-  const studentRange = sheet.getSheetValues(
-    Number(studentIndex),
+  const homeRange = sheet.getSheetValues(
+    +homeIndex,
     1,
     1,
     sheet.getLastColumn()
   );
   const headers = global.getHeadersFromSheet(sheet);
-  const [studentData] = global.sheetValuesToObject(studentRange, headers);
-  const isSameDocument = String(studentData.num_doc) === String(cedula);
+  const [homeData] = global.sheetValuesToObject(homeRange, headers);
+  const isSameDocument = String(homeData.num_doc) === String(houseId);
   if (!isSameDocument) return result;
 
-  const isFromCurrentPeriod = String(studentData[currentPeriod]) !== '-';
-  result.index = studentIndex;
-  result.state = isFromCurrentPeriod ? 'actual' : 'antiguo';
-  result.data = studentData;
+  result.index = homeIndex;
+  result.data = homeData;
   Logger.log(result);
-  Logger.log('=============END Validating Person===========');
+  Logger.log('=============END Searching House===========');
   return result;
+}
+
+export function updateHouse(serializedData) {
+  try {
+    const form = JSON.parse(serializedData);
+    const { data, index } = searchHouse(form.houseId);
+    if (!index) throw new Error('House does not exists');
+    const sheet = global.getSheetFromSpreadSheet('HOUSES');
+    const headers = global.getHeadersFromSheet(sheet);
+    const homeRange = sheet.getSheetValues(+index, 1, 1, sheet.getLastColumn());
+    const houseData = global.jsonToSheetValues(data, headers);
+
+    homeRange.setValues([houseData]);
+    return 'exito';
+  } catch (error) {
+    Logger.log(error);
+    throw new Error('Error editing student on General DB');
+  }
 }
 
 // function buscarPersona(cedula) {
 //   let folder;
-//   let house = validateHouse(cedula);
+//   let house = searchHouse(cedula);
 //   if (house.state !== 'no esta') {
 //     house.files = [];
 //     folder = getPersonFolder(cedula);
@@ -161,11 +144,6 @@ export function createHouse(formString) {
     avoidCollisionsInConcurrentAccessess();
     Logger.log('Data for registering');
     Logger.log(form);
-    // const filesResult = global.uploadHouseFiles(form.num_doc, form.files);
-    // Logger.log('Files Result');
-    // Logger.log(filesResult);
-    // const folderUrl = (filesResult || {}).folder;
-    // form.url_documentos = folderUrl;
     const response = registerHouse(form);
     Logger.log('Response');
     Logger.log(response);

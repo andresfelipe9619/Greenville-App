@@ -18,6 +18,7 @@ global.getSheetFromSpreadSheet = publicSheetFunctions.getSheetFromSpreadSheet;
 global.getRawDataFromSheet = publicSheetFunctions.getRawDataFromSheet;
 global.getSheetsData = publicSheetFunctions.getSheetsData;
 global.addSheet = publicSheetFunctions.addSheet;
+global.findText = publicSheetFunctions.findText;
 global.deleteSheet = publicSheetFunctions.deleteSheet;
 global.setActiveSheet = publicSheetFunctions.setActiveSheet;
 global.getHeadersFromSheet = publicSheetFunctions.getHeadersFromSheet;
