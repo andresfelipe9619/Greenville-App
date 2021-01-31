@@ -42,23 +42,37 @@ export function getHouses() {
   return houses;
 }
 
+export function getComments() {
+  const rawComments = global.getRawDataFromSheet('COMMENTS');
+  const comments = global.sheetValuesToObject(rawComments);
+  return comments;
+}
+
+function getHousesSheet() {
+  const sheet = global.getSheetFromSpreadSheet('HOUSES');
+  const headers = global.getHeadersFromSheet(sheet);
+  return { sheet, headers };
+}
+
 function registerHouse(data) {
   Logger.log('=============Registering HOUSE===========');
   const response = { ok: false, data: null };
-  const housesSheet = global.getSheetFromSpreadSheet('HOUSES');
-  const headers = global.getHeadersFromSheet(housesSheet);
-  const rowsBefore = housesSheet.getLastRow();
-  const lastRowId = housesSheet.getRange(rowsBefore, 1, 1, 1);
+  const { sheet, headers } = getHousesSheet();
+  const currentLastRow = sheet.getLastRow();
+  const [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
+  Logger.log('lastRowId');
+  Logger.log(lastRowId);
   const houseJson = { ...data, idhouse: lastRowId + 1 };
   const houseValues = global.jsonToSheetValues(houseJson, headers);
   Logger.log('HOUSE VALUES');
   Logger.log(houseValues);
 
-  housesSheet.appendRow(houseValues);
+  sheet.appendRow(houseValues);
 
-  const rowsAfter = housesSheet.getLastRow();
+  const rowsAfter = sheet.getLastRow();
+  const recordInserted = rowsAfter > currentLastRow;
 
-  if (rowsAfter > rowsBefore) {
+  if (recordInserted) {
     response.ok = true;
     response.data = houseJson;
   }
@@ -69,7 +83,7 @@ function registerHouse(data) {
 
 export function searchHouse(houseId) {
   Logger.log('=============Searching House===========');
-  const sheet = global.getSheetFromSpreadSheet('HOUSES');
+  const { sheet, headers } = getHousesSheet();
   const result = {
     index: -1,
     data: null,
@@ -83,9 +97,8 @@ export function searchHouse(houseId) {
     1,
     sheet.getLastColumn()
   );
-  const headers = global.getHeadersFromSheet(sheet);
   const [homeData] = global.sheetValuesToObject(homeRange, headers);
-  const isSameDocument = String(homeData.num_doc) === String(houseId);
+  const isSameDocument = String(homeData.idhouse) === String(houseId);
   if (!isSameDocument) return result;
 
   result.index = homeIndex;
@@ -101,8 +114,7 @@ export function updateHouse(serializedData) {
     const form = JSON.parse(serializedData);
     const { data, index } = searchHouse(form.houseId);
     if (!index) throw new Error('House does not exists');
-    const sheet = global.getSheetFromSpreadSheet('HOUSES');
-    const headers = global.getHeadersFromSheet(sheet);
+    const { sheet, headers } = getHousesSheet();
     const homeRange = sheet.getSheetValues(+index, 1, 1, sheet.getLastColumn());
     const houseData = global.jsonToSheetValues(data, headers);
 

@@ -70,25 +70,25 @@ export function findText({ sheet, text }) {
   return { index, data };
 }
 
-function addHeadings(people, headings) {
-  return people.map(personAsArray => {
-    const personAsObj = {};
+function addHeadings(object, headings) {
+  return object.map(sheetValues => {
+    const sheetValuesAsObject = {};
 
     headings.forEach((heading, i) => {
-      personAsObj[heading] = personAsArray[i];
+      sheetValuesAsObject[heading] = sheetValues[i];
     });
 
-    return personAsObj;
+    return sheetValuesAsObject;
   });
 }
 
 export function sheetValuesToObject(sheetValues, headers) {
   const headings = headers || sheetValues[0].map(normalizeString);
-  let people = null;
-  if (sheetValues) people = headers ? sheetValues : sheetValues.slice(1);
-  const peopleWithHeadings = addHeadings(people, headings);
+  let object = null;
+  if (sheetValues) object = headers ? sheetValues : sheetValues.slice(1);
+  const objectWithHeadings = addHeadings(object, headings);
 
-  return peopleWithHeadings;
+  return objectWithHeadings;
 }
 
 export function getHeadersFromSheet(sheet) {

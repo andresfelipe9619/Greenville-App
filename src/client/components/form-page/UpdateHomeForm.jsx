@@ -21,9 +21,9 @@ import { useHouse } from '../../context/House';
 const statuses = [
   { label: 'DRYWALL', value: 'drywall' },
   { label: 'PRIMEWALLS', value: 'primewalls' },
-  { label: 'FINISH PAINTING', value: 'finish-painting' },
-  { label: 'PAINT TOUCH UP', value: 'paint-touch-up' },
-  { label: 'EXTERIOR PAINT', value: 'exterior-paint' },
+  { label: 'FINISH PAINTING', value: 'finishpainting' },
+  { label: 'PAINT TOUCH UP', value: 'painttouchup' },
+  { label: 'EXTERIOR PAINT', value: 'exteriorpaint' },
 ];
 export default function UpdateHomeForm(props) {
   const classes = useStyles();

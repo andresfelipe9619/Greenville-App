@@ -86,7 +86,7 @@ export function SearchBox({ classes }) {
   const handleChange = (_, value, reason) => {
     console.log('{e,reason}', { value, reason });
     if (reason === 'select-option') {
-      const id = value.houseid;
+      const id = value.idhouse;
       setHouseSelected(value);
       history.push(`/update/${id}`);
     }
