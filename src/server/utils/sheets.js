@@ -14,9 +14,9 @@ function normalizeString(value) {
 
 function camelCase(string) {
   return String(string)
+    .toLowerCase()
     .replace(/\s(.)/g, a => a.toUpperCase())
-    .replace(/\s/g, '')
-    .replace(/^(.)/, b => b.toLowerCase());
+    .replace(/\s/g, '');
 }
 
 export function getSheetFromSpreadSheet(sheet) {
