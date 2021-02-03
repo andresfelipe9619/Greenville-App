@@ -21,9 +21,9 @@ import { useHouse } from '../../context/House';
 const statuses = [
   { label: 'DRYWALL', value: 'drywall' },
   { label: 'PRIMEWALLS', value: 'primewalls' },
-  { label: 'FINISH PAINTING', value: 'finishpainting' },
-  { label: 'PAINT TOUCH UP', value: 'painttouchup' },
-  { label: 'EXTERIOR PAINT', value: 'exteriorpaint' },
+  { label: 'FINISH PAINTING', value: 'finishPainting' },
+  { label: 'PAINT TOUCH UP', value: 'paintTouchUp' },
+  { label: 'EXTERIOR PAINT', value: 'exteriorPaint' },
 ];
 export default function UpdateHomeForm(props) {
   const classes = useStyles();
@@ -37,18 +37,14 @@ export default function UpdateHomeForm(props) {
 
   useEffect(() => {
     const checkState = statuses.reduce((acc, status) => {
-      if (!houseSelected) {
-        acc[status.value] = false;
-        return acc;
-      }
+      acc[status.value] = false;
+      if (!houseSelected) return acc;
+
       const found = (houseSelected.statuses || []).find(
         s => s.value === status.value
       );
-      if (found) {
-        acc[status.value] = true;
-      } else {
-        acc[status.value] = false;
-      }
+      if (found) acc[status.value] = true;
+
       return acc;
     }, {});
     setState(checkState);
@@ -64,7 +60,7 @@ export default function UpdateHomeForm(props) {
   const onSuccess = useCallback(resetForm => {
     openAlert({
       variant: 'success',
-      message: 'House Created Successfully!',
+      message: 'House Updated Successfully!',
     });
     resetForm(initialValues);
   }, []);
@@ -85,7 +81,7 @@ export default function UpdateHomeForm(props) {
       setIsLoading(true);
       console.log('houseFile', houseFile);
       // const fileString = await getFile(houseFile);
-      // const fileFromDrive = await createHouseFile(houseId, fileString);
+      // const fileFromDrive = await createHouseFile(idHouse, fileString);
       const house = JSON.stringify({
         ...formData,
         // houseFile: fileFromDrive.url,

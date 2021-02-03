@@ -12,6 +12,14 @@ function normalizeString(value) {
     .toLowerCase();
 }
 
+function wordToCamelCase(string) {
+  return String(string)
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
+      index === 0 ? word.toLowerCase() : word.toUpperCase()
+    )
+    .replace(/\s+/g, '');
+}
+
 export function getSheetFromSpreadSheet(sheet) {
   const Spreedsheet = SpreadsheetApp.openByUrl(GENERAL_DB);
   if (sheet) return Spreedsheet.getSheetByName(sheet);
@@ -70,23 +78,23 @@ export function findText({ sheet, text }) {
   return { index, data };
 }
 
-function addHeadings(object, headings) {
-  return object.map(sheetValues => {
+function addHeadings(sheetValues, headings) {
+  return sheetValues.map(row => {
     const sheetValuesAsObject = {};
 
-    headings.forEach((heading, i) => {
-      sheetValuesAsObject[heading] = sheetValues[i];
+    headings.forEach((heading, column) => {
+      sheetValuesAsObject[heading] = row[column];
     });
 
     return sheetValuesAsObject;
   });
 }
 
-export function sheetValuesToObject(sheetValues, headers) {
-  const headings = headers || sheetValues[0].map(normalizeString);
-  let object = null;
-  if (sheetValues) object = headers ? sheetValues : sheetValues.slice(1);
-  const objectWithHeadings = addHeadings(object, headings);
+export function sheetValuesToObject(values, headers) {
+  const headings = headers || values[0].map(wordToCamelCase);
+  let sheetValues = null;
+  if (values) sheetValues = headers ? values : values.slice(1);
+  const objectWithHeadings = addHeadings(sheetValues, headings);
 
   return objectWithHeadings;
 }

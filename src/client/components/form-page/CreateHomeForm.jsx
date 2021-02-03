@@ -48,16 +48,17 @@ export default function CreateHomeForm() {
       setSubmitting(true);
       setIsLoading(true);
       console.log('houseFile', houseFile);
-      // const fileString = await getFile(houseFile);
-      // const fileFromDrive = await createHouseFile(houseId, fileString);
-      const house = JSON.stringify({
-        ...formData,
-        // houseFile: fileFromDrive.url,
-      });
+      const fileString = await getFile(houseFile);
+      const house = JSON.stringify(formData);
       console.log('HOUSE', house);
       HouseContext.addHouse(formData);
       const result = await API.createHouse(house);
       console.log('result', result);
+      const fileFromDrive = await API.uploadHouseFiles(result.idHouse, {
+        name: 'Custom FILE :D',
+        base64: fileString,
+      });
+      API.updateHouse();
       onSuccess(resetForm);
     } catch (e) {
       onError(e);

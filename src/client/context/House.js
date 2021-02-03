@@ -18,7 +18,7 @@ function HouseReducer(state, { type, houses, houseSelected, house }) {
       return { ...state, houseSelected };
     }
     case 'update': {
-      const houseIndex = state.houses.findIndex(h => h.houseid);
+      const houseIndex = state.houses.findIndex(h => h.idHouse);
       if (houseIndex === -1) return state;
       const newHouses = [...state.houses];
       newHouses[houseIndex] = house;

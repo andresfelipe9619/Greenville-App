@@ -52,23 +52,23 @@ export function createHouseFile(fileName, id, fileData) {
   return result;
 }
 
-export function uploadHouseFiles(houseId, files) {
-  Logger.log(`=======UPLOADING HOUSE ${houseId} FILES======`);
+export function uploadHouseFiles(idHouse, files) {
+  Logger.log(`=======UPLOADING HOUSE ${idHouse} FILES======`);
   if (!files.length) return null;
   Logger.log('FILES:');
   const savedFiles = files.map(file => {
     const name = file.name || '';
     const base64 = file.base64 || '';
     Logger.log(name);
-    const savedFile = createHouseFile(name, houseId, base64);
+    const savedFile = createHouseFile(name, idHouse, base64);
     return savedFile.file;
   });
   const mainFolder = getMainFolder();
-  const currentFolder = getHouseFolder(houseId, mainFolder);
+  const currentFolder = getHouseFolder(idHouse, mainFolder);
   const response = { files: savedFiles, folder: currentFolder.getUrl() };
   Logger.log('FILES RESPONSE:');
   Logger.log(response);
 
-  Logger.log(`=======END UPLOADING HOUSE${houseId} FILES========`);
+  Logger.log(`=======END UPLOADING HOUSE${idHouse} FILES========`);
   return response;
 }

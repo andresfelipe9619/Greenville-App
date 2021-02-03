@@ -62,7 +62,7 @@ function registerHouse(data) {
   const [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
   Logger.log('lastRowId');
   Logger.log(lastRowId);
-  const houseJson = { ...data, idhouse: lastRowId + 1 };
+  const houseJson = { ...data, idhouse: +lastRowId + 1 };
   const houseValues = global.jsonToSheetValues(houseJson, headers);
   Logger.log('HOUSE VALUES');
   Logger.log(houseValues);
@@ -81,14 +81,14 @@ function registerHouse(data) {
   return response;
 }
 
-export function searchHouse(houseId) {
+export function searchHouse(idHouse) {
   Logger.log('=============Searching House===========');
   const { sheet, headers } = getHousesSheet();
   const result = {
     index: -1,
     data: null,
   };
-  const { index: homeIndex } = global.findText({ sheet, text: houseId });
+  const { index: homeIndex } = global.findText({ sheet, text: idHouse });
   if (homeIndex <= -1) return result;
 
   const homeRange = sheet.getSheetValues(
@@ -98,7 +98,7 @@ export function searchHouse(houseId) {
     sheet.getLastColumn()
   );
   const [homeData] = global.sheetValuesToObject(homeRange, headers);
-  const isSameDocument = String(homeData.idhouse) === String(houseId);
+  const isSameDocument = String(homeData.idHouse) === String(idHouse);
   if (!isSameDocument) return result;
 
   result.index = homeIndex;
@@ -112,7 +112,7 @@ export function updateHouse(serializedData) {
   try {
     const response = { ok: false, data: null };
     const form = JSON.parse(serializedData);
-    const { data, index } = searchHouse(form.houseId);
+    const { data, index } = searchHouse(form.idHouse);
     if (!index) throw new Error('House does not exists');
     const { sheet, headers } = getHousesSheet();
     const homeRange = sheet.getSheetValues(+index, 1, 1, sheet.getLastColumn());
@@ -128,26 +128,6 @@ export function updateHouse(serializedData) {
     throw new Error('Error updating house');
   }
 }
-
-// function buscarPersona(cedula) {
-//   let folder;
-//   let house = searchHouse(cedula);
-//   if (house.state !== 'no esta') {
-//     house.files = [];
-//     folder = getPersonFolder(cedula);
-//     const files = folder.getFiles();
-//     Logger.log(`files: ${files}`);
-//     while (files.hasNext()) {
-//       const file = files.next();
-//       house.files.push({ name: file.getName(), url: file.getUrl() });
-//     }
-//   } else {
-//     house = null;
-//   }
-//   Logger.log('THIS IS WHAT U ARE LOOKING FOR');
-//   Logger.log(house);
-//   return JSON.stringify(house);
-// }
 
 function avoidCollisionsInConcurrentAccessess() {
   const lock = LockService.getPublicLock();

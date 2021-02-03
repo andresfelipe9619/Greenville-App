@@ -31,7 +31,7 @@ export default function AppRouter() {
           <Route
             exact
             strict
-            path="/update/:houseId"
+            path="/update/:idHouse"
             render={props => <UpdateHomeForm {...props} />}
           />
         </Switch>
