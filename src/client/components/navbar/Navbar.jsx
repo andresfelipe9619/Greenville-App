@@ -78,6 +78,7 @@ export default function Navbar() {
 export function SearchBox({ classes }) {
   const history = useHistory();
   const [{ houses }, { setHouses, setHouseSelected }] = useHouse();
+  console.log('houses', houses);
   const fetchHouses = async () => {
     const response = await getHouses();
     setHouses(response);

@@ -58,7 +58,9 @@ export default function CreateHomeForm() {
         name: 'Custom FILE :D',
         base64: fileString,
       });
-      API.updateHouse();
+      API.updateHouse(
+        JSON.stringify({ files: fileFromDrive, idHouse: result.idHouse })
+      );
       onSuccess(resetForm);
     } catch (e) {
       onError(e);

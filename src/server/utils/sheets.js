@@ -12,12 +12,11 @@ function normalizeString(value) {
     .toLowerCase();
 }
 
-function wordToCamelCase(string) {
+function camelCase(string) {
   return String(string)
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
-      index === 0 ? word.toLowerCase() : word.toUpperCase()
-    )
-    .replace(/\s+/g, '');
+    .replace(/\s(.)/g, a => a.toUpperCase())
+    .replace(/\s/g, '')
+    .replace(/^(.)/, b => b.toLowerCase());
 }
 
 export function getSheetFromSpreadSheet(sheet) {
@@ -91,7 +90,7 @@ function addHeadings(sheetValues, headings) {
 }
 
 export function sheetValuesToObject(values, headers) {
-  const headings = headers || values[0].map(wordToCamelCase);
+  const headings = headers || values[0].map(camelCase);
   let sheetValues = null;
   if (values) sheetValues = headers ? values : values.slice(1);
   const objectWithHeadings = addHeadings(sheetValues, headings);
