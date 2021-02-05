@@ -116,7 +116,9 @@ export function updateHouse(serializedData) {
     if (!index) throw new Error('House does not exists');
     const { sheet, headers } = getHousesSheet();
     const homeRange = sheet.getSheetValues(+index, 1, 1, sheet.getLastColumn());
-    const houseData = global.jsonToSheetValues(data, headers);
+    const houseData = global.jsonToSheetValues({ ...data, ...form }, headers);
+    Logger.log('houseData');
+    Logger.log(houseData);
 
     homeRange.setValues([houseData]);
 

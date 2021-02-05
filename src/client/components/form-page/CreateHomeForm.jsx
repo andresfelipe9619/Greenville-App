@@ -61,8 +61,13 @@ export default function CreateHomeForm() {
         },
       ]);
       console.log('fileFromDrive', fileFromDrive);
+      if (!fileFromDrive.folder) {
+        throw new Error(
+          'Somenthing went wrong creating files. It is not returning any folder.'
+        );
+      }
       API.updateHouse(
-        JSON.stringify({ files: fileFromDrive, idHouse: data.idHouse })
+        JSON.stringify({ files: fileFromDrive.folder, idHouse: data.idHouse })
       );
       onSuccess({ resetForm, data });
     } catch (e) {
