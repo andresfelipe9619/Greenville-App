@@ -44,7 +44,7 @@ export function createHouseFile(fileName, id, fileData) {
   );
   const blob = Utilities.newBlob(bytes, contentType, fileName);
 
-  const file = currentFolder.createHouseFile(blob);
+  const file = currentFolder.createFile(blob);
   file.setDescription(`Subido Por ${id}`);
   result.url = file.getUrl();
   result.name = file.getName();
