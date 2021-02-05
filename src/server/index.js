@@ -10,6 +10,7 @@ global.isAdmin = publicMainFunction.isAdmin;
 global.getHouses = publicMainFunction.getHouses;
 global.validateHouse = publicMainFunction.validateHouse;
 global.createHouse = publicMainFunction.createHouse;
+global.updateHouse = publicMainFunction.updateHouse;
 
 global.createHouseFile = publicDriveFunctions.createHouseFile;
 global.uploadHouseFiles = publicDriveFunctions.uploadHouseFiles;
