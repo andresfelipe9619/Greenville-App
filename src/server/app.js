@@ -62,7 +62,7 @@ function registerHouse(data) {
   const [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
   Logger.log('lastRowId');
   Logger.log(lastRowId);
-  const houseJson = { ...data, idhouse: +lastRowId + 1 };
+  const houseJson = { ...data, idHouse: +lastRowId + 1 };
   const houseValues = global.jsonToSheetValues(houseJson, headers);
   Logger.log('HOUSE VALUES');
   Logger.log(houseValues);
