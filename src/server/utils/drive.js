@@ -1,5 +1,5 @@
 const ROOT_FOLDER = 'Greenville app';
-const FILES_FOLDER = 'Archivos';
+const FILES_FOLDER = 'Storage';
 
 function findOrCreateFolder(name, folder2search) {
   let folder;

@@ -25,10 +25,10 @@ export default function CreateHomeForm() {
   const { openAlert } = useAlertDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSuccess = useCallback(resetForm => {
+  const onSuccess = useCallback(({ result, resetForm }) => {
     openAlert({
       variant: 'success',
-      message: 'House Created Successfully!',
+      message: `House #${result.idHouse} created successfully!`,
     });
     resetForm(initialValues);
   }, []);
@@ -54,14 +54,17 @@ export default function CreateHomeForm() {
       HouseContext.addHouse(formData);
       const result = await API.createHouse(house);
       console.log('result', result);
-      const fileFromDrive = await API.uploadHouseFiles(result.idHouse, {
-        name: 'Custom FILE :D',
-        base64: fileString,
-      });
+      const fileFromDrive = await API.uploadHouseFiles(result.idHouse, [
+        {
+          name: 'Custom FILE :D',
+          base64: fileString,
+        },
+      ]);
+      console.log('fileFromDrive', fileFromDrive);
       API.updateHouse(
         JSON.stringify({ files: fileFromDrive, idHouse: result.idHouse })
       );
-      onSuccess(resetForm);
+      onSuccess({ resetForm, result });
     } catch (e) {
       onError(e);
     } finally {

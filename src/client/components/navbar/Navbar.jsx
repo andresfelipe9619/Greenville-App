@@ -12,11 +12,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useHistory } from 'react-router-dom';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import useStyles from './styles';
-import server from '../../utils/server';
+import API from '../../api';
 import { useHouse } from '../../context/House';
-
-const { serverFunctions } = server;
-const { getHouses } = serverFunctions;
 
 export default function Navbar() {
   const classes = useStyles();
@@ -80,7 +77,7 @@ export function SearchBox({ classes }) {
   const [{ houses }, { setHouses, setHouseSelected }] = useHouse();
   console.log('houses', houses);
   const fetchHouses = async () => {
-    const response = await getHouses();
+    const response = await API.getHouses();
     setHouses(response);
   };
 
@@ -88,8 +85,8 @@ export function SearchBox({ classes }) {
     console.log('{e,reason}', { value, reason });
     if (reason === 'select-option') {
       const id = value.idHouse;
-      setHouseSelected(value);
       history.push(`/update/${id}`);
+      setHouseSelected(value);
     }
   };
 
