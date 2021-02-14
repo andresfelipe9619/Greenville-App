@@ -66,7 +66,10 @@ function registerHouse(data) {
   const response = { ok: false, data: null };
   const { sheet, headers } = getHousesSheet();
   const currentLastRow = sheet.getLastRow();
-  const [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
+  let lastRowId = 0;
+  if (currentLastRow > 1) {
+    [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
+  }
   Logger.log('lastRowId');
   Logger.log(lastRowId);
   const houseJson = { ...data, idHouse: +lastRowId + 1 };
