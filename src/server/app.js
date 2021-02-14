@@ -1,5 +1,6 @@
+const getCurrentUser = () => Session.getActiveUser().getEmail();
 export function isAdmin() {
-  const guessEmail = Session.getActiveUser().getEmail();
+  const guessEmail = getCurrentUser();
   const admins = [
     'suarez.andres@correounivalle.edu.co',
     'samuel.ramirez@correounivalle.edu.co',
@@ -42,14 +43,20 @@ export function getHouses() {
   return houses;
 }
 
+function getHousesSheet() {
+  const sheet = global.getSheetFromSpreadSheet('HOUSES');
+  const headers = global.getHeadersFromSheet(sheet);
+  return { sheet, headers };
+}
+
 export function getComments() {
   const rawComments = global.getRawDataFromSheet('COMMENTS');
   const comments = global.sheetValuesToObject(rawComments);
   return comments;
 }
 
-function getHousesSheet() {
-  const sheet = global.getSheetFromSpreadSheet('HOUSES');
+export function getCommentsSheet() {
+  const sheet = global.getSheetFromSpreadSheet('COMMENTS');
   const headers = global.getHeadersFromSheet(sheet);
   return { sheet, headers };
 }
@@ -81,6 +88,41 @@ function registerHouse(data) {
   return response;
 }
 
+export function registerComment(data) {
+  Logger.log('=============Registering COMMENT===========');
+  const response = { ok: false, data: null };
+  const { sheet, headers } = getCommentsSheet();
+  const currentLastRow = sheet.getLastRow();
+  let lastRowId = 0;
+  if (currentLastRow > 1) {
+    [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
+  }
+  Logger.log('lastRowId');
+  Logger.log(lastRowId);
+  const houseJson = {
+    ...data,
+    user: getCurrentUser(),
+    idComment: +lastRowId + 1,
+    date: new Date().toString(),
+  };
+  const commentValues = global.jsonToSheetValues(houseJson, headers);
+  Logger.log('COMMENT VALUES');
+  Logger.log(commentValues);
+
+  sheet.appendRow(commentValues);
+
+  const rowsAfter = sheet.getLastRow();
+  const recordInserted = rowsAfter > currentLastRow;
+
+  if (recordInserted) {
+    response.ok = true;
+    response.data = houseJson;
+  }
+
+  Logger.log('=============END Registering COMMENT===========');
+  return response;
+}
+
 export function searchHouse(idHouse) {
   Logger.log('=============Searching House===========');
   const { sheet, headers } = getHousesSheet();
@@ -89,6 +131,7 @@ export function searchHouse(idHouse) {
     data: null,
   };
   const { index: homeIndex } = global.findText({ sheet, text: idHouse });
+  Logger.log(`HomeIndex ${homeIndex}`);
   if (homeIndex <= -1) return result;
 
   const homeRange = sheet.getSheetValues(
@@ -97,7 +140,11 @@ export function searchHouse(idHouse) {
     1,
     sheet.getLastColumn()
   );
+  Logger.log(`homeRange: ${homeRange.length}`);
+  Logger.log(homeRange);
   const [homeData] = global.sheetValuesToObject(homeRange, headers);
+  Logger.log(`HomeData:`);
+  Logger.log(homeData);
   const isSameDocument = String(homeData.idHouse) === String(idHouse);
   if (!isSameDocument) return result;
 
@@ -115,7 +162,7 @@ export function updateHouse(serializedData) {
     const { data, index } = searchHouse(form.idHouse);
     if (!index) throw new Error('House does not exists');
     const { sheet, headers } = getHousesSheet();
-    const homeRange = sheet.getSheetValues(+index, 1, 1, sheet.getLastColumn());
+    const homeRange = sheet.getRange(+index, 1, 1, sheet.getLastColumn());
     const houseData = global.jsonToSheetValues({ ...data, ...form }, headers);
     Logger.log('houseData');
     Logger.log(houseData);
@@ -131,16 +178,34 @@ export function updateHouse(serializedData) {
   }
 }
 
-function avoidCollisionsInConcurrentAccessess() {
-  const lock = LockService.getPublicLock();
-  lock.waitLock(15000);
+// function avoidCollisionsInConcurrentAccessess() {
+//   const lock = LockService.getPublicLock();
+//   lock.waitLock(15000);
+// }
+
+export function createComment(formString) {
+  const form = JSON.parse(formString);
+  if (!form || !Object.keys(form).length) throw new Error('No data sent');
+  try {
+    // avoidCollisionsInConcurrentAccessess();
+    Logger.log('Data for registering');
+    Logger.log(form);
+    const response = registerComment(form);
+    Logger.log('Response');
+    Logger.log(response);
+    return response;
+  } catch (error) {
+    Logger.log('Error Registering Student');
+    Logger.log(error);
+    return error.toString();
+  }
 }
 
 export function createHouse(formString) {
   const form = JSON.parse(formString);
   if (!form || !Object.keys(form).length) throw new Error('No data sent');
   try {
-    avoidCollisionsInConcurrentAccessess();
+    // avoidCollisionsInConcurrentAccessess();
     Logger.log('Data for registering');
     Logger.log(form);
     const response = registerHouse(form);

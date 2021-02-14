@@ -11,8 +11,11 @@ global.getHouses = publicMainFunction.getHouses;
 global.validateHouse = publicMainFunction.validateHouse;
 global.createHouse = publicMainFunction.createHouse;
 global.updateHouse = publicMainFunction.updateHouse;
+global.createComment = publicMainFunction.createComment;
 
 global.createHouseFile = publicDriveFunctions.createHouseFile;
+global.createHouseCommentFile = publicDriveFunctions.createHouseCommentFile;
+global.uploadHouseCommentsFiles = publicDriveFunctions.uploadHouseCommentsFiles;
 global.uploadHouseFiles = publicDriveFunctions.uploadHouseFiles;
 
 global.getSheetFromSpreadSheet = publicSheetFunctions.getSheetFromSpreadSheet;

@@ -60,6 +60,11 @@ function HouseContext({ children }) {
   );
   const addHouse = useCallback(house => dispatch({ type: 'add', house }), []);
 
+  const updateHouse = useCallback(
+    house => dispatch({ type: 'update', house }),
+    []
+  );
+
   const removeHouse = useCallback(
     house => dispatch({ type: 'remove', house }),
     []
@@ -81,6 +86,7 @@ function HouseContext({ children }) {
           setHouses,
           addHouse,
           removeHouse,
+          updateHouse,
           getHouseSelected,
           setHouseSelected,
         }}

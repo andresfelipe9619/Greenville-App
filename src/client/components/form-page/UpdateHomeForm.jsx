@@ -15,8 +15,9 @@ import { updateValidationSchema, initialValues } from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
 import useStyles from './styles';
 import { useAlertDispatch } from '../../context/Alert';
-import { updateHouse } from '../../api';
-import { useHouse } from '../../context/House';
+import { getFile } from '../utils';
+import API from '../../api';
+import { useHouse, useHouseDispatch } from '../../context/House';
 
 const statuses = [
   { label: 'DRYWALL', value: 'drywall' },
@@ -27,6 +28,7 @@ const statuses = [
 ];
 export default function UpdateHomeForm(props) {
   const classes = useStyles();
+  const HouseContext = useHouseDispatch();
   const { openAlert } = useAlertDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState({});
@@ -75,19 +77,42 @@ export default function UpdateHomeForm(props) {
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
-    const { houseFile, ...formData } = values;
+    const { comment, commentFiles, ...formData } = values;
     try {
       setSubmitting(true);
       setIsLoading(true);
-      console.log('houseFile', houseFile);
-      // const fileString = await getFile(houseFile);
-      // const fileFromDrive = await createHouseFile(idHouse, fileString);
-      const house = JSON.stringify({
-        ...formData,
-        // houseFile: fileFromDrive.url,
-      });
+      console.log('comment', comment);
+      const house = JSON.stringify(formData);
       console.log('HOUSE', house);
-      //   await createHouse(house);
+      HouseContext.updateHouse(formData);
+      await API.updateHouse({
+        idHouse: houseSelected,
+        ...house,
+      });
+      if (commentFiles) {
+        const fileString = await getFile(commentFiles);
+        const fileFromDrive = await API.uploadHouseCommentsFiles(commentFiles, [
+          {
+            name: 'Custom FILE :D',
+            base64: fileString,
+          },
+        ]);
+        console.log('fileFromDrive', fileFromDrive);
+        if (!fileFromDrive.folder) {
+          throw new Error(
+            'Somenthing went wrong creating files. It is not returning any folder.'
+          );
+        }
+      }
+
+      if (comment) {
+        await API.createComment(
+          JSON.stringify({ idHouse: houseSelected, comment })
+        );
+      }
+
+      API.updateHouse(JSON.stringify({ idHouse: houseSelected, ...formData }));
+
       onSuccess(resetForm);
     } catch (e) {
       onError(e);
@@ -231,7 +256,7 @@ export default function UpdateHomeForm(props) {
                     </Typography>
                     <CustomTextField
                       type="text"
-                      name="newUpdate"
+                      name="comment"
                       label="New Update"
                       multiline
                       rows={3}

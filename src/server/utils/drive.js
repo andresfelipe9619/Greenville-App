@@ -1,5 +1,15 @@
 const ROOT_FOLDER = 'Greenville app';
 const FILES_FOLDER = 'Storage';
+const FILES_COMMENTS = 'Comments';
+
+function base64ToBlob(fileName, fileData) {
+  const contentType = fileData.substring(5, fileData.indexOf(';'));
+  const bytes = Utilities.base64Decode(
+    fileData.substr(fileData.indexOf('base64,') + 7)
+  );
+  const blob = Utilities.newBlob(bytes, contentType, fileName);
+  return blob;
+}
 
 function findOrCreateFolder(name, folder2search) {
   let folder;
@@ -22,29 +32,31 @@ function getFilesFolder(folder) {
   return filesFolder;
 }
 
-function getHouseFolder(name, folder) {
-  const filesFolder = getFilesFolder(folder);
+function getCommentsFolder(folder) {
+  let mainFolder = folder;
+  if (!folder) mainFolder = getMainFolder();
+  const commentsFolder = findOrCreateFolder(FILES_COMMENTS, mainFolder);
+  return commentsFolder;
+}
+
+function getHouseCommentsFolder(name) {
+  const commentsFolder = getCommentsFolder();
+  const houseFolder = findOrCreateFolder(name, commentsFolder);
+  return houseFolder;
+}
+
+function getHouseFolder(name) {
+  const filesFolder = getFilesFolder();
   const houseFolder = findOrCreateFolder(name, filesFolder);
   return houseFolder;
 }
 
-export function createHouseFile(fileName, id, fileData) {
+function createDriveFile({ id, folder, blob }) {
   const result = {
     url: '',
     name: '',
   };
-  const mainFolder = getMainFolder();
-  Logger.log(`Main Folder: ${mainFolder}`);
-  const currentFolder = getHouseFolder(id, mainFolder);
-  Logger.log(`File Folder: ${currentFolder}`);
-  const contentType = fileData.substring(5, fileData.indexOf(';'));
-  Logger.log(`Content Type: ${contentType}`);
-  const bytes = Utilities.base64Decode(
-    fileData.substr(fileData.indexOf('base64,') + 7)
-  );
-  const blob = Utilities.newBlob(bytes, contentType, fileName);
-
-  const file = currentFolder.createFile(blob);
+  const file = folder.createFile(blob);
   file.setDescription(`Subido Por ${id}`);
   result.url = file.getUrl();
   result.name = file.getName();
@@ -52,19 +64,61 @@ export function createHouseFile(fileName, id, fileData) {
   return result;
 }
 
-export function uploadHouseFiles(idHouse, files) {
-  Logger.log(`=======UPLOADING HOUSE ${idHouse} FILES======`);
-  if (!files.length) return null;
-  Logger.log('FILES:');
+export function createHouseFile({ fileName, id, fileData }) {
+  const currentFolder = getHouseFolder(id);
+  const blob = base64ToBlob(fileName, fileData);
+  const result = createDriveFile({ id, blob, folder: currentFolder });
+  return result;
+}
+
+export function createHouseCommentFile({ fileName, id, fileData }) {
+  const currentFolder = getHouseCommentsFolder(id);
+  const blob = base64ToBlob(fileName, fileData);
+  const result = createDriveFile({ id, blob, folder: currentFolder });
+  return result;
+}
+
+function mapHouseFiles({ idHouse, files, createFile }) {
   const savedFiles = files.map(file => {
     const name = file.name || '';
     const base64 = file.base64 || '';
     Logger.log(name);
-    const savedFile = createHouseFile(name, idHouse, base64);
+    const savedFile = createFile({
+      fileName: name,
+      id: idHouse,
+      fileData: base64,
+    });
     return savedFile.file;
   });
-  const mainFolder = getMainFolder();
-  const currentFolder = getHouseFolder(idHouse, mainFolder);
+  return savedFiles;
+}
+
+export function uploadHouseCommentsFiles(idHouse, files) {
+  Logger.log(`=======UPLOADING HOUSE ${idHouse} COMMENTS FILES======`);
+  if (!files.length) return null;
+  const savedFiles = mapHouseFiles({
+    idHouse,
+    files,
+    createFile: createHouseCommentFile,
+  });
+  const currentFolder = getHouseCommentsFolder(idHouse);
+  const response = { files: savedFiles, folder: currentFolder.getUrl() };
+  Logger.log('FILES RESPONSE:');
+  Logger.log(response);
+
+  Logger.log(`=======END UPLOADING HOUSE${idHouse} COMMENTS FILES========`);
+  return response;
+}
+
+export function uploadHouseFiles(idHouse, files) {
+  Logger.log(`=======UPLOADING HOUSE ${idHouse} FILES======`);
+  if (!files.length) return null;
+  const savedFiles = mapHouseFiles({
+    idHouse,
+    files,
+    createFile: createHouseFile,
+  });
+  const currentFolder = getHouseFolder(idHouse);
   const response = { files: savedFiles, folder: currentFolder.getUrl() };
   Logger.log('FILES RESPONSE:');
   Logger.log(response);

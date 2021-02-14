@@ -69,11 +69,15 @@ export const setActiveSheet = sheetName => {
 };
 
 export function findText({ sheet, text }) {
-  let index;
-  const textFinder = sheet.createTextFinder(text);
+  let index = -1;
+  const textFinder = sheet.createTextFinder(text).matchEntireCell(true);
   const textFound = textFinder.findNext();
-  if (textFound) index = textFound.getRow();
-  const data = textFound || null;
+  if (!textFound) return { index, data: null };
+  const row = textFound.getRow();
+  const col = textFound.getColumn();
+  const isHouseIdCol = col === 1;
+  if (isHouseIdCol) index = row;
+  const data = textFound;
   return { index, data };
 }
 
@@ -90,10 +94,10 @@ function addHeadings(sheetValues, headings) {
 }
 
 export function sheetValuesToObject(values, headers) {
-  const headings = headers || values[0].map(camelCase);
+  const headings = headers || values[0];
   let sheetValues = null;
   if (values) sheetValues = headers ? values : values.slice(1);
-  const objectWithHeadings = addHeadings(sheetValues, headings);
+  const objectWithHeadings = addHeadings(sheetValues, headings.map(camelCase));
 
   return objectWithHeadings;
 }
