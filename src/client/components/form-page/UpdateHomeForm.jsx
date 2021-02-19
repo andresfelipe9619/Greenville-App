@@ -26,7 +26,7 @@ const statuses = [
   { label: 'PAINT TOUCH UP', value: 'paintTouchUp' },
   { label: 'EXTERIOR PAINT', value: 'exteriorPaint' },
 ];
-export default function UpdateHomeForm(props) {
+export default function UpdateHomeForm() {
   const classes = useStyles();
   const HouseContext = useHouseDispatch();
   const { openAlert } = useAlertDispatch();
@@ -34,9 +34,6 @@ export default function UpdateHomeForm(props) {
   const [state, setState] = useState({});
   const [{ houseSelected }] = useHouse();
   console.log('houseSelected', houseSelected);
-
-  console.log('props', props);
-
   useEffect(() => {
     const checkState = statuses.reduce((acc, status) => {
       acc[status.value] = false;
@@ -83,12 +80,9 @@ export default function UpdateHomeForm(props) {
       setIsLoading(true);
       console.log('comment', comment);
       const house = JSON.stringify(formData);
+      const idSelected = houseSelected.idHouse;
       console.log('HOUSE', house);
-      HouseContext.updateHouse(formData);
-      await API.updateHouse({
-        idHouse: houseSelected,
-        ...house,
-      });
+
       if (commentFiles) {
         const fileString = await getFile(commentFiles);
         const fileFromDrive = await API.uploadHouseCommentsFiles(commentFiles, [
@@ -107,11 +101,11 @@ export default function UpdateHomeForm(props) {
 
       if (comment) {
         await API.createComment(
-          JSON.stringify({ idHouse: houseSelected, comment })
+          JSON.stringify({ idHouse: idSelected, description: comment })
         );
       }
-
-      API.updateHouse(JSON.stringify({ idHouse: houseSelected, ...formData }));
+      HouseContext.updateHouse(formData);
+      API.updateHouse(JSON.stringify({ idHouse: idSelected, ...formData }));
 
       onSuccess(resetForm);
     } catch (e) {
@@ -254,6 +248,9 @@ export default function UpdateHomeForm(props) {
                     <Typography variant="h5" component="h2" paragraph>
                       Update Process...
                     </Typography>
+                    {(houseSelected.comments || []).map((c, i) => (
+                      <p key={i}>{JSON.stringify(c)}</p>
+                    ))}
                     <CustomTextField
                       type="text"
                       name="comment"

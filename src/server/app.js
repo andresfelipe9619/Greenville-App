@@ -162,7 +162,10 @@ export function updateHouse(serializedData) {
   try {
     const response = { ok: false, data: null };
     const form = JSON.parse(serializedData);
+    Logger.log(form);
     const { data, index } = searchHouse(form.idHouse);
+    Logger.log('data');
+    Logger.log(data);
     if (!index) throw new Error('House does not exists');
     const { sheet, headers } = getHousesSheet();
     const homeRange = sheet.getRange(+index, 1, 1, sheet.getLastColumn());

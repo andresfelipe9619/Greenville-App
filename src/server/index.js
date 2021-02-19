@@ -12,6 +12,7 @@ global.validateHouse = publicMainFunction.validateHouse;
 global.createHouse = publicMainFunction.createHouse;
 global.updateHouse = publicMainFunction.updateHouse;
 global.createComment = publicMainFunction.createComment;
+global.getComments = publicMainFunction.getComments;
 
 global.createHouseFile = publicDriveFunctions.createHouseFile;
 global.createHouseCommentFile = publicDriveFunctions.createHouseCommentFile;

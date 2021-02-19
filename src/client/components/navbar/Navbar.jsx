@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -77,8 +77,13 @@ export function SearchBox({ classes }) {
   const [{ houses }, { setHouses, setHouseSelected }] = useHouse();
   console.log('houses', houses);
   const fetchHouses = async () => {
-    const response = await API.getHouses();
-    setHouses(response);
+    let housesResponse = await API.getHouses();
+    const comments = await API.getComments();
+    housesResponse = housesResponse.map(h => ({
+      ...h,
+      comments: comments.filter(c => c.idHouse === h.idHouse),
+    }));
+    setHouses(housesResponse);
   };
 
   const handleChange = (_, value, reason) => {

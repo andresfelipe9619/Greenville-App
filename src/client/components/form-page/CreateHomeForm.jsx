@@ -51,9 +51,9 @@ export default function CreateHomeForm() {
       const fileString = await getFile(houseFile);
       const house = JSON.stringify(formData);
       console.log('HOUSE', house);
-      HouseContext.addHouse(formData);
       const { data } = await API.createHouse(house);
       console.log('data', data);
+      HouseContext.addHouse(data);
       const fileFromDrive = await API.uploadHouseFiles(data.idHouse, [
         {
           name: 'Custom FILE :D',
