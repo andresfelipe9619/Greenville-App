@@ -2,7 +2,6 @@ import React from 'react';
 import DescriptionIcon from '@material-ui/icons/Description';
 import { FilePreviewerThumbnail } from 'react-file-previewer';
 import { getFileSize } from '../utils';
-import './styles.css';
 
 export default function Thumb({ file, loading, fileString }) {
   if (!file) return null;
