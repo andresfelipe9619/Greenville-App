@@ -42,7 +42,6 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.2.4",
-    "react-file-previewer": "^0.6.3",
     "react-router-dom": "^5.2.0",
     "yup": "^0.32.8"
   },
