@@ -26,7 +26,7 @@ const statuses = [
   { label: 'PAINT TOUCH UP', value: 'paintTouchUp' },
   { label: 'EXTERIOR PAINT', value: 'exteriorPaint' },
 ];
-export default function UpdateHomeForm() {
+export default function UpdateHomeForm({ history }) {
   const classes = useStyles();
   const HouseContext = useHouseDispatch();
   const { openAlert } = useAlertDispatch();
@@ -62,6 +62,7 @@ export default function UpdateHomeForm() {
       message: 'House Updated Successfully!',
     });
     resetForm(initialValues);
+    history.push('/');
   }, []);
 
   const onError = useCallback(e => {
@@ -74,23 +75,32 @@ export default function UpdateHomeForm() {
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
-    const { comment, commentFiles, ...formData } = values;
+    const { comment: description, commentFiles, ...formData } = values;
     try {
       setSubmitting(true);
       setIsLoading(true);
-      console.log('comment', comment);
       const house = JSON.stringify(formData);
       const idSelected = houseSelected.idHouse;
       console.log('HOUSE', house);
+      let comment = null;
 
-      if (commentFiles) {
+      if (description) {
+        comment = await API.createComment(
+          JSON.stringify({ idHouse: idSelected, description })
+        );
+      }
+
+      if (comment && commentFiles) {
         const fileString = await getFile(commentFiles);
-        const fileFromDrive = await API.uploadHouseCommentsFiles(commentFiles, [
-          {
-            name: 'Custom FILE :D',
-            base64: fileString,
-          },
-        ]);
+        const fileFromDrive = await API.uploadHouseCommentsFiles(
+          comment.idComment,
+          [
+            {
+              name: 'Custom FILE :D',
+              base64: fileString,
+            },
+          ]
+        );
         console.log('fileFromDrive', fileFromDrive);
         if (!fileFromDrive.folder) {
           throw new Error(
@@ -99,11 +109,6 @@ export default function UpdateHomeForm() {
         }
       }
 
-      if (comment) {
-        await API.createComment(
-          JSON.stringify({ idHouse: idSelected, description: comment })
-        );
-      }
       HouseContext.updateHouse(formData);
       API.updateHouse(JSON.stringify({ idHouse: idSelected, ...formData }));
 
@@ -223,7 +228,7 @@ export default function UpdateHomeForm() {
                     <FormControl
                       required
                       component="fieldset"
-                      className={classes.formControl}
+                      classes={{ root: classes.formControl }}
                     >
                       <FormGroup row>
                         {statuses.map(status => (

@@ -16,7 +16,6 @@ export const CustomTextField = ({
   isLoading,
   handleChange,
   handleBlur,
-  ...props
 }) => (
   <TextField
     value={values[name] || ''}
@@ -31,7 +30,6 @@ export const CustomTextField = ({
     name={name}
     label={label}
     fullWidth
-    {...props}
   />
 );
 
@@ -46,7 +44,7 @@ export const CustomSelect = ({
   isLoading,
 }) => (
   <FormControl
-    className={classes.formControl}
+    classes={{ root: classes.formControl }}
     fullWidth
     error={!!(touched[name] && errors[name])}
   >

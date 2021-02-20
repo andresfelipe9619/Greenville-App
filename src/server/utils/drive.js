@@ -34,7 +34,7 @@ function getFilesFolder(folder) {
 
 function getCommentsFolder(folder) {
   let mainFolder = folder;
-  if (!folder) mainFolder = getMainFolder();
+  if (!folder) mainFolder = getFilesFolder();
   const commentsFolder = findOrCreateFolder(FILES_COMMENTS, mainFolder);
   return commentsFolder;
 }

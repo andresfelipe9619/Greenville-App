@@ -9,12 +9,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
 import useStyles from './styles';
-import {
-  createValidationSchema,
-  testValues as initialValues,
-} from './form-settings';
+import { createValidationSchema, initialValues } from './form-settings';
 import { CustomSelect, CustomTextField } from './inputs';
-import { getFile } from '../utils';
 import API from '../../api';
 import { useAlertDispatch } from '../../context/Alert';
 import { useHouseDispatch } from '../../context/House';
@@ -47,28 +43,29 @@ export default function CreateHomeForm() {
     try {
       setSubmitting(true);
       setIsLoading(true);
-      console.log('houseFile', houseFile);
-      const fileString = await getFile(houseFile);
+
       const house = JSON.stringify(formData);
       console.log('HOUSE', house);
       const { data } = await API.createHouse(house);
       console.log('data', data);
       HouseContext.addHouse(data);
-      const fileFromDrive = await API.uploadHouseFiles(data.idHouse, [
-        {
-          name: 'Custom FILE :D',
-          base64: fileString,
-        },
-      ]);
-      console.log('fileFromDrive', fileFromDrive);
-      if (!fileFromDrive.folder) {
-        throw new Error(
-          'Somenthing went wrong creating files. It is not returning any folder.'
+      if (houseFile) {
+        const fileFromDrive = await API.uploadHouseFiles(data.idHouse, [
+          {
+            name: 'Custom FILE :D',
+            base64: houseFile,
+          },
+        ]);
+        console.log('fileFromDrive', fileFromDrive);
+        if (!fileFromDrive.folder) {
+          throw new Error(
+            'Somenthing went wrong creating files. It is not returning any folder.'
+          );
+        }
+        API.updateHouse(
+          JSON.stringify({ files: fileFromDrive.folder, idHouse: data.idHouse })
         );
       }
-      API.updateHouse(
-        JSON.stringify({ files: fileFromDrive.folder, idHouse: data.idHouse })
-      );
       onSuccess({ resetForm, data });
     } catch (e) {
       onError(e);
