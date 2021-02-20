@@ -8,7 +8,6 @@ global.doPost = publicMainFunction.doPost;
 
 global.isAdmin = publicMainFunction.isAdmin;
 global.getHouses = publicMainFunction.getHouses;
-global.validateHouse = publicMainFunction.validateHouse;
 global.createHouse = publicMainFunction.createHouse;
 global.updateHouse = publicMainFunction.updateHouse;
 global.createComment = publicMainFunction.createComment;
