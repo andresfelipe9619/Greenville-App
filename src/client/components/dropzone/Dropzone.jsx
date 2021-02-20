@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import Thumb from './Thumb';
+import { getFile } from '../utils';
 
 export default function CustomDropzone({
   error,
@@ -12,11 +13,17 @@ export default function CustomDropzone({
   helperText,
 }) {
   const [loading, setLoading] = useState(false);
-  const file = values[field];
-  const onDrop = useCallback(acceptedFiles => {
+  const [file, setFile] = useState(null);
+  const fileString = values[field];
+
+  const onDrop = useCallback(async acceptedFiles => {
     if (!acceptedFiles.length) return;
     setLoading(true);
-    setFieldValue(field, acceptedFiles[0]);
+    const [droppedFile] = acceptedFiles;
+    console.log('DroppedFile: ', droppedFile);
+    setFile(droppedFile);
+    const response = await getFile(droppedFile);
+    setFieldValue(field, response);
     setLoading(false);
   }, []);
 
@@ -41,7 +48,9 @@ export default function CustomDropzone({
               archivo
             </p>
           )}
-          {file && <Thumb file={file} loading={loading} />}
+          {file && (
+            <Thumb file={file} loading={loading} fileString={fileString} />
+          )}
         </div>
       )}
     </Dropzone>
