@@ -43,16 +43,40 @@ export function getHouses() {
   return houses;
 }
 
+function getEntityData(entity) {
+  const rawEntities = global.getRawDataFromSheet(entity);
+  const entities = global.sheetValuesToObject(rawEntities);
+  return entities;
+}
+
 function getHousesSheet() {
   const sheet = global.getSheetFromSpreadSheet('HOUSES');
   const headers = global.getHeadersFromSheet(sheet);
   return { sheet, headers };
 }
 
+export function getFilesGroups() {
+  return getEntityData('FILES GROUPS');
+}
+
+export function getUsers() {
+  return getEntityData('USERS');
+}
+
+export function getBuilders() {
+  return getEntityData('BUILDERS');
+}
+
+export function getModels() {
+  return getEntityData('MODELS');
+}
+
+export function getZones() {
+  return getEntityData('ZONES');
+}
+
 export function getComments() {
-  const rawComments = global.getRawDataFromSheet('COMMENTS');
-  const comments = global.sheetValuesToObject(rawComments);
-  return comments;
+  return getEntityData('COMMENTS');
 }
 
 export function getCommentsSheet() {

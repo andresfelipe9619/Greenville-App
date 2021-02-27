@@ -11,6 +11,11 @@ global.getHouses = publicMainFunction.getHouses;
 global.createHouse = publicMainFunction.createHouse;
 global.updateHouse = publicMainFunction.updateHouse;
 global.createComment = publicMainFunction.createComment;
+global.getFilesGroups = publicMainFunction.getFilesGroups;
+global.getUsers = publicMainFunction.getUsers;
+global.getBuilders = publicMainFunction.getBuilders;
+global.getModels = publicMainFunction.getModels;
+global.getZones = publicMainFunction.getZones;
 global.getComments = publicMainFunction.getComments;
 
 global.createHouseFile = publicDriveFunctions.createHouseFile;

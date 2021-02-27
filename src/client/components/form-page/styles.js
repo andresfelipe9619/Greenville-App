@@ -6,7 +6,7 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
   },
   formControl: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0, 1),
     minWidth: 200,
   },
   paper: {

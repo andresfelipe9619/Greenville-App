@@ -40,6 +40,7 @@ export const CustomSelect = ({
   errors,
   touched,
   values,
+  options,
   handleChange,
   isLoading,
 }) => (
@@ -64,9 +65,11 @@ export const CustomSelect = ({
         id: name,
       }}
     >
-      <MenuItem value={'A'}>A</MenuItem>
-      <MenuItem value={'B'}>B</MenuItem>
-      <MenuItem value={'C'}>C</MenuItem>
+      {options.map((o, i) => (
+        <MenuItem key={i} value={o.name}>
+          {o.name}
+        </MenuItem>
+      ))}
     </Select>
     <FormHelperText>
       {touched.tematica_ponencia && errors.tematica_ponencia}

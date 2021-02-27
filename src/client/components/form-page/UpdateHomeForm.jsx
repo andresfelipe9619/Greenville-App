@@ -12,12 +12,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import { updateValidationSchema, initialValues } from './form-settings';
-import { CustomSelect, CustomTextField } from './inputs';
+import { CustomTextField } from './inputs';
 import useStyles from './styles';
 import { useAlertDispatch } from '../../context/Alert';
 import { getFile } from '../utils';
 import API from '../../api';
 import { useHouse, useHouseDispatch } from '../../context/House';
+import HomeFields from './HomeFields';
 
 const statuses = [
   { label: 'DRYWALL', value: 'drywall' },
@@ -153,59 +154,7 @@ export default function UpdateHomeForm({ history }) {
               </Typography>
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={8}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      name="lastName"
-                      label="Last Name"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomSelect name="model" label="Model" {...inputProps} />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomSelect
-                      name="builder"
-                      label="Builder"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomSelect name="zone" label="Zone" {...inputProps} />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="drywallFootage"
-                      label="Drywall Footage"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="footHouse"
-                      label="Foot House"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="footGarage"
-                      label="Foot Garage"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="footExterior"
-                      label="Foot Exterior"
-                      {...inputProps}
-                    />
-                  </Grid>
-
+                  <HomeFields inputProps={inputProps} />
                   <Divider variant="middle" />
                   <Grid item xs={12}>
                     <Typography variant="h5" component="h2">

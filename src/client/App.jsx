@@ -12,6 +12,9 @@ const theme = createMuiTheme({
       main: '#ffe0b2',
     },
   },
+  typography: {
+    fontSize: 18,
+  },
 });
 const App = () => (
   <GlobalState>

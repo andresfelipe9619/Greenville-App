@@ -10,16 +10,19 @@ import { Formik } from 'formik';
 import Dropzone from '../dropzone/Dropzone';
 import useStyles from './styles';
 import { createValidationSchema, initialValues } from './form-settings';
-import { CustomSelect, CustomTextField } from './inputs';
+import { CustomTextField } from './inputs';
 import API from '../../api';
 import { useAlertDispatch } from '../../context/Alert';
 import { useHouseDispatch } from '../../context/House';
+import HomeFields from './HomeFields';
+import useHouseForm from '../../hooks/useHouseForm';
 
 export default function CreateHomeForm() {
   const classes = useStyles();
   const HouseContext = useHouseDispatch();
   const { openAlert } = useAlertDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const dependencies = useHouseForm();
 
   const onSuccess = useCallback(({ data, resetForm }) => {
     openAlert({
@@ -115,59 +118,10 @@ export default function CreateHomeForm() {
                       {...inputProps}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      name="lastName"
-                      label="Last Name"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomSelect name="model" label="Model" {...inputProps} />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomSelect
-                      name="builder"
-                      label="Builder"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomSelect name="zone" label="Zone" {...inputProps} />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="drywallFootage"
-                      label="Drywall Footage"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="footHouse"
-                      label="Foot House"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="footGarage"
-                      label="Foot Garage"
-                      {...inputProps}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomTextField
-                      type="number"
-                      name="footExterior"
-                      label="Foot Exterior"
-                      {...inputProps}
-                    />
-                  </Grid>
-
+                  <HomeFields
+                    inputProps={inputProps}
+                    dependencies={dependencies}
+                  />
                   <Divider variant="middle" />
                   <Grid
                     container
