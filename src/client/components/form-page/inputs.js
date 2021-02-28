@@ -2,10 +2,37 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 
+export const CustomInput = ({
+  values,
+  name,
+  label,
+  type,
+  touched,
+  errors,
+  isLoading,
+  handleChange,
+  handleBlur,
+}) => (
+  <Input
+    inputProps={{ 'aria-label': label }}
+    value={values[name] || ''}
+    onChange={handleChange}
+    disabled={isLoading}
+    onBlur={handleBlur}
+    helperText={touched[name] && errors[name]}
+    error={!!(touched[name] && errors[name])}
+    required
+    type={type}
+    id={name}
+    name={name}
+    fullWidth
+  />
+);
 export const CustomTextField = ({
   values,
   name,

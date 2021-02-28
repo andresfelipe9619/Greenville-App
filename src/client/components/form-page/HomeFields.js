@@ -1,17 +1,13 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import { CustomSelect, CustomTextField } from './inputs';
 
 export default function HomeFields({ inputProps, dependencies }) {
   let selectedZone = null;
   const inputZone = inputProps.values.zone;
-  console.log('inputZone', inputZone);
-  console.log('dependencies', dependencies);
   if (inputZone) {
     selectedZone = dependencies.zones.find(z => z.name === inputZone);
   }
-  console.log('selectedZone', selectedZone);
   return (
     <>
       <Grid item xs={12} sm={4}>
@@ -69,8 +65,7 @@ export default function HomeFields({ inputProps, dependencies }) {
         item
         xs={12}
         sm={6}
-        component={Box}
-        bgColor={(selectedZone || {}).color}
+        style={{ backgroundColor: (selectedZone || {}).color }}
       >
         <CustomSelect
           name="zone"

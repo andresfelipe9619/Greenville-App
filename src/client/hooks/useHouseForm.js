@@ -6,6 +6,7 @@ export default function useHouseForm() {
   const [builders, setBuilders] = useState([]);
   const [models, setModels] = useState([]);
   const [filesGroups, setFilesGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const initFormData = async () => {
     try {
@@ -21,6 +22,8 @@ export default function useHouseForm() {
       setFilesGroups(f);
     } catch (error) {
       console.log('error', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,6 +31,5 @@ export default function useHouseForm() {
     initFormData();
   }, []);
 
-  const dependencies = { zones, builders, models, filesGroups };
-  return dependencies;
+  return { loading, zones, builders, models, filesGroups };
 }

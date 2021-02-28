@@ -8,7 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import useStyles from './styles';
 import { createValidationSchema, initialValues } from './form-settings';
-import { CustomTextField } from './inputs';
+import { CustomInput } from './inputs';
 import API from '../../api';
 import { useAlertDispatch } from '../../context/Alert';
 import { useHouseDispatch } from '../../context/House';
@@ -111,7 +111,10 @@ export default function CreateHomeForm() {
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={8}>
                   <Grid item xs={12} sm={12}>
-                    <CustomTextField
+                    <Typography variant="h6" color="primary">
+                      Address
+                    </Typography>
+                    <CustomInput
                       name="address"
                       label="Address"
                       {...inputProps}
