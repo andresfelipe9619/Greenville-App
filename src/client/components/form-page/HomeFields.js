@@ -1,8 +1,17 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import { CustomSelect, CustomTextField } from './inputs';
 
 export default function HomeFields({ inputProps, dependencies }) {
+  let selectedZone = null;
+  const inputZone = inputProps.values.zone;
+  console.log('inputZone', inputZone);
+  console.log('dependencies', dependencies);
+  if (inputZone) {
+    selectedZone = dependencies.zones.find(z => z.name === inputZone);
+  }
+  console.log('selectedZone', selectedZone);
   return (
     <>
       <Grid item xs={12} sm={4}>
@@ -13,7 +22,7 @@ export default function HomeFields({ inputProps, dependencies }) {
           name="model"
           label="Model"
           {...inputProps}
-          options={dependencies.model}
+          options={dependencies.models}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -21,7 +30,7 @@ export default function HomeFields({ inputProps, dependencies }) {
           name="builder"
           label="Builder"
           {...inputProps}
-          options={dependencies.builder}
+          options={dependencies.builders}
         />
       </Grid>
       <Grid item xs={12} sm={3}>
@@ -56,12 +65,18 @@ export default function HomeFields({ inputProps, dependencies }) {
           {...inputProps}
         />
       </Grid>
-      <Grid item xs={12} sm={12}>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        component={Box}
+        bgColor={(selectedZone || {}).color}
+      >
         <CustomSelect
           name="zone"
           label="Zone"
           {...inputProps}
-          options={dependencies.zone}
+          options={dependencies.zones}
         />
       </Grid>
     </>

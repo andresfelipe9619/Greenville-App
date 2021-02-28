@@ -12,13 +12,14 @@ import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import { updateValidationSchema, initialValues } from './form-settings';
-import { CustomTextField } from './inputs';
 import useStyles from './styles';
 import { useAlertDispatch } from '../../context/Alert';
 import { getFile } from '../utils';
 import API from '../../api';
 import { useHouse, useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
+import FilesFields from './FilesFields';
+import useHouseForm from '../../hooks/useHouseForm';
 
 const statuses = [
   { label: 'DRYWALL', value: 'drywall' },
@@ -34,6 +35,8 @@ export default function UpdateHomeForm({ history }) {
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState({});
   const [{ houseSelected }] = useHouse();
+  const dependencies = useHouseForm();
+
   console.log('houseSelected', houseSelected);
   useEffect(() => {
     const checkState = statuses.reduce((acc, status) => {
@@ -134,6 +137,7 @@ export default function UpdateHomeForm({ history }) {
             values,
             touched,
             errors,
+            setFieldValue,
             handleBlur,
             handleChange,
             handleSubmit,
@@ -197,33 +201,10 @@ export default function UpdateHomeForm({ history }) {
                     </FormControl>
                   </Grid>
                   <Divider variant="middle" />
-
-                  <Grid item xs={12}>
-                    <Typography variant="h5" component="h2" paragraph>
-                      Update Process...
-                    </Typography>
-                    {(houseSelected.comments || []).map((c, i) => (
-                      <p key={i}>{JSON.stringify(c)}</p>
-                    ))}
-                    <CustomTextField
-                      type="text"
-                      name="comment"
-                      label="New Update"
-                      multiline
-                      rows={3}
-                      rowsMax={6}
-                      variant="outlined"
-                      {...inputProps}
-                    />
-                    <Button
-                      disabled={isLoading}
-                      className={classes.button}
-                      variant="outlined"
-                      color="primary"
-                    >
-                      Attachments
-                    </Button>
-                  </Grid>
+                  <FilesFields
+                    {...{ values, isLoading, setFieldValue }}
+                    filesGroups={dependencies.filesGroups}
+                  />
                   <Divider variant="middle" />
 
                   <Grid item xs={12}>

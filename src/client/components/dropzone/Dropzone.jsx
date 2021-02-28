@@ -39,7 +39,7 @@ export default function CustomDropzone({
     <Dropzone onDrop={onDrop} accept={accept} disabled={disabled}>
       {({ getRootProps, getInputProps, isDragActive }) => (
         <div style={style} {...getRootProps()}>
-          <input id="houseFile" name="houseFile" {...getInputProps()} />
+          <input id={field} name={field} {...getInputProps()} />
           {error && <p>{helperText}</p>}
           {isDragActive && !error && <p>Arrastra los archivos acá ...</p>}
           {!file && !error && (

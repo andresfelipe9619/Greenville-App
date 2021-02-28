@@ -65,7 +65,7 @@ export const CustomSelect = ({
         id: name,
       }}
     >
-      {options.map((o, i) => (
+      {(options || []).map((o, i) => (
         <MenuItem key={i} value={o.name}>
           {o.name}
         </MenuItem>

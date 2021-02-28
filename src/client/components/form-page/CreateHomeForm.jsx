@@ -2,12 +2,10 @@ import React, { useCallback, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import InputLabel from '@material-ui/core/InputLabel';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
-import Dropzone from '../dropzone/Dropzone';
 import useStyles from './styles';
 import { createValidationSchema, initialValues } from './form-settings';
 import { CustomTextField } from './inputs';
@@ -16,6 +14,7 @@ import { useAlertDispatch } from '../../context/Alert';
 import { useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
 import useHouseForm from '../../hooks/useHouseForm';
+import FilesFields from './FilesFields';
 
 export default function CreateHomeForm() {
   const classes = useStyles();
@@ -123,32 +122,10 @@ export default function CreateHomeForm() {
                     dependencies={dependencies}
                   />
                   <Divider variant="middle" />
-                  <Grid
-                    container
-                    item
-                    spacing={8}
-                    xs={12}
-                    alignItems="center"
-                    justify="center"
-                  >
-                    <Grid item xs={12}>
-                      <InputLabel htmlFor="houseFile">
-                        Files to Upload
-                      </InputLabel>
-                    </Grid>
-                    <Divider variant="middle" />
-                    <Grid item xs={8}>
-                      <Dropzone
-                        field={'houseFile'}
-                        disabled={isLoading}
-                        setFieldValue={setFieldValue}
-                        values={values}
-                        // accept={SUPPORTED_FORMATS}
-                        error={!!(touched.houseFile && errors.houseFile)}
-                        helperText={touched.houseFile && errors.houseFile}
-                      />
-                    </Grid>
-                  </Grid>
+                  <FilesFields
+                    {...{ values, isLoading, setFieldValue }}
+                    filesGroups={dependencies.filesGroups}
+                  />
                   <Divider variant="middle" />
                   <Grid item xs={12}>
                     <Button

@@ -28,5 +28,6 @@ export default function useHouseForm() {
     initFormData();
   }, []);
 
-  return { zones, builders, models, filesGroups };
+  const dependencies = { zones, builders, models, filesGroups };
+  return dependencies;
 }
