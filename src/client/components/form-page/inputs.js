@@ -12,6 +12,7 @@ export const CustomInput = ({
   name,
   label,
   type,
+  style,
   touched,
   errors,
   isLoading,
@@ -27,6 +28,7 @@ export const CustomInput = ({
     helperText={touched[name] && errors[name]}
     error={!!(touched[name] && errors[name])}
     required
+    style={style}
     type={type}
     id={name}
     name={name}
@@ -38,6 +40,7 @@ export const CustomTextField = ({
   name,
   label,
   type,
+  style,
   touched,
   errors,
   isLoading,
@@ -52,6 +55,7 @@ export const CustomTextField = ({
     helperText={touched[name] && errors[name]}
     error={!!(touched[name] && errors[name])}
     required
+    style={style}
     type={type}
     id={name}
     name={name}
@@ -65,6 +69,7 @@ export const CustomSelect = ({
   label,
   classes,
   errors,
+  style,
   touched,
   values,
   options,
@@ -74,6 +79,7 @@ export const CustomSelect = ({
   <FormControl
     classes={{ root: classes.formControl }}
     fullWidth
+    style={style}
     error={!!(touched[name] && errors[name])}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>

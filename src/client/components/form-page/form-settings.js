@@ -21,6 +21,7 @@ const testValues = {
 const initialValues = {
   model: '',
   builder: '',
+  idHR: '',
   zone: '',
   lastName: '',
   address: '',
@@ -32,6 +33,7 @@ const initialValues = {
 };
 
 const defaultSchema = {
+  idHR: Yup.number().required('Obligatory field'),
   drywallFootage: Yup.number().required('Obligatory field'),
   footGarage: Yup.number().required('Obligatory field'),
   footHouse: Yup.number().required('Obligatory field'),

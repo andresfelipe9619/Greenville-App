@@ -157,7 +157,7 @@ export default function UpdateHomeForm({ history }) {
                 Update House
               </Typography>
               <form onSubmit={handleSubmit}>
-                <Grid container spacing={8}>
+                <Grid container spacing={4}>
                   <HomeFields inputProps={inputProps} />
                   <Divider variant="middle" />
                   <Grid item xs={12}>

@@ -8,7 +8,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import useStyles from './styles';
 import { createValidationSchema, initialValues } from './form-settings';
-import { CustomInput } from './inputs';
 import API from '../../api';
 import { useAlertDispatch } from '../../context/Alert';
 import { useHouseDispatch } from '../../context/House';
@@ -109,17 +108,7 @@ export default function CreateHomeForm() {
                 Create New House
               </Typography>
               <form onSubmit={handleSubmit}>
-                <Grid container spacing={8}>
-                  <Grid item xs={12} sm={12}>
-                    <Typography variant="h6" color="primary">
-                      Address
-                    </Typography>
-                    <CustomInput
-                      name="address"
-                      label="Address"
-                      {...inputProps}
-                    />
-                  </Grid>
+                <Grid container spacing={4}>
                   <HomeFields
                     inputProps={inputProps}
                     dependencies={dependencies}
