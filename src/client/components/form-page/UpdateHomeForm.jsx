@@ -158,7 +158,10 @@ export default function UpdateHomeForm({ history }) {
               </Typography>
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
-                  <HomeFields inputProps={inputProps} />
+                  <HomeFields
+                    inputProps={inputProps}
+                    dependencies={dependencies}
+                  />
                   <Divider variant="middle" />
                   <Grid item xs={12}>
                     <Typography variant="h5" component="h2">
