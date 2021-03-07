@@ -11,7 +11,7 @@ import Link from '@material-ui/core/Link';
 import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
-import { updateValidationSchema, initialValues } from './form-settings';
+import { updateValidationSchema, getInitialValues } from './form-settings';
 import useStyles from './styles';
 import { useAlertDispatch } from '../../context/Alert';
 import { getFile } from '../utils';
@@ -36,6 +36,7 @@ export default function UpdateHomeForm({ history }) {
   const [state, setState] = useState({});
   const [{ houseSelected }] = useHouse();
   const dependencies = useHouseForm();
+  const initialValues = getInitialValues();
 
   console.log('houseSelected', houseSelected);
   useEffect(() => {

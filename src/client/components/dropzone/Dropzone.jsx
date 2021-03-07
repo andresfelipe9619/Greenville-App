@@ -1,28 +1,29 @@
 import React, { useCallback, useState } from 'react';
 import Dropzone from 'react-dropzone';
+import Box from '@material-ui/core/Box';
 import Thumb from './Thumb';
 import { getFile } from '../utils';
 
 export default function CustomDropzone({
   error,
   field,
-  accept,
   values,
-  disabled,
-  setFieldValue,
   helperText,
+  setFieldValue,
+  ...dropZoneProps
 }) {
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState(null);
-  const fileString = values[field];
+  const [files, setFiles] = useState([]);
+  const { disabled } = dropZoneProps;
+
+  const addFiles = (droppedFiles = []) =>
+    setFiles(prevFiles => [...prevFiles, ...droppedFiles]);
 
   const onDrop = useCallback(async acceptedFiles => {
     if (!acceptedFiles.length) return;
     setLoading(true);
-    const [droppedFile] = acceptedFiles;
-    console.log('DroppedFile: ', droppedFile);
-    setFile(droppedFile);
-    const response = await getFile(droppedFile);
+    addFiles(acceptedFiles);
+    const response = await Promise.all(acceptedFiles.map(getFile));
     setFieldValue(field, response);
     setLoading(false);
   }, []);
@@ -36,20 +37,23 @@ export default function CustomDropzone({
   };
 
   return (
-    <Dropzone onDrop={onDrop} accept={accept} disabled={disabled}>
+    <Dropzone onDrop={onDrop} {...dropZoneProps}>
       {({ getRootProps, getInputProps, isDragActive }) => (
         <div style={style} {...getRootProps()}>
           <input id={field} name={field} {...getInputProps()} />
           {error && <p>{helperText}</p>}
-          {isDragActive && !error && <p>Arrastra los archivos acá ...</p>}
-          {!file && !error && (
-            <p>
-              Arrastra y suelta tu archivo aquí, o haz clic para seleccionar un
-              archivo
-            </p>
-          )}
-          {file && (
-            <Thumb file={file} loading={loading} fileString={fileString} />
+          {isDragActive && !error && <p>Drop Files here ...</p>}
+          {!files.length && !error && <p>Drop files here or click to upload</p>}
+          {!!files.length && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              {files.map((file, i) => (
+                <Thumb key={i} {...{ file, loading }} />
+              ))}
+            </Box>
           )}
         </div>
       )}

@@ -15,10 +15,11 @@ const testValues = {
   footGarage: '2222',
   footHouse: '2222',
   footExterior: '2222',
-  houseFile: undefined,
 };
 
-const initialValues = {
+const setDefaultValue = (o, key) => ({ ...o, [key]: '' });
+
+const getInitialValues = (filesFields = []) => ({
   model: '',
   builder: '',
   idHR: '',
@@ -29,8 +30,8 @@ const initialValues = {
   footGarage: '',
   footHouse: '',
   footExterior: '',
-  houseFile: undefined,
-};
+  ...filesFields.reduce(setDefaultValue, {}),
+});
 
 const defaultSchema = {
   idHR: Yup.number().required('Obligatory field'),
@@ -61,7 +62,7 @@ const createValidationSchema = Yup.object().shape({
 });
 
 export {
-  initialValues,
+  getInitialValues,
   testValues,
   SUPPORTED_FORMATS,
   createValidationSchema,

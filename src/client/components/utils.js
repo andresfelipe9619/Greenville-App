@@ -1,7 +1,8 @@
 export const getFile = file => {
   return new Promise(resolve => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
+    reader.onloadend = () =>
+      resolve({ name: file.name, base64: reader.result });
     reader.readAsDataURL(file);
   });
 };

@@ -35,9 +35,10 @@ export default function FilesFields({
             alignItems="center"
           >
             {filesGroups.map(f => (
-              <Grid item xs={4} key={f.name}>
+              <Grid item xs={6} key={f.name}>
                 <Typography variant="h6">{f.name}</Typography>
                 <Dropzone
+                  multiple
                   field={f.name}
                   values={values}
                   disabled={isLoading}

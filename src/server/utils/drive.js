@@ -45,9 +45,22 @@ function getHouseCommentsFolder(name) {
   return houseFolder;
 }
 
-function getHouseFolder(name) {
+function getZoneFolder(zone) {
   const filesFolder = getFilesFolder();
-  const houseFolder = findOrCreateFolder(name, filesFolder);
+  const zoneFolder = findOrCreateFolder(zone, filesFolder);
+  return zoneFolder;
+}
+
+function getFileGroupFolder({ group, zone, idHouse }) {
+  const zoneFolder = getZoneFolder(zone);
+  const houseFolder = findOrCreateFolder(idHouse, zoneFolder);
+  const fileGroupFolder = findOrCreateFolder(group, houseFolder);
+  return fileGroupFolder;
+}
+
+function getHouseFolder({ idHouse, zone }) {
+  const zoneFolder = getZoneFolder(zone);
+  const houseFolder = findOrCreateFolder(idHouse, zoneFolder);
   return houseFolder;
 }
 
@@ -64,8 +77,8 @@ function createDriveFile({ id, folder, blob }) {
   return result;
 }
 
-export function createHouseFile({ fileName, id, fileData }) {
-  const currentFolder = getHouseFolder(id);
+export function createHouseFile({ fileName, id, fileData, zone, group }) {
+  const currentFolder = getFileGroupFolder({ idHouse: id, zone, group });
   const blob = base64ToBlob(fileName, fileData);
   const result = createDriveFile({ id, blob, folder: currentFolder });
   return result;
@@ -78,7 +91,7 @@ export function createHouseCommentFile({ fileName, id, fileData }) {
   return result;
 }
 
-function mapHouseFiles({ idHouse, files, createFile }) {
+function mapHouseFiles({ idHouse, files, createFile, ...options }) {
   const savedFiles = files.map(file => {
     const name = file.name || '';
     const base64 = file.base64 || '';
@@ -87,6 +100,7 @@ function mapHouseFiles({ idHouse, files, createFile }) {
       fileName: name,
       id: idHouse,
       fileData: base64,
+      ...options,
     });
     return savedFile.file;
   });
@@ -110,15 +124,18 @@ export function uploadHouseCommentsFiles(idHouse, files) {
   return response;
 }
 
-export function uploadHouseFiles(idHouse, files) {
+export function uploadHouseFiles({ idHouse, zone, group, files }) {
   Logger.log(`=======UPLOADING HOUSE ${idHouse} FILES======`);
   if (!files.length) return null;
-  const savedFiles = mapHouseFiles({
+  const options = {
     idHouse,
     files,
+    zone,
+    group,
     createFile: createHouseFile,
-  });
-  const currentFolder = getHouseFolder(idHouse);
+  };
+  const savedFiles = mapHouseFiles(options);
+  const currentFolder = getHouseFolder({ idHouse, zone });
   const response = { files: savedFiles, folder: currentFolder.getUrl() };
   Logger.log('FILES RESPONSE:');
   Logger.log(response);
