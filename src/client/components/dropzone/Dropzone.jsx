@@ -1,13 +1,36 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Dropzone from 'react-dropzone';
-import Box from '@material-ui/core/Box';
-import Thumb from './Thumb';
+import { fade, makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 import { getFile } from '../utils';
+import PreviewList from './PreviewList';
+
+const useStyles = makeStyles(() => ({
+  text: {
+    textAlign: 'center',
+  },
+  container: {
+    width: '100%',
+    height: '100%',
+    boxSizing: 'border-box',
+    borderStyle: 'dashed',
+    backgroundColor: fade('#555', 0.2),
+  },
+  default: {
+    borderColor: 'black',
+  },
+  error: {
+    borderColor: 'red',
+  },
+  disabled: {
+    borderColor: 'gray',
+  },
+}));
 
 export default function CustomDropzone({
   error,
   field,
-  values,
+  reset,
   helperText,
   setFieldValue,
   ...dropZoneProps
@@ -15,6 +38,7 @@ export default function CustomDropzone({
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const { disabled } = dropZoneProps;
+  const classes = useStyles();
 
   const addFiles = (droppedFiles = []) =>
     setFiles(prevFiles => [...prevFiles, ...droppedFiles]);
@@ -28,33 +52,30 @@ export default function CustomDropzone({
     setLoading(false);
   }, []);
 
-  let borderColor = 'black';
-  if (error) borderColor = 'red';
-  if (disabled) borderColor = 'gray';
-  const style = {
-    borderColor,
-    borderStyle: 'dashed',
-  };
+  useEffect(() => {
+    if (reset) {
+      setFiles([]);
+    }
+  }, [reset]);
 
   return (
     <Dropzone onDrop={onDrop} {...dropZoneProps}>
       {({ getRootProps, getInputProps, isDragActive }) => (
-        <div style={style} {...getRootProps()}>
+        <div
+          className={clsx(classes.container, {
+            [classes.error]: error,
+            [classes.disabled]: disabled,
+            [classes.default]: !disabled && !error,
+          })}
+          {...getRootProps()}
+        >
           <input id={field} name={field} {...getInputProps()} />
-          {error && <p>{helperText}</p>}
-          {isDragActive && !error && <p>Drop Files here ...</p>}
-          {!files.length && !error && <p>Drop files here or click to upload</p>}
-          {!!files.length && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              {files.map((file, i) => (
-                <Thumb key={i} {...{ file, loading }} />
-              ))}
-            </Box>
-          )}
+          <p className={classes.text}>
+            {error && helperText}
+            {isDragActive && !error && 'Drop Files here ...'}
+            {!files.length && !error && 'Drop files here or click to upload'}
+          </p>
+          {!!files.length && <PreviewList files={files} loading={loading} />}
         </div>
       )}
     </Dropzone>
