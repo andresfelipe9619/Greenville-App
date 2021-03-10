@@ -81,7 +81,7 @@ export function SearchBox({ classes }) {
     const comments = await API.getComments();
     housesResponse = housesResponse.map(h => ({
       ...h,
-      comments: comments.filter(c => c.idHouse === h.idHouse),
+      comments: comments.filter(c => c.idHouse === h.idHouse).reverse(),
     }));
     setHouses(housesResponse);
   };
