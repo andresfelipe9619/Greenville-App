@@ -22,19 +22,18 @@ const setDefaultValue = (o, key) => ({ ...o, [key]: '' });
 const getInitialValues = (filesFields = []) => ({
   model: '',
   builder: '',
-  idHR: '',
+  idHr: '',
   zone: '',
   lastName: '',
   address: '',
-  drywallFootage: '',
-  footGarage: '',
-  footHouse: '',
-  footExterior: '',
+  drywallFootage: 0,
+  footGarage: 0,
+  footHouse: 0,
+  footExterior: 0,
   ...filesFields.reduce(setDefaultValue, {}),
 });
 
 const defaultSchema = {
-  idHR: Yup.number().required('Obligatory field'),
   drywallFootage: Yup.number().required('Obligatory field'),
   footGarage: Yup.number().required('Obligatory field'),
   footHouse: Yup.number().required('Obligatory field'),

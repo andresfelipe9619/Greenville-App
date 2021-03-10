@@ -18,8 +18,9 @@ import { getFile } from '../utils';
 import API from '../../api';
 import { useHouse, useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
-import FilesFields from './FilesFields';
+// import FilesFields from './FilesFields';
 import useHouseForm from '../../hooks/useHouseForm';
+import CommentsSection from './CommentsSection';
 
 const statuses = [
   { label: 'DRYWALL', value: 'drywall' },
@@ -129,6 +130,7 @@ export default function UpdateHomeForm({ history }) {
   return (
     <div>
       <Formik
+        enableReinitialize
         onSubmit={onSubmit}
         initialValues={houseSelected}
         validationSchema={updateValidationSchema}
@@ -138,7 +140,7 @@ export default function UpdateHomeForm({ history }) {
             values,
             touched,
             errors,
-            setFieldValue,
+            // setFieldValue,
             handleBlur,
             handleChange,
             handleSubmit,
@@ -160,24 +162,10 @@ export default function UpdateHomeForm({ history }) {
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
                   <HomeFields
+                    showId
                     inputProps={inputProps}
                     dependencies={dependencies}
                   />
-                  <Divider variant="middle" />
-                  <Grid item xs={12}>
-                    <Typography variant="h5" component="h2">
-                      Files
-                    </Typography>
-                    <Link href="#">Link to Documents!</Link>
-                    <Button
-                      disabled={isLoading}
-                      className={classes.button}
-                      variant="outlined"
-                      color="primary"
-                    >
-                      Update
-                    </Button>
-                  </Grid>
                   <Grid item xs={12}>
                     <Typography variant="h5" component="h2">
                       House Status
@@ -205,9 +193,28 @@ export default function UpdateHomeForm({ history }) {
                     </FormControl>
                   </Grid>
                   <Divider variant="middle" />
-                  <FilesFields
+                  <Grid item xs={12}>
+                    <Typography variant="h5" component="h2">
+                      Files
+                    </Typography>
+                    <Link href="#">Link to Documents!</Link>
+                    <Button
+                      disabled={isLoading}
+                      className={classes.button}
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Update
+                    </Button>
+                  </Grid>
+
+                  <Divider variant="middle" />
+                  {/* <FilesFields
                     {...{ values, isLoading, setFieldValue }}
                     filesGroups={dependencies.filesGroups}
+                  /> */}
+                  <CommentsSection
+                    {...{ isLoading, inputProps, houseSelected }}
                   />
                   <Divider variant="middle" />
 

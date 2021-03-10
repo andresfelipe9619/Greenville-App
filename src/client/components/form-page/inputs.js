@@ -42,6 +42,7 @@ export const CustomTextField = ({
   type,
   style,
   touched,
+  disabled,
   errors,
   isLoading,
   handleChange,
@@ -50,7 +51,7 @@ export const CustomTextField = ({
   <TextField
     value={values[name] || ''}
     onChange={handleChange}
-    disabled={isLoading}
+    disabled={isLoading || disabled}
     onBlur={handleBlur}
     helperText={touched[name] && errors[name]}
     error={!!(touched[name] && errors[name])}

@@ -3,7 +3,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { CustomSelect, CustomTextField, CustomInput } from './inputs';
 
-export default function HomeFields({ inputProps, dependencies }) {
+export default function HomeFields({
+  inputProps,
+  dependencies,
+  showId = false,
+}) {
   let selectedZone = null;
   const inputZone = inputProps.values.zone;
   if (inputZone) {
@@ -22,26 +26,35 @@ export default function HomeFields({ inputProps, dependencies }) {
           <Typography variant="h6" color="primary">
             Address
           </Typography>
-          <CustomInput name="address" label="Address" {...inputProps} />
+          <CustomInput
+            name="address"
+            label="Address"
+            disabled={showId}
+            {...inputProps}
+          />
         </Grid>
         <Grid item xs={6} sm={3}>
           <CustomSelect
             name="zone"
             label="Zone"
+            disabled={showId}
             {...inputProps}
             style={{ marginTop: 25 }}
             options={dependencies.zones}
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <CustomTextField
-            name="idHR"
-            label="ID HR"
-            type="number"
-            {...inputProps}
-            style={{ margin: '25px 0px 0px 16px' }}
-          />
-        </Grid>
+        {showId && (
+          <Grid item xs={6} sm={3}>
+            <CustomTextField
+              disabled
+              name="idHr"
+              label="ID HR"
+              type="number"
+              {...inputProps}
+              style={{ margin: '25px 0px 0px 16px' }}
+            />
+          </Grid>
+        )}
       </Grid>
       <Grid item xs={12} sm={4}>
         <CustomTextField name="lastName" label="Last Name" {...inputProps} />
