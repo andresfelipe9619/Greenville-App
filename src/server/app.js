@@ -37,12 +37,6 @@ export function doPost(request) {
   return null;
 }
 
-export function getHouses() {
-  const rawHouses = global.getRawDataFromSheet('HOUSES');
-  const houses = global.sheetValuesToObject(rawHouses);
-  return houses;
-}
-
 function getEntityData(entity) {
   const rawEntities = global.getRawDataFromSheet(entity);
   const entities = global.sheetValuesToObject(rawEntities);
@@ -53,6 +47,10 @@ function getHousesSheet() {
   const sheet = global.getSheetFromSpreadSheet('HOUSES');
   const headers = global.getHeadersFromSheet(sheet);
   return { sheet, headers };
+}
+
+export function getHouses() {
+  return getEntityData('HOUSES');
 }
 
 export function getFilesGroups() {
@@ -91,12 +89,18 @@ function registerHouse(data) {
   const { sheet, headers } = getHousesSheet();
   const currentLastRow = sheet.getLastRow();
   let lastRowId = 0;
+  let lastRowHrId = 0;
   if (currentLastRow > 1) {
-    [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
+    const [ids] = sheet.getSheetValues(currentLastRow, 1, 1, 2);
+    [lastRowId, lastRowHrId] = ids;
   }
   Logger.log('lastRowId');
   Logger.log(lastRowId);
-  const houseJson = { ...data, idHouse: +lastRowId + 1 };
+  const houseJson = {
+    ...data,
+    idHouse: +lastRowId + 1,
+    idHr: +lastRowHrId + 1,
+  };
   const houseValues = global.jsonToSheetValues(houseJson, headers);
   Logger.log('HOUSE VALUES');
   Logger.log(houseValues);
