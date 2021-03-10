@@ -14,7 +14,6 @@ import { Formik } from 'formik';
 import { updateValidationSchema, getInitialValues } from './form-settings';
 import useStyles from './styles';
 import { useAlertDispatch } from '../../context/Alert';
-import { getFile } from '../utils';
 import API from '../../api';
 import { useHouse, useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
@@ -81,39 +80,13 @@ export default function UpdateHomeForm({ history }) {
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
-    const { comment: description, commentFiles, ...formData } = values;
+    const { commentFiles, ...formData } = values;
     try {
       setSubmitting(true);
       setIsLoading(true);
       const house = JSON.stringify(formData);
       const idSelected = houseSelected.idHouse;
       console.log('HOUSE', house);
-      let comment = null;
-
-      if (description) {
-        comment = await API.createComment(
-          JSON.stringify({ idHouse: idSelected, description })
-        );
-      }
-
-      if (comment && commentFiles) {
-        const fileString = await getFile(commentFiles);
-        const fileFromDrive = await API.uploadHouseCommentsFiles(
-          comment.idComment,
-          [
-            {
-              name: 'Custom FILE :D',
-              base64: fileString,
-            },
-          ]
-        );
-        console.log('fileFromDrive', fileFromDrive);
-        if (!fileFromDrive.folder) {
-          throw new Error(
-            'Somenthing went wrong creating files. It is not returning any folder.'
-          );
-        }
-      }
 
       HouseContext.updateHouse(formData);
       API.updateHouse(JSON.stringify({ idHouse: idSelected, ...formData }));
@@ -197,7 +170,9 @@ export default function UpdateHomeForm({ history }) {
                     <Typography variant="h5" component="h2">
                       Files
                     </Typography>
-                    <Link href="#">Link to Documents!</Link>
+                    <Link href={houseSelected.files || '#'} target="_blank">
+                      Link to Documents!
+                    </Link>
                     <Button
                       disabled={isLoading}
                       className={classes.button}
@@ -213,11 +188,8 @@ export default function UpdateHomeForm({ history }) {
                     {...{ values, isLoading, setFieldValue }}
                     filesGroups={dependencies.filesGroups}
                   /> */}
-                  <CommentsSection
-                    {...{ isLoading, inputProps, houseSelected }}
-                  />
+                  <CommentsSection {...{ isLoading, houseSelected }} />
                   <Divider variant="middle" />
-
                   <Grid item xs={12}>
                     <Button
                       disabled={isLoading}

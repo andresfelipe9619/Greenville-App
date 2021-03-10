@@ -8,12 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dropzone from '../dropzone/Dropzone';
 
-export default function FilesFields({
-  values,
-  isLoading,
-  filesGroups,
-  setFieldValue,
-}) {
+export default function FilesFields({ isLoading, filesGroups, setFieldValue }) {
   if (!filesGroups || !filesGroups.length) return null;
   return (
     <Box width="100%" mt={8}>
@@ -40,7 +35,6 @@ export default function FilesFields({
                 <Dropzone
                   multiple
                   field={f.name}
-                  values={values}
                   disabled={isLoading}
                   setFieldValue={setFieldValue}
                   // accept={SUPPORTED_FORMATS}

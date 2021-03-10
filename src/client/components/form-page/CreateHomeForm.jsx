@@ -15,39 +15,6 @@ import HomeFields from './HomeFields';
 import useHouseForm from '../../hooks/useHouseForm';
 import FilesFields from './FilesFields';
 
-const noFolderCreated = () => {
-  throw new Error(
-    'Somenthing went wrong creating files. It is not returning any folder.'
-  );
-};
-
-// props: group, zone, files, ...etc
-async function uploadFileToHouse({ idHouse, ...props }) {
-  const fileFromDrive = await API.uploadHouseFiles({
-    idHouse,
-    ...props,
-  });
-  console.log('fileFromDrive', fileFromDrive);
-  if (!fileFromDrive.folder) noFolderCreated();
-  return fileFromDrive;
-}
-
-async function uplaodFilesGroups({ idHouse, zone, houseFiles = [] }) {
-  if (!houseFiles.length) return null;
-  const [firstGroup, ...restGroups] = houseFiles;
-  // Upload first group independently
-  // so we can create the folder for the rest of files
-  const result = await uploadFileToHouse({ idHouse, zone, ...firstGroup });
-  if (!restGroups || !restGroups.length) {
-    return result;
-  }
-  return Promise.all(
-    restGroups.map(fileGroup =>
-      uploadFileToHouse({ idHouse, zone, ...fileGroup })
-    )
-  );
-}
-
 export default function CreateHomeForm() {
   const classes = useStyles();
   const HouseContext = useHouseDispatch();
@@ -106,7 +73,7 @@ export default function CreateHomeForm() {
       const { idHouse, zone } = data;
       HouseContext.addHouse(data);
       if (houseFiles.length) {
-        const fileFromDrive = await uplaodFilesGroups({
+        const fileFromDrive = await API.uplaodFilesGroups({
           zone,
           idHouse,
           houseFiles,

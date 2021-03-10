@@ -44,6 +44,9 @@ export const CustomTextField = ({
   touched,
   disabled,
   errors,
+  rows,
+  rowsMax,
+  multiline,
   isLoading,
   handleChange,
   handleBlur,
@@ -60,6 +63,9 @@ export const CustomTextField = ({
     type={type}
     id={name}
     name={name}
+    rows={rows}
+    multiline={multiline}
+    rowsMax={rowsMax}
     label={label}
     fullWidth
   />

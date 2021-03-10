@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { fade, makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,6 +18,15 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     margin: '30px 40px',
+  },
+  commentBox: {
+    backgroundColor: fade('#555', 0.2),
+  },
+  commentContainer: {
+    marginTop: theme.spacing(0.5),
+  },
+  userBox: {
+    fontWeight: 'bold',
   },
 }));
 export default useStyles;

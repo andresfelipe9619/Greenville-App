@@ -96,12 +96,12 @@ function registerHouse(data) {
   }
   Logger.log('lastRowId');
   Logger.log(lastRowId);
-  const houseJson = {
+  const houseJSON = {
     ...data,
     idHouse: +lastRowId + 1,
     idHr: +lastRowHrId + 1,
   };
-  const houseValues = global.jsonToSheetValues(houseJson, headers);
+  const houseValues = global.jsonToSheetValues(houseJSON, headers);
   Logger.log('HOUSE VALUES');
   Logger.log(houseValues);
 
@@ -112,7 +112,7 @@ function registerHouse(data) {
 
   if (recordInserted) {
     response.ok = true;
-    response.data = houseJson;
+    response.data = houseJSON;
   }
 
   Logger.log('=============END Registering HOUSE===========');
@@ -130,13 +130,13 @@ export function registerComment(data) {
   }
   Logger.log('lastRowId');
   Logger.log(lastRowId);
-  const houseJson = {
+  const commentJSON = {
     ...data,
     user: getCurrentUser(),
     idComment: +lastRowId + 1,
     date: new Date().toString(),
   };
-  const commentValues = global.jsonToSheetValues(houseJson, headers);
+  const commentValues = global.jsonToSheetValues(commentJSON, headers);
   Logger.log('COMMENT VALUES');
   Logger.log(commentValues);
 
@@ -147,7 +147,7 @@ export function registerComment(data) {
 
   if (recordInserted) {
     response.ok = true;
-    response.data = houseJson;
+    response.data = commentJSON;
   }
 
   Logger.log('=============END Registering COMMENT===========');

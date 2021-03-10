@@ -39,12 +39,6 @@ function getCommentsFolder(folder) {
   return commentsFolder;
 }
 
-function getHouseCommentsFolder(name) {
-  const commentsFolder = getCommentsFolder();
-  const houseFolder = findOrCreateFolder(name, commentsFolder);
-  return houseFolder;
-}
-
 function getZoneFolder(zone) {
   const filesFolder = getFilesFolder();
   const zoneFolder = findOrCreateFolder(zone, filesFolder);
@@ -62,6 +56,13 @@ function getHouseFolder({ idHouse, zone }) {
   const zoneFolder = getZoneFolder(zone);
   const houseFolder = findOrCreateFolder(idHouse, zoneFolder);
   return houseFolder;
+}
+
+function getHouseCommentsFolder({ id, idComment, zone }) {
+  const houseFolder = getHouseFolder({ idHouse: id, zone });
+  const commentsFolder = getCommentsFolder(houseFolder);
+  const commentFolder = findOrCreateFolder(idComment, commentsFolder);
+  return commentFolder;
 }
 
 function createDriveFile({ id, folder, blob }) {
@@ -84,8 +85,14 @@ export function createHouseFile({ fileName, id, fileData, zone, group }) {
   return result;
 }
 
-export function createHouseCommentFile({ fileName, id, fileData }) {
-  const currentFolder = getHouseCommentsFolder(id);
+export function createHouseCommentFile({
+  id,
+  zone,
+  fileName,
+  fileData,
+  idComment,
+}) {
+  const currentFolder = getHouseCommentsFolder({ id, idComment, zone });
   const blob = base64ToBlob(fileName, fileData);
   const result = createDriveFile({ id, blob, folder: currentFolder });
   return result;
@@ -107,12 +114,16 @@ function mapHouseFiles({ idHouse, files, createFile, ...options }) {
   return savedFiles;
 }
 
-export function uploadHouseCommentsFiles(idHouse, files) {
-  Logger.log(`=======UPLOADING HOUSE ${idHouse} COMMENTS FILES======`);
+export function uploadHouseCommentsFiles({ idComment, idHouse, files, zone }) {
+  Logger.log(
+    `=======UPLOADING HOUSE ${idHouse} - Comment: ${idComment} - Zone: ${zone} COMMENTS FILES======`
+  );
   if (!files.length) return null;
   const savedFiles = mapHouseFiles({
     idHouse,
     files,
+    zone,
+    idComment,
     createFile: createHouseCommentFile,
   });
   const currentFolder = getHouseCommentsFolder(idHouse);
