@@ -7,7 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Link from '@material-ui/core/Link';
 import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
@@ -171,15 +170,8 @@ export default function UpdateHomeForm({ history }) {
                   </Grid>
                   <Divider variant="middle" />
                   <Grid item xs={12}>
-                    <Typography variant="h5" component="h2">
-                      Files
-                    </Typography>
-                    {houseSelected.files ? (
-                      <Link href={houseSelected.files} target="_blank">
-                        Link to Documents!
-                      </Link>
-                    ) : null}
                     <FilesFields
+                      houseFiles={houseSelected.files}
                       {...{ values, isLoading, setFieldValue }}
                       filesGroups={dependencies.filesGroups}
                     />

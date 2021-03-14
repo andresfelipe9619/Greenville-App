@@ -16,6 +16,7 @@ export const CustomInput = ({
   touched,
   errors,
   isLoading,
+  InputProps,
   handleChange,
   handleBlur,
 }) => (
@@ -27,6 +28,7 @@ export const CustomInput = ({
     onBlur={handleBlur}
     helperText={touched[name] && errors[name]}
     error={!!(touched[name] && errors[name])}
+    InputProps={InputProps}
     required
     style={style}
     type={type}

@@ -18,11 +18,20 @@ function HouseReducer(state, { type, houses, houseSelected, house }) {
       return { ...state, houseSelected };
     }
     case 'update': {
-      const houseIndex = state.houses.findIndex(h => h.idHouse);
+      const houseIndex = state.houses.findIndex(
+        h => h.idHouse === house.idHouse
+      );
+      const isHouseSelected = state.houseSelected
+        ? state.houseSelected.idHouse === house.idHouse
+        : null;
       if (houseIndex === -1) return state;
       const newHouses = [...state.houses];
       newHouses[houseIndex] = house;
-      return { ...state, houses: newHouses };
+      return {
+        ...state,
+        houses: newHouses,
+        houseSelected: isHouseSelected ? house : state.houseSelected,
+      };
     }
     case 'add': {
       return {

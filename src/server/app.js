@@ -252,7 +252,7 @@ export function updateComment(serializedData) {
   const response = updateEntity({
     serializedData,
     name: 'House',
-    searchEntity: searchComment,
+    findEntity: searchComment,
     getEntitySheet: getCommentsSheet,
     idGetter: entity => entity.idComment,
   });

@@ -29,7 +29,9 @@ export default function HomeFields({
           <CustomInput
             name="address"
             label="Address"
-            disabled={showId}
+            InputProps={{
+              readOnly: showId,
+            }}
             {...inputProps}
           />
         </Grid>
@@ -46,11 +48,13 @@ export default function HomeFields({
         {showId && (
           <Grid item xs={6} sm={3}>
             <CustomTextField
-              disabled
               name="idHr"
               label="ID HR"
               type="number"
               {...inputProps}
+              InputProps={{
+                readOnly: showId,
+              }}
               style={{ margin: '25px 0px 0px 16px' }}
             />
           </Grid>

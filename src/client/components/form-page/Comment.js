@@ -47,7 +47,9 @@ function Comment({ comment }) {
           </Link>
         </Grid>
       ) : null}
-      <Divider variant="middle" flexItem />
+      <Grid item md={12}>
+        <Divider variant="middle" flexItem />
+      </Grid>
     </Grid>
   );
 }

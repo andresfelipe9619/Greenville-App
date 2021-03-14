@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 import { CustomTextField } from './inputs';
 import Dropzone from '../dropzone/Dropzone';
 import API from '../../api';
@@ -104,7 +103,7 @@ export default function CommentsSection({ isLoading }) {
   console.log(`files`, files);
 
   return (
-    <Box width="100%" mt={8}>
+    <Box width="100%" my={8}>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -147,7 +146,6 @@ export default function CommentsSection({ isLoading }) {
                 {uploading ? 'Saving Comment...' : 'Save Comment'}
               </Button>
             </Grid>
-            <Divider variant="middle" flexItem />
             {(houseSelected.comments || []).map((c, i) => (
               <Comment key={i} comment={c} />
             ))}
