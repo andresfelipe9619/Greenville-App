@@ -42,6 +42,7 @@ export const CustomTextField = ({
   type,
   style,
   touched,
+  variant,
   disabled,
   errors,
   rows,
@@ -52,6 +53,7 @@ export const CustomTextField = ({
   handleBlur,
 }) => (
   <TextField
+    variant={variant}
     value={values[name] || ''}
     onChange={handleChange}
     disabled={isLoading || disabled}

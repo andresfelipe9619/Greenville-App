@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     margin: '30px 40px',
   },
   commentBox: {
+    padding: theme.spacing(1),
     backgroundColor: fade('#555', 0.2),
   },
   commentContainer: {

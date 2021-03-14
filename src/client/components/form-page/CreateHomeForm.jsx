@@ -12,7 +12,7 @@ import API from '../../api';
 import { useAlertDispatch } from '../../context/Alert';
 import { useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
-import useHouseForm from '../../hooks/useHouseForm';
+import useHouseForm, { getFormData } from '../../hooks/useHouseForm';
 import FilesFields from './FilesFields';
 
 export default function CreateHomeForm() {
@@ -46,24 +46,7 @@ export default function CreateHomeForm() {
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
-    const { houseFiles, formData } = Object.keys(values).reduce(
-      (acc, key) => {
-        const keyValue = values[key];
-        const isFile = Array.isArray(keyValue);
-        if (isFile) {
-          return {
-            ...acc,
-            houseFiles: [
-              ...acc.houseFiles,
-              { group: key, files: [...keyValue] },
-            ],
-          };
-        }
-        return { ...acc, formData: { ...acc.formData, [key]: keyValue } };
-      },
-      { houseFiles: [], formData: {} }
-    );
-    console.log('{houseFiles, formData}', { houseFiles, formData });
+    const { houseFiles, formData } = getFormData(values);
     try {
       setSubmitting(true);
       setIsLoading(true);
@@ -143,7 +126,7 @@ export default function CreateHomeForm() {
                       className={classes.button}
                       disabled={isLoading || loadingDependencies}
                     >
-                      Enviar
+                      Save
                     </Button>
                     {isLoading && <LinearProgress />}
                   </Grid>

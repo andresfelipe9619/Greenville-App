@@ -33,3 +33,22 @@ export default function useHouseForm() {
 
   return { loading, zones, builders, models, filesGroups };
 }
+
+export function getFormData(values) {
+  const formData = Object.keys(values).reduce(
+    (acc, key) => {
+      const keyValue = values[key];
+      const isFile = Array.isArray(keyValue);
+      if (isFile) {
+        return {
+          ...acc,
+          houseFiles: [...acc.houseFiles, { group: key, files: [...keyValue] }],
+        };
+      }
+      return { ...acc, formData: { ...acc.formData, [key]: keyValue } };
+    },
+    { houseFiles: [], formData: {} }
+  );
+  console.log(`Form Data`, formData);
+  return formData;
+}

@@ -12,54 +12,18 @@ import { CustomTextField } from './inputs';
 import Dropzone from '../dropzone/Dropzone';
 import API from '../../api';
 import useStyles from './styles';
-import { useHouseDispatch } from '../../context/House';
+import { useHouse } from '../../context/House';
+import { useAlertDispatch } from '../../context/Alert';
+import Comment from './Comment';
 
-const formatOptions = {
-  weekday: 'short',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-};
-
-function Comment({ comment }) {
-  if (!comment) return null;
-  const date = new Date(comment.date).toLocaleString('en-US', formatOptions);
-  const classes = useStyles();
-  return (
-    <Grid
-      item
-      md={12}
-      container
-      spacing={2}
-      className={classes.commentContainer}
-    >
-      <Grid item md={6}>
-        <Typography align="left" className={classes.userBox}>
-          {comment.user}
-        </Typography>
-      </Grid>
-      <Grid item md={6}>
-        <Typography align="right">{date}</Typography>
-      </Grid>
-      <Grid item md={12}>
-        <Box width="100%" className={classes.commentBox}>
-          <Typography align="left">{comment.description}</Typography>
-        </Box>
-      </Grid>
-      <Divider variant="middle" flexItem />
-    </Grid>
-  );
-}
-
-export default function CommentsSection({ isLoading, houseSelected }) {
+export default function CommentsSection({ isLoading }) {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
   const [reset, setReset] = useState(false);
-  const HouseContext = useHouseDispatch();
+  const [{ houseSelected }, HouseContext] = useHouse();
+  const { openAlert } = useAlertDispatch();
 
   const setFieldValue = (_, value) => {
     if (!value || !value.length) return;
@@ -68,10 +32,9 @@ export default function CommentsSection({ isLoading, houseSelected }) {
 
   const handleChange = e => {
     const { value } = e.target;
-    setReset(false);
     setDescription(value);
   };
-
+  console.log(`houseSelected`, houseSelected);
   const handleSaveComment = async () => {
     try {
       setUploading(true);
@@ -79,9 +42,9 @@ export default function CommentsSection({ isLoading, houseSelected }) {
       const { data: comment } = await API.createComment(
         JSON.stringify({ idHouse, description })
       );
+      let commentFolder = '';
       console.log('Created Comment: ', comment);
-      HouseContext.updateHouse({ idHouse, comments: [...comments, comment] });
-      if (comment && files) {
+      if (comment && files.length) {
         const { idComment } = comment;
         const fileFromDrive = await API.uploadHouseCommentsFiles({
           idComment,
@@ -90,18 +53,36 @@ export default function CommentsSection({ isLoading, houseSelected }) {
           zone,
         });
         console.log('fileFromDrive', fileFromDrive);
+
         if (!fileFromDrive.folder) {
           throw new Error(
             'Somenthing went wrong creating files. It is not returning any folder.'
           );
         }
+        commentFolder = fileFromDrive.folder;
+        await API.updateComment(
+          JSON.stringify({ files: commentFolder, idComment })
+        );
       }
+      HouseContext.updateHouse({
+        idHouse,
+        comments: [{ ...comment, files: commentFolder }, ...comments],
+      });
+      openAlert({
+        variant: 'success',
+        message: 'Comment created successfully',
+      });
     } catch (error) {
       console.error(error);
+      openAlert({
+        variant: 'error',
+        message: 'Something went wrong creating the comment',
+      });
     } finally {
       setUploading(false);
-      setFiles([]);
       setDescription('');
+      setFiles([]);
+      setReset(false);
     }
   };
 
@@ -119,6 +100,8 @@ export default function CommentsSection({ isLoading, houseSelected }) {
       comment: description,
     },
   };
+
+  console.log(`files`, files);
 
   return (
     <Box width="100%" mt={8}>

@@ -17,8 +17,8 @@ import { useAlertDispatch } from '../../context/Alert';
 import API from '../../api';
 import { useHouse, useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
-// import FilesFields from './FilesFields';
-import useHouseForm from '../../hooks/useHouseForm';
+import FilesFields from './FilesFields';
+import useHouseForm, { getFormData } from '../../hooks/useHouseForm';
 import CommentsSection from './CommentsSection';
 
 const statuses = [
@@ -80,17 +80,24 @@ export default function UpdateHomeForm({ history }) {
   }, []);
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
-    const { commentFiles, ...formData } = values;
+    const { houseFiles, formData } = getFormData(values);
+    const { idHouse, zone } = houseSelected;
     try {
       setSubmitting(true);
       setIsLoading(true);
-      const house = JSON.stringify(formData);
-      const idSelected = houseSelected.idHouse;
-      console.log('HOUSE', house);
-
+      let houseFolder = '';
+      if (houseFiles.length) {
+        const fileFromDrive = await API.uplaodFilesGroups({
+          zone,
+          idHouse,
+          houseFiles,
+        });
+        houseFolder = fileFromDrive.folder;
+      }
       HouseContext.updateHouse(formData);
-      API.updateHouse(JSON.stringify({ idHouse: idSelected, ...formData }));
-
+      API.updateHouse(
+        JSON.stringify({ idHouse, ...formData, files: houseFolder })
+      );
       onSuccess(resetForm);
     } catch (e) {
       onError(e);
@@ -113,7 +120,7 @@ export default function UpdateHomeForm({ history }) {
             values,
             touched,
             errors,
-            // setFieldValue,
+            setFieldValue,
             handleBlur,
             handleChange,
             handleSubmit,
@@ -129,9 +136,6 @@ export default function UpdateHomeForm({ history }) {
           };
           return (
             <Paper className={classes.paper}>
-              <Typography component="h1" variant="h4" gutterBottom>
-                Update House
-              </Typography>
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
                   <HomeFields
@@ -170,25 +174,16 @@ export default function UpdateHomeForm({ history }) {
                     <Typography variant="h5" component="h2">
                       Files
                     </Typography>
-                    <Link href={houseSelected.files || '#'} target="_blank">
-                      Link to Documents!
-                    </Link>
-                    <Button
-                      disabled={isLoading}
-                      className={classes.button}
-                      variant="outlined"
-                      color="primary"
-                    >
-                      Update
-                    </Button>
+                    {houseSelected.files ? (
+                      <Link href={houseSelected.files} target="_blank">
+                        Link to Documents!
+                      </Link>
+                    ) : null}
+                    <FilesFields
+                      {...{ values, isLoading, setFieldValue }}
+                      filesGroups={dependencies.filesGroups}
+                    />
                   </Grid>
-
-                  <Divider variant="middle" />
-                  {/* <FilesFields
-                    {...{ values, isLoading, setFieldValue }}
-                    filesGroups={dependencies.filesGroups}
-                  /> */}
-                  <CommentsSection {...{ isLoading, houseSelected }} />
                   <Divider variant="middle" />
                   <Grid item xs={12}>
                     <Button
@@ -208,6 +203,7 @@ export default function UpdateHomeForm({ history }) {
           );
         }}
       </Formik>
+      <CommentsSection {...{ isLoading, houseSelected }} />
     </div>
   );
 }
