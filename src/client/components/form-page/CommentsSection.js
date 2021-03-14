@@ -5,6 +5,9 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CustomTextField } from './inputs';
@@ -31,8 +34,10 @@ export default function CommentsSection({ isLoading }) {
 
   const handleChange = e => {
     const { value } = e.target;
+    setReset(false);
     setDescription(value);
   };
+
   console.log(`houseSelected`, houseSelected);
   const handleSaveComment = async () => {
     try {
@@ -81,7 +86,7 @@ export default function CommentsSection({ isLoading }) {
       setUploading(false);
       setDescription('');
       setFiles([]);
-      setReset(false);
+      setReset(true);
     }
   };
 
@@ -146,9 +151,15 @@ export default function CommentsSection({ isLoading }) {
                 {uploading ? 'Saving Comment...' : 'Save Comment'}
               </Button>
             </Grid>
-            {(houseSelected.comments || []).map((c, i) => (
-              <Comment key={i} comment={c} />
-            ))}
+            <List dense aria-label="house comments">
+              <ListItem divider>
+                <ListItemText>
+                  {(houseSelected.comments || []).map((c, i) => (
+                    <Comment key={i} comment={c} />
+                  ))}
+                </ListItemText>
+              </ListItem>
+            </List>
           </Grid>
         </AccordionDetails>
       </Accordion>
