@@ -26,11 +26,13 @@ function HouseReducer(state, { type, houses, houseSelected, house }) {
         : null;
       if (houseIndex === -1) return state;
       const newHouses = [...state.houses];
-      newHouses[houseIndex] = house;
+      newHouses[houseIndex] = { ...newHouses[houseIndex], ...house };
       return {
         ...state,
         houses: newHouses,
-        houseSelected: isHouseSelected ? house : state.houseSelected,
+        houseSelected: isHouseSelected
+          ? { ...state.houseSelected, ...house }
+          : state.houseSelected,
       };
     }
     case 'add': {

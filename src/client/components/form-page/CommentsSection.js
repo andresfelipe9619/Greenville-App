@@ -39,8 +39,9 @@ export default function CommentsSection({ isLoading }) {
   };
 
   console.log(`houseSelected`, houseSelected);
-  const handleSaveComment = async () => {
+  const handleSaveComment = async event => {
     try {
+      event.stopPropagation();
       setUploading(true);
       const { idHouse, zone, comments, address } = houseSelected;
       const { data: comment } = await API.createComment(
