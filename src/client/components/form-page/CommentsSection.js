@@ -42,7 +42,7 @@ export default function CommentsSection({ isLoading }) {
   const handleSaveComment = async () => {
     try {
       setUploading(true);
-      const { idHouse, zone, comments } = houseSelected;
+      const { idHouse, zone, comments, address } = houseSelected;
       const { data: comment } = await API.createComment(
         JSON.stringify({ idHouse, description })
       );
@@ -52,9 +52,9 @@ export default function CommentsSection({ isLoading }) {
         const { idComment } = comment;
         const fileFromDrive = await API.uploadHouseCommentsFiles({
           idComment,
-          idHouse,
           files,
           zone,
+          idHouse: `${idHouse} / ${address}`,
         });
         console.log('fileFromDrive', fileFromDrive);
 
