@@ -126,7 +126,11 @@ export function uploadHouseCommentsFiles({ idComment, idHouse, files, zone }) {
     idComment,
     createFile: createHouseCommentFile,
   });
-  const currentFolder = getHouseCommentsFolder(idHouse);
+  const currentFolder = getHouseCommentsFolder({
+    id: idHouse,
+    idComment,
+    zone,
+  });
   const response = { files: savedFiles, folder: currentFolder.getUrl() };
   Logger.log('FILES RESPONSE:');
   Logger.log(response);

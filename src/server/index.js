@@ -10,6 +10,7 @@ global.isAdmin = publicMainFunction.isAdmin;
 global.getHouses = publicMainFunction.getHouses;
 global.createHouse = publicMainFunction.createHouse;
 global.updateHouse = publicMainFunction.updateHouse;
+global.updateComment = publicMainFunction.updateComment;
 global.createComment = publicMainFunction.createComment;
 global.getFilesGroups = publicMainFunction.getFilesGroups;
 global.getUsers = publicMainFunction.getUsers;

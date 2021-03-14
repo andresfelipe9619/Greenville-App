@@ -154,62 +154,109 @@ export function registerComment(data) {
   return response;
 }
 
-export function searchHouse(idHouse) {
-  Logger.log('=============Searching House===========');
-  const { sheet, headers } = getHousesSheet();
+function searchEntity({ name, getEntitySheet, entityId, idGetter }) {
+  Logger.log(`=============Searching ${name}===========`);
+  const { sheet, headers } = getEntitySheet();
   const result = {
     index: -1,
     data: null,
   };
-  const { index: homeIndex } = global.findText({ sheet, text: idHouse });
-  Logger.log(`HomeIndex ${homeIndex}`);
-  if (homeIndex <= -1) return result;
+  const { index: entityIndex } = global.findText({ sheet, text: entityId });
+  Logger.log(`${name} Index ${entityIndex}`);
+  if (entityIndex <= -1) return result;
 
-  const homeRange = sheet.getSheetValues(
-    +homeIndex,
+  const entityRange = sheet.getSheetValues(
+    +entityIndex,
     1,
     1,
     sheet.getLastColumn()
   );
-  Logger.log(`homeRange: ${homeRange.length}`);
-  Logger.log(homeRange);
-  const [homeData] = global.sheetValuesToObject(homeRange, headers);
-  Logger.log(`HomeData:`);
-  Logger.log(homeData);
-  const isSameDocument = String(homeData.idHouse) === String(idHouse);
+  Logger.log(`${name} Range: ${entityRange.length}`);
+  Logger.log(entityRange);
+  const [entityData] = global.sheetValuesToObject(entityRange, headers);
+  Logger.log(`${name} Data:`);
+  Logger.log(entityData);
+  const isSameDocument = String(idGetter(entityData)) === String(entityId);
   if (!isSameDocument) return result;
 
-  result.index = homeIndex;
-  result.data = homeData;
+  result.index = entityIndex;
+  result.data = entityData;
   Logger.log(result);
   Logger.log('=============END Searching House===========');
   return result;
 }
 
-export function updateHouse(serializedData) {
+export function searchComment(idComment) {
+  const result = searchEntity({
+    name: 'Comment',
+    entityId: idComment,
+    getEntitySheet: getCommentsSheet,
+    idGetter: entity => entity.idComment,
+  });
+  return result;
+}
+
+export function searchHouse(idHouse) {
+  const result = searchEntity({
+    name: 'House',
+    entityId: idHouse,
+    getEntitySheet: getHousesSheet,
+    idGetter: entity => entity.idHouse,
+  });
+  return result;
+}
+
+function updateEntity({
+  name,
+  idGetter,
+  findEntity,
+  serializedData,
+  getEntitySheet,
+}) {
   try {
     const response = { ok: false, data: null };
     const form = JSON.parse(serializedData);
+    Logger.log(`Submitted Form ${name} Data`);
     Logger.log(form);
-    const { data, index } = searchHouse(form.idHouse);
-    Logger.log('data');
-    Logger.log(data);
-    if (!index) throw new Error('House does not exists');
-    const { sheet, headers } = getHousesSheet();
-    const homeRange = sheet.getRange(+index, 1, 1, sheet.getLastColumn());
-    const houseData = global.jsonToSheetValues({ ...data, ...form }, headers);
-    Logger.log('houseData');
-    Logger.log(houseData);
+    const { data, index } = findEntity(idGetter(form));
+    if (!index) throw new Error(`${name} does not exists`);
+    const { sheet, headers } = getEntitySheet();
+    const entityRange = sheet.getRange(+index, 1, 1, sheet.getLastColumn());
+    const entityData = global.jsonToSheetValues({ ...data, ...form }, headers);
+    Logger.log(`${name} Data`);
+    Logger.log(entityData);
 
-    homeRange.setValues([houseData]);
+    entityRange.setValues([entityData]);
 
     response.ok = true;
-    response.data = houseData;
+    response.data = entityData;
     return response;
   } catch (error) {
     Logger.log(error);
     throw new Error('Error updating house');
   }
+}
+
+export function updateHouse(serializedData) {
+  const response = updateEntity({
+    serializedData,
+    name: 'House',
+    findEntity: searchHouse,
+    getEntitySheet: getHousesSheet,
+    idGetter: entity => entity.idHouse,
+  });
+  return response;
+}
+
+export function updateComment(serializedData) {
+  const response = updateEntity({
+    serializedData,
+    name: 'House',
+    searchEntity: searchComment,
+    getEntitySheet: getCommentsSheet,
+    idGetter: entity => entity.idComment,
+  });
+  return response;
 }
 
 // function avoidCollisionsInConcurrentAccessess() {
