@@ -53,12 +53,12 @@ export default function CreateHomeForm() {
       const house = JSON.stringify(formData);
       const { data } = await API.createHouse(house);
       console.log('data', data);
-      const { idHouse, zone } = data;
+      const { idHouse, zone, address } = data;
       HouseContext.addHouse(data);
       if (houseFiles.length) {
         const fileFromDrive = await API.uplaodFilesGroups({
           zone,
-          idHouse,
+          idHouse: `${idHouse} / ${address}`,
           houseFiles,
         });
         await API.updateHouse(

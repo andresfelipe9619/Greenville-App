@@ -2,7 +2,6 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import useStyles from './styles';
 
@@ -47,9 +46,6 @@ function Comment({ comment }) {
           </Link>
         </Grid>
       ) : null}
-      <Grid item md={12}>
-        <Divider variant="middle" flexItem />
-      </Grid>
     </Grid>
   );
 }

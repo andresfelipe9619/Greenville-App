@@ -152,7 +152,7 @@ export default function CommentsSection({ isLoading }) {
               </Button>
             </Grid>
             <List dense aria-label="house comments">
-              <ListItem divider>
+              <ListItem divider dense>
                 <ListItemText>
                   {(houseSelected.comments || []).map((c, i) => (
                     <Comment key={i} comment={c} />

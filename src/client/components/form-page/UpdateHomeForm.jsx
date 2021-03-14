@@ -80,7 +80,7 @@ export default function UpdateHomeForm({ history }) {
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
     const { houseFiles, formData } = getFormData(values);
-    const { idHouse, zone } = houseSelected;
+    const { idHouse, zone, address } = houseSelected;
     try {
       setSubmitting(true);
       setIsLoading(true);
@@ -88,7 +88,7 @@ export default function UpdateHomeForm({ history }) {
       if (houseFiles.length) {
         const fileFromDrive = await API.uplaodFilesGroups({
           zone,
-          idHouse,
+          idHouse: `${idHouse} / ${address}`,
           houseFiles,
         });
         houseFolder = fileFromDrive.folder;
