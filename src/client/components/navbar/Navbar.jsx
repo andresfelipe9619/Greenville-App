@@ -102,11 +102,11 @@ export function SearchBox({ classes }) {
   return (
     <Autocomplete
       id="combo-box-demo"
-      className={classes.search}
       options={houses}
-      getOptionLabel={option => option.address}
-      onChange={handleChange}
       style={{ width: 300 }}
+      onChange={handleChange}
+      className={classes.search}
+      getOptionLabel={option => `${option.address} - ${option.builder}`}
       renderInput={params => (
         <TextField
           {...params}
