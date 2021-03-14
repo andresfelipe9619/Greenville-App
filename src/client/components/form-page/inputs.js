@@ -15,6 +15,7 @@ export const CustomInput = ({
   style,
   touched,
   errors,
+  readOnly,
   isLoading,
   InputProps,
   handleChange,
@@ -32,6 +33,7 @@ export const CustomInput = ({
     required
     style={style}
     type={type}
+    readOnly={readOnly}
     id={name}
     name={name}
     fullWidth
@@ -52,6 +54,7 @@ export const CustomTextField = ({
   multiline,
   isLoading,
   handleChange,
+  InputProps,
   handleBlur,
 }) => (
   <TextField
@@ -71,6 +74,7 @@ export const CustomTextField = ({
     multiline={multiline}
     rowsMax={rowsMax}
     label={label}
+    InputProps={InputProps}
     fullWidth
   />
 );

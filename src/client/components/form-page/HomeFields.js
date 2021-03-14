@@ -29,9 +29,7 @@ export default function HomeFields({
           <CustomInput
             name="address"
             label="Address"
-            InputProps={{
-              readOnly: showId,
-            }}
+            readOnly={showId}
             {...inputProps}
           />
         </Grid>
