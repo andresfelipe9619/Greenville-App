@@ -67,7 +67,7 @@ function HouseContext({ children }) {
     console.log('==== SETTING HOUSE SELECTED ====');
     dispatch({ type: 'select', houseSelected });
     const houseWithFiles = await API.getHouseFiles(houseSelected);
-    dispatch({ type: 'update', houseWithFiles });
+    dispatch({ type: 'update', house: houseWithFiles });
     console.log('==== END SETTING HOUSE SELECTED ====');
   }, []);
 

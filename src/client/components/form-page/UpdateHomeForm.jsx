@@ -36,7 +36,6 @@ export default function UpdateHomeForm({ history }) {
   const dependencies = useHouseForm();
   const initialValues = getInitialValues();
 
-  console.log('houseSelected', houseSelected);
   useEffect(() => {
     const checkState = statuses.reduce((acc, status) => {
       acc[status.value] = false;

@@ -77,7 +77,7 @@ export function SearchBox({ classes }) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [{ houses }, { setHouses, setHouseSelected }] = useHouse();
-  console.log('houses', houses);
+
   const fetchHouses = async () => {
     try {
       setLoading(true);
