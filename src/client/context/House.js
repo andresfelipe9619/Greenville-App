@@ -99,6 +99,7 @@ function HouseContext({ children }) {
     console.log(`Response Data: `, data);
     const houseFolder = await getHouseFolder({ house: data, files });
     const newHouse = { ...data, files: houseFolder };
+    await API.updateHouse(JSON.stringify(newHouse));
     dispatch({ type: 'add', house: newHouse });
     console.log('==== END CREATING HOUSE ====');
     return newHouse;
