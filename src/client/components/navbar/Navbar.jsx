@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -11,6 +11,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useHistory } from 'react-router-dom';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import useStyles from './styles';
 import API from '../../api';
 import { useHouse } from '../../context/House';
@@ -74,16 +75,24 @@ export default function Navbar() {
 
 export function SearchBox({ classes }) {
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
   const [{ houses }, { setHouses, setHouseSelected }] = useHouse();
   console.log('houses', houses);
   const fetchHouses = async () => {
-    let housesResponse = await API.getHouses();
-    const comments = await API.getComments();
-    housesResponse = housesResponse.map(h => ({
-      ...h,
-      comments: comments.filter(c => c.idHouse === h.idHouse).reverse(),
-    }));
-    setHouses(housesResponse);
+    try {
+      setLoading(true);
+      let housesResponse = await API.getHouses();
+      const comments = await API.getComments();
+      housesResponse = housesResponse.map(h => ({
+        ...h,
+        comments: comments.filter(c => c.idHouse === h.idHouse).reverse(),
+      }));
+      setHouses(housesResponse);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (_, value, reason) => {
@@ -101,8 +110,9 @@ export function SearchBox({ classes }) {
 
   return (
     <Autocomplete
-      id="combo-box-demo"
+      id="search-house-box"
       options={houses}
+      loading={loading}
       style={{ width: 300 }}
       onChange={handleChange}
       className={classes.search}
@@ -117,6 +127,14 @@ export function SearchBox({ classes }) {
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
+            ),
+            endAdornment: (
+              <>
+                {loading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
+                {params.InputProps.endAdornment}
+              </>
             ),
           }}
         />
