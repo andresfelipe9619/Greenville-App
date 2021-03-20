@@ -1,4 +1,5 @@
 import React, { useReducer, useContext, useCallback } from 'react';
+import API from '../api';
 
 const initialState = {
   houses: [],
@@ -61,34 +62,53 @@ function HouseContext({ children }) {
     houses => dispatch({ type: 'houses', houses }),
     []
   );
-  const setHouseSelected = useCallback(
-    houseSelected => dispatch({ type: 'select', houseSelected }),
-    []
-  );
+
+  const setHouseSelected = useCallback(async houseSelected => {
+    dispatch({ type: 'select', houseSelected });
+    const houseWithFiles = await API.getHouseFiles(houseSelected);
+    dispatch({ type: 'update', houseWithFiles });
+  }, []);
+
   const getHouseSelected = useCallback(
     () => dispatch({ type: 'get-select' }),
     []
   );
-  const addHouse = useCallback(house => dispatch({ type: 'add', house }), []);
 
-  const updateHouse = useCallback(
-    house => dispatch({ type: 'update', house }),
-    []
-  );
+  const getHouseFolder = useCallback(async ({ house, files }) => {
+    const { idHouse, zone, address } = house;
+    let houseFolder = '';
+    if (files.length) {
+      const fileFromDrive = await API.uplaodFilesGroups({
+        zone,
+        houseFiles: files,
+        idHouse: `${idHouse} / ${address}`,
+      });
+      houseFolder = fileFromDrive.folder;
+    }
+
+    return houseFolder;
+  }, []);
+
+  const addHouse = useCallback(async ({ house, files }) => {
+    const { data } = await API.createHouse(JSON.stringify(house));
+    console.log('data', data);
+    const houseFolder = await getHouseFolder({ house: data, files });
+    const newHouse = { ...data, files: houseFolder };
+    dispatch({ type: 'add', newHouse });
+    return newHouse;
+  }, []);
+
+  const updateHouse = useCallback(async ({ files, house }) => {
+    const houseFolder = await getHouseFolder({ house, files });
+    const newHouse = { ...house, files: houseFolder };
+    await API.updateHouse(JSON.stringify(newHouse));
+    dispatch({ type: 'update', newHouse });
+  }, []);
 
   const removeHouse = useCallback(
     house => dispatch({ type: 'remove', house }),
     []
   );
-  //   async function updateUser(dispatch, user, updates) {
-  //     dispatch({type: 'start update', updates})
-  //     try {
-  //       const updatedUser = await userClient.updateUser(user, updates)
-  //       dispatch({type: 'finish update', updatedUser})
-  //     } catch (error) {
-  //       dispatch({type: 'fail update', error})
-  //     }
-  //   }
 
   return (
     <HouseStateContext.Provider value={state}>

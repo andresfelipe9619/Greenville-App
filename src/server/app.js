@@ -49,37 +49,34 @@ function getHousesSheet() {
   return { sheet, headers };
 }
 
-function getHousesFiles(houses) {
-  return houses.map(house => {
-    if (!house.files) return house;
-    const newHouse = { ...house };
-    const { idHouse, address, zone } = newHouse;
-    Logger.log(`newHouse`, newHouse);
-    const folder = global.getHouseFolder({
-      zone,
-      idHouse: `${idHouse} / ${address}`,
-    });
-    const subFolders = folder.getFolders();
-    const houseFiles = {};
-    while (subFolders.hasNext()) {
-      const fileGroupFolder = subFolders.next();
-      const groupName = fileGroupFolder.getName();
-      const groupFiles = fileGroupFolder.getFiles();
-      const files = [];
-      while (groupFiles.hasNext()) {
-        const file = groupFiles.next();
-        files.push({ name: file.getName(), url: file.getUrl() });
-      }
-      houseFiles[groupName] = files;
-    }
-    newHouse.filesGroups = houseFiles;
-    return newHouse;
+export function getHouseFiles(house) {
+  if (!house.files) return house;
+  const newHouse = { ...house };
+  const { idHouse, address, zone } = newHouse;
+  Logger.log(`newHouse`, newHouse);
+  const folder = global.getHouseFolder({
+    zone,
+    idHouse: `${idHouse} / ${address}`,
   });
+  const subFolders = folder.getFolders();
+  const houseFiles = {};
+  while (subFolders.hasNext()) {
+    const fileGroupFolder = subFolders.next();
+    const groupName = fileGroupFolder.getName();
+    const groupFiles = fileGroupFolder.getFiles();
+    const files = [];
+    while (groupFiles.hasNext()) {
+      const file = groupFiles.next();
+      files.push({ name: file.getName(), url: file.getUrl() });
+    }
+    houseFiles[groupName] = files;
+  }
+  newHouse.filesGroups = houseFiles;
+  return newHouse;
 }
 
 export function getHouses() {
-  const houses = getEntityData('HOUSES');
-  return getHousesFiles(houses);
+  return getEntityData('HOUSES');
 }
 
 export function getFilesGroups() {

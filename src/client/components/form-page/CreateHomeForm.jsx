@@ -8,7 +8,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import useStyles from './styles';
 import { createValidationSchema, getInitialValues } from './form-settings';
-import API from '../../api';
 import { useAlertDispatch } from '../../context/Alert';
 import { useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
@@ -50,21 +49,12 @@ export default function CreateHomeForm() {
     try {
       setSubmitting(true);
       setIsLoading(true);
-      const house = JSON.stringify(formData);
-      const { data } = await API.createHouse(house);
-      console.log('data', data);
-      const { idHouse, zone, address } = data;
-      HouseContext.addHouse(data);
-      if (houseFiles.length) {
-        const fileFromDrive = await API.uplaodFilesGroups({
-          zone,
-          idHouse: `${idHouse} / ${address}`,
-          houseFiles,
-        });
-        await API.updateHouse(
-          JSON.stringify({ files: fileFromDrive.folder, idHouse })
-        );
-      }
+
+      const data = await HouseContext.addHouse({
+        files: houseFiles,
+        house: formData,
+      });
+
       onSuccess({ resetForm, data });
     } catch (e) {
       onError(e);

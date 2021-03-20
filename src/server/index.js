@@ -6,6 +6,7 @@ import * as publicMainFunction from './app';
 global.doGet = publicMainFunction.doGet;
 global.doPost = publicMainFunction.doPost;
 
+// BUSINESS LOGIC FUNCTIONS
 global.isAdmin = publicMainFunction.isAdmin;
 global.getCurrentUser = publicMainFunction.getCurrentUser;
 global.getHouses = publicMainFunction.getHouses;
@@ -19,7 +20,9 @@ global.getBuilders = publicMainFunction.getBuilders;
 global.getModels = publicMainFunction.getModels;
 global.getZones = publicMainFunction.getZones;
 global.getComments = publicMainFunction.getComments;
+global.getHouseFiles = publicMainFunction.getHouseFiles;
 
+// DRIVE FUNCTIONS
 global.createHouseFile = publicDriveFunctions.createHouseFile;
 global.createHouseCommentFile = publicDriveFunctions.createHouseCommentFile;
 global.uploadHouseCommentsFiles = publicDriveFunctions.uploadHouseCommentsFiles;
@@ -27,6 +30,7 @@ global.uploadHouseFiles = publicDriveFunctions.uploadHouseFiles;
 global.getHouseFolder = publicDriveFunctions.getHouseFolder;
 global.getHouseCommentsFolder = publicDriveFunctions.getHouseCommentsFolder;
 
+// SPREADSHEET FUNCTIONS
 global.getSheetFromSpreadSheet = publicSheetFunctions.getSheetFromSpreadSheet;
 global.getRawDataFromSheet = publicSheetFunctions.getRawDataFromSheet;
 global.getSheetsData = publicSheetFunctions.getSheetsData;

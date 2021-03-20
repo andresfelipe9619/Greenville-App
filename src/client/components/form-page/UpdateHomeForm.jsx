@@ -13,7 +13,6 @@ import { Formik } from 'formik';
 import { updateValidationSchema, getInitialValues } from './form-settings';
 import useStyles from './styles';
 import { useAlertDispatch } from '../../context/Alert';
-import API from '../../api';
 import { useHouse, useHouseDispatch } from '../../context/House';
 import HomeFields from './HomeFields';
 import FilesFields from './FilesFields';
@@ -80,23 +79,10 @@ export default function UpdateHomeForm({ history }) {
 
   const onSubmit = useCallback(async (values, { setSubmitting, resetForm }) => {
     const { houseFiles, formData } = getFormData(values);
-    const { idHouse, zone, address } = houseSelected;
     try {
       setSubmitting(true);
       setIsLoading(true);
-      let houseFolder = '';
-      if (houseFiles.length) {
-        const fileFromDrive = await API.uplaodFilesGroups({
-          zone,
-          idHouse: `${idHouse} / ${address}`,
-          houseFiles,
-        });
-        houseFolder = fileFromDrive.folder;
-      }
-      HouseContext.updateHouse(formData);
-      API.updateHouse(
-        JSON.stringify({ idHouse, ...formData, files: houseFolder })
-      );
+      await HouseContext.updateHouse({ files: houseFiles, house: formData });
       onSuccess(resetForm);
     } catch (e) {
       onError(e);
