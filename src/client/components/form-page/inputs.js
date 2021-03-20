@@ -88,6 +88,7 @@ export const CustomSelect = ({
   touched,
   values,
   options,
+  InputProps,
   handleChange,
   isLoading,
 }) => (
@@ -111,6 +112,7 @@ export const CustomSelect = ({
       inputProps={{
         name,
         id: name,
+        ...InputProps,
       }}
     >
       {(options || []).map((o, i) => (

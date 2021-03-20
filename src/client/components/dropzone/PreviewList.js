@@ -10,6 +10,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
+    padding: theme.spacing(2),
     justifyContent: 'space-between',
     overflow: 'hidden',
     backgroundColor: fade('#555', 0.2),

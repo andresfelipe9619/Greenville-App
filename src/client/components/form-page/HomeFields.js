@@ -37,7 +37,9 @@ export default function HomeFields({
           <CustomSelect
             name="zone"
             label="Zone"
-            disabled={showId}
+            InputProps={{
+              readOnly: showId,
+            }}
             {...inputProps}
             style={{ marginTop: 25 }}
             options={dependencies.zones}
