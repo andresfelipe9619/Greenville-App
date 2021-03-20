@@ -64,9 +64,11 @@ function HouseContext({ children }) {
   );
 
   const setHouseSelected = useCallback(async houseSelected => {
+    console.log('==== SETTING HOUSE SELECTED ====');
     dispatch({ type: 'select', houseSelected });
     const houseWithFiles = await API.getHouseFiles(houseSelected);
     dispatch({ type: 'update', houseWithFiles });
+    console.log('==== END SETTING HOUSE SELECTED ====');
   }, []);
 
   const getHouseSelected = useCallback(
@@ -75,6 +77,7 @@ function HouseContext({ children }) {
   );
 
   const getHouseFolder = useCallback(async ({ house, files }) => {
+    console.log('==== GETTING HOUSE FOLDER ====');
     const { idHouse, zone, address } = house;
     let houseFolder = '';
     if (files.length) {
@@ -85,24 +88,29 @@ function HouseContext({ children }) {
       });
       houseFolder = fileFromDrive.folder;
     }
-
+    console.log(`House Folder: `, houseFolder);
+    console.log('==== END GETTING HOUSE FOLDER ====');
     return houseFolder;
   }, []);
 
   const addHouse = useCallback(async ({ house, files }) => {
+    console.log('==== CREATING HOUSE ====');
     const { data } = await API.createHouse(JSON.stringify(house));
-    console.log('data', data);
+    console.log(`Response Data: `, data);
     const houseFolder = await getHouseFolder({ house: data, files });
     const newHouse = { ...data, files: houseFolder };
-    dispatch({ type: 'add', newHouse });
+    dispatch({ type: 'add', house: newHouse });
+    console.log('==== END CREATING HOUSE ====');
     return newHouse;
   }, []);
 
   const updateHouse = useCallback(async ({ files, house }) => {
+    console.log('==== UPDATING HOUSE ====');
     const houseFolder = await getHouseFolder({ house, files });
     const newHouse = { ...house, files: houseFolder };
     await API.updateHouse(JSON.stringify(newHouse));
-    dispatch({ type: 'update', newHouse });
+    dispatch({ type: 'update', house: newHouse });
+    console.log('==== END UPDATING HOUSE ====');
   }, []);
 
   const removeHouse = useCallback(
