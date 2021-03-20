@@ -52,13 +52,13 @@ function getFileGroupFolder({ group, zone, idHouse }) {
   return fileGroupFolder;
 }
 
-function getHouseFolder({ idHouse, zone }) {
+export function getHouseFolder({ idHouse, zone }) {
   const zoneFolder = getZoneFolder(zone);
   const houseFolder = findOrCreateFolder(idHouse, zoneFolder);
   return houseFolder;
 }
 
-function getHouseCommentsFolder({ id, idComment, zone }) {
+export function getHouseCommentsFolder({ id, idComment, zone }) {
   const houseFolder = getHouseFolder({ idHouse: id, zone });
   const commentsFolder = getCommentsFolder(houseFolder);
   const commentFolder = findOrCreateFolder(idComment, commentsFolder);
@@ -71,10 +71,10 @@ function createDriveFile({ id, folder, blob }) {
     name: '',
   };
   const file = folder.createFile(blob);
-  file.setDescription(`Subido Por ${id}`);
+  const guessEmail = global.getCurrentUser();
+  file.setDescription(`Uploaded by ${guessEmail} - House ${id}`);
   result.url = file.getUrl();
   result.name = file.getName();
-  result.file = file;
   return result;
 }
 
@@ -109,7 +109,7 @@ function mapHouseFiles({ idHouse, files, createFile, ...options }) {
       fileData: base64,
       ...options,
     });
-    return savedFile.file;
+    return savedFile;
   });
   return savedFiles;
 }

@@ -7,6 +7,7 @@ global.doGet = publicMainFunction.doGet;
 global.doPost = publicMainFunction.doPost;
 
 global.isAdmin = publicMainFunction.isAdmin;
+global.getCurrentUser = publicMainFunction.getCurrentUser;
 global.getHouses = publicMainFunction.getHouses;
 global.createHouse = publicMainFunction.createHouse;
 global.updateHouse = publicMainFunction.updateHouse;
@@ -23,6 +24,8 @@ global.createHouseFile = publicDriveFunctions.createHouseFile;
 global.createHouseCommentFile = publicDriveFunctions.createHouseCommentFile;
 global.uploadHouseCommentsFiles = publicDriveFunctions.uploadHouseCommentsFiles;
 global.uploadHouseFiles = publicDriveFunctions.uploadHouseFiles;
+global.getHouseFolder = publicDriveFunctions.getHouseFolder;
+global.getHouseCommentsFolder = publicDriveFunctions.getHouseCommentsFolder;
 
 global.getSheetFromSpreadSheet = publicSheetFunctions.getSheetFromSpreadSheet;
 global.getRawDataFromSheet = publicSheetFunctions.getRawDataFromSheet;
