@@ -2,10 +2,7 @@ import React from 'react';
 import { makeStyles, fade } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import Thumb from './Thumb';
-// import GridListTileBar from '@material-ui/core/GridListTileBar';
-// import IconButton from '@material-ui/core/IconButton';
-// import StarBorderIcon from '@material-ui/icons/StarBorder';
+import Thumb, { FileGroupThumb } from './Thumb';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,6 +34,21 @@ export default function PreviewList({ files, loading }) {
         {files.map((file, i) => (
           <GridListTile key={i}>
             <Thumb {...{ file, loading }} />
+          </GridListTile>
+        ))}
+      </GridList>
+    </div>
+  );
+}
+
+export function PreviewFileGruop({ files, loading }) {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      <GridList className={classes.gridList} cols={3}>
+        {files.map((file, i) => (
+          <GridListTile key={i}>
+            <FileGroupThumb {...{ file, loading }} />
           </GridListTile>
         ))}
       </GridList>

@@ -8,14 +8,19 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Link from '@material-ui/core/Link';
 import Dropzone from '../dropzone/Dropzone';
 import { AccordionSummary } from './styles';
+import { PreviewFileGruop } from '../dropzone/PreviewList';
 
 export default function FilesFields({
   isLoading,
-  houseFiles,
   filesGroups,
+  houseSelected,
   setFieldValue,
 }) {
   if (!filesGroups || !filesGroups.length) return null;
+  const { files: houseFiles, filesGroups: houseFilesGroups } = houseSelected;
+  const haveFilesGroups = !!Object.keys(houseFilesGroups || {}).length;
+  console.log(`filesGroups`, filesGroups);
+  console.log(`houseFilesGroups`, houseFilesGroups);
   return (
     <Box width="100%" mt={8}>
       <Accordion>
@@ -43,6 +48,9 @@ export default function FilesFields({
             {filesGroups.map(f => (
               <Grid item xs={6} key={f.name}>
                 <Typography variant="h6">{f.name}</Typography>
+                {haveFilesGroups && (houseFilesGroups[f.name] || []).length && (
+                  <PreviewFileGruop files={houseFilesGroups[f.name]} />
+                )}
                 <Dropzone
                   multiple
                   field={f.name}

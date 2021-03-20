@@ -1,7 +1,7 @@
 import React, { useReducer, useContext, useCallback } from 'react';
 
 const initialState = {
-  houses: [{ address: 'Mariano', houseid: 190 }],
+  houses: [],
   house: null,
   houseSelected: null,
 };

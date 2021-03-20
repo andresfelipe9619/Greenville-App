@@ -171,7 +171,7 @@ export default function UpdateHomeForm({ history }) {
                   <Divider variant="middle" />
                   <Grid item xs={12}>
                     <FilesFields
-                      houseFiles={houseSelected.files}
+                      houseSelected={houseSelected}
                       {...{ values, isLoading, setFieldValue }}
                       filesGroups={dependencies.filesGroups}
                     />
