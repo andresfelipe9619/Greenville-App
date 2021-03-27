@@ -79,6 +79,10 @@ export function getHouses() {
   return getEntityData('HOUSES');
 }
 
+export function getHouseStatuses() {
+  return getEntityData('HOUSE STATUSES');
+}
+
 export function getFilesGroups() {
   return getEntityData('FILES GROUPS');
 }

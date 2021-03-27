@@ -6,22 +6,25 @@ export default function useHouseForm() {
   const [builders, setBuilders] = useState([]);
   const [models, setModels] = useState([]);
   const [filesGroups, setFilesGroups] = useState([]);
+  const [houseStatuses, setHouseStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const initFormData = async () => {
     try {
-      const [z, b, m, f] = await Promise.all([
+      const [z, b, m, f, s] = await Promise.all([
         API.getZones(),
         API.getBuilders(),
         API.getModels(),
         API.getFilesGroups(),
+        API.getHouseStatuses(),
       ]);
       setZones(z);
       setModels(m);
       setBuilders(b);
       setFilesGroups(f);
+      setHouseStatuses(s);
     } catch (error) {
-      console.log('error', error);
+      console.log('Error getting dependencies data: ', error);
     } finally {
       setLoading(false);
     }
@@ -31,7 +34,7 @@ export default function useHouseForm() {
     initFormData();
   }, []);
 
-  return { loading, zones, builders, models, filesGroups };
+  return { loading, zones, builders, models, filesGroups, houseStatuses };
 }
 
 export function getFormData(values) {

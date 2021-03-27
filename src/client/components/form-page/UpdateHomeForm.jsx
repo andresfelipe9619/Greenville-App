@@ -1,13 +1,9 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Formik } from 'formik';
 import { updateValidationSchema, getInitialValues } from './form-settings';
@@ -18,45 +14,16 @@ import HomeFields from './HomeFields';
 import FilesFields from './FilesFields';
 import useHouseForm, { getFormData } from '../../hooks/useHouseForm';
 import CommentsSection from './CommentsSection';
+import HouseStatuses from './HouseStatuses';
 
-const statuses = [
-  { label: 'DRYWALL', value: 'drywall' },
-  { label: 'PRIMEWALLS', value: 'primewalls' },
-  { label: 'FINISH PAINTING', value: 'finishPainting' },
-  { label: 'PAINT TOUCH UP', value: 'paintTouchUp' },
-  { label: 'EXTERIOR PAINT', value: 'exteriorPaint' },
-];
 export default function UpdateHomeForm({ history }) {
   const classes = useStyles();
   const HouseContext = useHouseDispatch();
   const { openAlert } = useAlertDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [state, setState] = useState({});
   const [{ houseSelected }] = useHouse();
   const dependencies = useHouseForm();
   const initialValues = getInitialValues();
-
-  useEffect(() => {
-    const checkState = statuses.reduce((acc, status) => {
-      acc[status.value] = false;
-      if (!houseSelected) return acc;
-
-      const found = (houseSelected.statuses || []).find(
-        s => s.value === status.value
-      );
-      if (found) acc[status.value] = true;
-
-      return acc;
-    }, {});
-    setState(checkState);
-  }, []);
-
-  const handleChangeCheck = useCallback(event => {
-    setState(prevState => ({
-      ...prevState,
-      [event.target.name]: event.target.checked,
-    }));
-  }, []);
 
   const onSuccess = useCallback(resetForm => {
     openAlert({
@@ -93,6 +60,7 @@ export default function UpdateHomeForm({ history }) {
 
   return (
     <div>
+      {dependencies.loading && <LinearProgress />}
       <Formik
         enableReinitialize
         onSubmit={onSubmit}
@@ -131,27 +99,10 @@ export default function UpdateHomeForm({ history }) {
                     <Typography variant="h5" component="h2">
                       House Status
                     </Typography>
-                    <FormControl
-                      required
-                      component="fieldset"
-                      classes={{ root: classes.formControl }}
-                    >
-                      <FormGroup row>
-                        {statuses.map(status => (
-                          <FormControlLabel
-                            key={status.value}
-                            control={
-                              <Checkbox
-                                checked={state[status.value] || false}
-                                onChange={handleChangeCheck}
-                                name={status.value}
-                              />
-                            }
-                            label={status.label}
-                          />
-                        ))}
-                      </FormGroup>
-                    </FormControl>
+                    <HouseStatuses
+                      house={houseSelected}
+                      statuses={dependencies.houseStatuses}
+                    />
                   </Grid>
                   <Divider variant="middle" />
                   <Grid item xs={12}>

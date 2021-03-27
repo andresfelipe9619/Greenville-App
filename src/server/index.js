@@ -21,6 +21,7 @@ global.getModels = publicMainFunction.getModels;
 global.getZones = publicMainFunction.getZones;
 global.getComments = publicMainFunction.getComments;
 global.getHouseFiles = publicMainFunction.getHouseFiles;
+global.getHouseStatuses = publicMainFunction.getHouseStatuses;
 
 // DRIVE FUNCTIONS
 global.createHouseFile = publicDriveFunctions.createHouseFile;
