@@ -91,12 +91,15 @@ export default function HouseStatuses({ statuses, house }) {
 
   useEffect(() => {
     if (!house.status) return;
+    console.log(`statuses`, statuses);
+    console.log(`house.status`, house.status);
     const index = statuses.findIndex(s => s.name === house.status);
+    console.log(`index`, index);
     setActiveStep(index);
-  }, [house]);
+  }, [house, statuses]);
 
-  if (!activeStep) return null;
-  console.log(`activeStep`, activeStep);
+  if (!activeStep && statuses.length) return null;
+
   return (
     <div className={classes.root}>
       <Stepper

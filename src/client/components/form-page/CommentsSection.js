@@ -10,6 +10,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import { CustomTextField } from './inputs';
 import Dropzone from '../dropzone/Dropzone';
 import API from '../../api';
@@ -18,14 +20,19 @@ import { useHouse } from '../../context/House';
 import { useAlertDispatch } from '../../context/Alert';
 import Comment from './Comment';
 
-export default function CommentsSection({ isLoading }) {
+export default function CommentsSection({ isLoading, houseStatuses }) {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
   const [reset, setReset] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [{ houseSelected }, HouseContext] = useHouse();
   const { openAlert } = useAlertDispatch();
+  const currentStatusIndex = houseStatuses.findIndex(
+    s => s.name === houseSelected.status
+  );
+  const newStatus = houseStatuses[currentStatusIndex + 1];
 
   const setFieldValue = (_, value) => {
     if (!value || !value.length) return;
@@ -37,6 +44,8 @@ export default function CommentsSection({ isLoading }) {
     setReset(false);
     setDescription(value);
   };
+
+  const handleChangeStatus = event => setChecked(event.target.checked);
 
   console.log(`houseSelected`, houseSelected);
   const handleSaveComment = async event => {
@@ -69,9 +78,17 @@ export default function CommentsSection({ isLoading }) {
           JSON.stringify({ files: commentFolder, idComment })
         );
       }
+      let status = null;
+      if (checked) {
+        status = newStatus.name;
+      }
+
       HouseContext.updateHouse({
-        idHouse,
-        comments: [{ ...comment, files: commentFolder }, ...comments],
+        house: {
+          idHouse,
+          status: status || houseSelected.status,
+          comments: [{ ...comment, files: commentFolder }, ...comments],
+        },
       });
       openAlert({
         variant: 'success',
@@ -107,7 +124,6 @@ export default function CommentsSection({ isLoading }) {
   };
 
   console.log(`files`, files);
-
   return (
     <Box width="100%" my={8}>
       <Accordion>
@@ -142,9 +158,21 @@ export default function CommentsSection({ isLoading }) {
               />
             </Grid>
             <Grid item md={3} container justify="flex-end">
+              {currentStatusIndex < houseStatuses.length - 1 && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={checked}
+                      onChange={handleChangeStatus}
+                      name="status"
+                    />
+                  }
+                  label={`Update House Status to ${newStatus.name}`}
+                />
+              )}
               <Button
                 color="primary"
-                variant="outlined"
+                variant="contained"
                 disabled={disabled}
                 className={classes.button}
                 onClick={handleSaveComment}

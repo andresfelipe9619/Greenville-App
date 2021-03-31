@@ -131,7 +131,13 @@ export default function UpdateHomeForm({ history }) {
           );
         }}
       </Formik>
-      <CommentsSection {...{ isLoading, houseSelected }} />
+      <CommentsSection
+        {...{
+          isLoading,
+          houseSelected,
+          houseStatuses: dependencies.houseStatuses,
+        }}
+      />
     </div>
   );
 }

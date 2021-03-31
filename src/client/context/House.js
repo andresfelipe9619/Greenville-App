@@ -76,7 +76,7 @@ function HouseContext({ children }) {
     []
   );
 
-  const getHouseFolder = useCallback(async ({ house, files }) => {
+  const getHouseFolder = useCallback(async ({ house, files = [] }) => {
     console.log('==== GETTING HOUSE FOLDER ====');
     const { idHouse, zone, address } = house;
     let houseFolder = '';
@@ -87,6 +87,8 @@ function HouseContext({ children }) {
         idHouse: `${idHouse} / ${address}`,
       });
       houseFolder = fileFromDrive.folder;
+    } else {
+      houseFolder = house.files || '';
     }
     console.log(`House Folder: `, houseFolder);
     console.log('==== END GETTING HOUSE FOLDER ====');
