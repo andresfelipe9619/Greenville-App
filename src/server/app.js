@@ -130,6 +130,7 @@ function registerHouse(data) {
     ...data,
     idHouse: +lastRowId + 1,
     idHr: +lastRowHrId + 1,
+    date: new Date().toString(),
   };
   const houseValues = global.jsonToSheetValues(houseJSON, headers);
   Logger.log('HOUSE VALUES');
