@@ -98,7 +98,7 @@ export default function HouseStatuses({ statuses, house }) {
     setActiveStep(index);
   }, [house, statuses]);
 
-  if (!activeStep && statuses.length) return null;
+  if (Number.isNaN(activeStep) || !statuses.length) return null;
 
   return (
     <div className={classes.root}>
