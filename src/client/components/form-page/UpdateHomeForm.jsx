@@ -9,19 +9,19 @@ import { Formik } from 'formik';
 import { updateValidationSchema, getInitialValues } from './form-settings';
 import useStyles from './styles';
 import { useAlertDispatch } from '../../context/Alert';
-import { useHouse, useHouseDispatch } from '../../context/House';
+import { useHouse } from '../../context/House';
 import HomeFields from './HomeFields';
 import FilesFields from './FilesFields';
 import useHouseForm, { getFormData } from '../../hooks/useHouseForm';
 import CommentsSection from './CommentsSection';
 import HouseStatuses from './HouseStatuses';
+import { formatDate } from '../utils';
 
 export default function UpdateHomeForm({ history }) {
   const classes = useStyles();
-  const HouseContext = useHouseDispatch();
   const { openAlert } = useAlertDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [{ houseSelected }] = useHouse();
+  const [{ houseSelected }, { updateHouse }] = useHouse();
   const dependencies = useHouseForm();
   const initialValues = getInitialValues();
 
@@ -48,7 +48,7 @@ export default function UpdateHomeForm({ history }) {
     try {
       setSubmitting(true);
       setIsLoading(true);
-      await HouseContext.updateHouse({ files: houseFiles, house: formData });
+      await updateHouse({ files: houseFiles, house: formData });
       onSuccess(resetForm);
     } catch (e) {
       onError(e);
@@ -90,6 +90,13 @@ export default function UpdateHomeForm({ history }) {
             <Paper className={classes.paper}>
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
+                  {houseSelected.date && (
+                    <Grid item xs={12} container justify="flex-end">
+                      <Typography variant="caption">
+                        {formatDate(houseSelected.date)}
+                      </Typography>
+                    </Grid>
+                  )}
                   <HomeFields
                     showId
                     inputProps={inputProps}

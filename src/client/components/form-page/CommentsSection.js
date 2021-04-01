@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -27,7 +26,7 @@ export default function CommentsSection({ isLoading, houseStatuses }) {
   const [uploading, setUploading] = useState(false);
   const [reset, setReset] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [{ houseSelected }, HouseContext] = useHouse();
+  const [{ houseSelected }, { updateHouse }] = useHouse();
   const { openAlert } = useAlertDispatch();
   const currentStatusIndex = houseStatuses.findIndex(
     s => s.name === houseSelected.status
@@ -47,43 +46,33 @@ export default function CommentsSection({ isLoading, houseStatuses }) {
 
   const handleChangeStatus = event => setChecked(event.target.checked);
 
-  console.log(`houseSelected`, houseSelected);
   const handleSaveComment = async event => {
+    console.log(`houseSelected`, houseSelected);
+    console.log(`files`, files);
+
     try {
       event.stopPropagation();
       setUploading(true);
-      const { idHouse, zone, comments, address } = houseSelected;
+      const { idHouse, zone, comments = [], address } = houseSelected;
+      let status = '';
+      if (checked) status = newStatus.name;
+
       const { data: comment } = await API.createComment(
-        JSON.stringify({ idHouse, description })
+        JSON.stringify({ idHouse, description, status })
       );
       let commentFolder = '';
       console.log('Created Comment: ', comment);
+
       if (comment && files.length) {
-        const { idComment } = comment;
-        const fileFromDrive = await API.uploadHouseCommentsFiles({
-          idComment,
-          files,
+        commentFolder = API.uploadFilesToComment({
           zone,
+          files,
           idHouse: `${idHouse} / ${address}`,
+          idComment: comment.idComment,
         });
-        console.log('fileFromDrive', fileFromDrive);
-
-        if (!fileFromDrive.folder) {
-          throw new Error(
-            'Somenthing went wrong creating files. It is not returning any folder.'
-          );
-        }
-        commentFolder = fileFromDrive.folder;
-        await API.updateComment(
-          JSON.stringify({ files: commentFolder, idComment })
-        );
-      }
-      let status = null;
-      if (checked) {
-        status = newStatus.name;
       }
 
-      HouseContext.updateHouse({
+      updateHouse({
         house: {
           idHouse,
           status: status || houseSelected.status,
@@ -123,7 +112,6 @@ export default function CommentsSection({ isLoading, houseStatuses }) {
     },
   };
 
-  console.log(`files`, files);
   return (
     <Box width="100%" my={8}>
       <Accordion>
@@ -180,15 +168,15 @@ export default function CommentsSection({ isLoading, houseStatuses }) {
                 {uploading ? 'Saving Comment...' : 'Save Comment'}
               </Button>
             </Grid>
-            <List dense aria-label="house comments">
-              <ListItem divider dense>
-                <ListItemText>
-                  {(houseSelected.comments || []).map((c, i) => (
-                    <Comment key={i} comment={c} />
-                  ))}
-                </ListItemText>
-              </ListItem>
-            </List>
+            <Grid item md={12}>
+              <List dense aria-label="house comments">
+                {(houseSelected.comments || []).map((c, i) => (
+                  <ListItem key={i} divider button selected={!!c.status}>
+                    <Comment comment={c} />
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>
           </Grid>
         </AccordionDetails>
       </Accordion>

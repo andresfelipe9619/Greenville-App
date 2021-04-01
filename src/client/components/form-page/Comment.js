@@ -4,19 +4,11 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import useStyles from './styles';
-
-const formatOptions = {
-  weekday: 'short',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-};
+import { formatDate } from '../utils';
 
 function Comment({ comment }) {
   if (!comment) return null;
-  const date = new Date(comment.date).toLocaleString('en-US', formatOptions);
+  const date = formatDate(comment.date);
   const classes = useStyles();
   return (
     <Grid
@@ -40,10 +32,17 @@ function Comment({ comment }) {
         </Box>
       </Grid>
       {comment.files ? (
-        <Grid item md={12}>
+        <Grid item md={6}>
           <Link align="right" href={comment.files} target="_blank">
             Attachments
           </Link>
+        </Grid>
+      ) : null}
+      {comment.status ? (
+        <Grid item md={comment.files ? 6 : 12} container justify="flex-end">
+          <Typography variant="caption" align="right">
+            Updated to {comment.status}
+          </Typography>
         </Grid>
       ) : null}
     </Grid>

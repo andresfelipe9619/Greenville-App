@@ -161,11 +161,13 @@ export function registerComment(data) {
   }
   Logger.log('lastRowId');
   Logger.log(lastRowId);
+  const timestamp = new Date().toString();
   const commentJSON = {
     ...data,
     user: getCurrentUser(),
     idComment: +lastRowId + 1,
-    date: new Date().toString(),
+    date: timestamp,
+    statusDate: timestamp,
   };
   const commentValues = global.jsonToSheetValues(commentJSON, headers);
   Logger.log('COMMENT VALUES');
