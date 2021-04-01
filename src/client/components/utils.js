@@ -18,3 +18,15 @@ export const getFileSize = fileSize => {
   const exactSize = `${Math.round(size * 100) / 100} ${fSExt[i]}`;
   return exactSize;
 };
+
+const formatOptions = {
+  weekday: 'short',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+};
+
+export const formatDate = date =>
+  new Date(date).toLocaleString('en-US', formatOptions);

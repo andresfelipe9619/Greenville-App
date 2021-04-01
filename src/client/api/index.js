@@ -19,6 +19,23 @@ async function uploadFileToHouse({ idHouse, ...props }) {
   return fileFromDrive;
 }
 
+async function uploadFilesToComment({ idComment, files, idHouse, zone }) {
+  let commentFolder = '';
+  const fileFromDrive = await serverFunctions.uploadHouseCommentsFiles({
+    idComment,
+    files,
+    zone,
+    idHouse,
+  });
+  console.log('fileFromDrive', fileFromDrive);
+  if (!fileFromDrive.folder) noFolderCreated();
+  commentFolder = fileFromDrive.folder;
+  await serverFunctions.updateComment(
+    JSON.stringify({ files: commentFolder, idComment })
+  );
+  return commentFolder;
+}
+
 async function uplaodFilesGroups({ idHouse, zone, houseFiles = [] }) {
   if (!houseFiles.length) return null;
   const [firstGroup, ...restGroups] = houseFiles;
@@ -36,5 +53,6 @@ async function uplaodFilesGroups({ idHouse, zone, houseFiles = [] }) {
 
 serverFunctions.uplaodFilesGroups = uplaodFilesGroups;
 serverFunctions.uploadFileToHouse = uploadFileToHouse;
+serverFunctions.uploadFilesToComment = uploadFilesToComment;
 
 export default serverFunctions;
