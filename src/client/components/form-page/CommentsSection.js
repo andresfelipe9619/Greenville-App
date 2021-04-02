@@ -137,7 +137,7 @@ export default function CommentsSection({ isLoading, houseStatuses }) {
               variant="outlined"
               {...inputProps}
             />
-            <Grid item md={9}>
+            <Grid item xs={12} md={9}>
               <Dropzone
                 multiple
                 reset={reset}
@@ -145,7 +145,7 @@ export default function CommentsSection({ isLoading, houseStatuses }) {
                 setFieldValue={setFieldValue}
               />
             </Grid>
-            <Grid item md={3} container justify="flex-end">
+            <Grid item xs={12} md={3} container justify="flex-end">
               {currentStatusIndex < houseStatuses.length - 1 && (
                 <FormControlLabel
                   control={

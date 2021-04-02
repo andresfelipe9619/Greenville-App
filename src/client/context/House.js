@@ -3,7 +3,6 @@ import API from '../api';
 
 const initialState = {
   houses: [],
-  house: null,
   houseSelected: null,
 };
 
@@ -11,14 +10,18 @@ const HouseStateContext = React.createContext();
 const HouseDispatchContext = React.createContext();
 
 function HouseReducer(state, { type, houses, houseSelected, house }) {
+  console.log('=======HOUSE REDUCER=======');
   switch (type) {
     case 'houses': {
+      console.log(`Houses: `, houses);
       return { ...state, houses };
     }
     case 'select': {
+      console.log(`House Selected: `, houseSelected);
       return { ...state, houseSelected };
     }
     case 'update': {
+      console.log(`Update House: `, house);
       const houseIndex = state.houses.findIndex(
         h => h.idHouse === house.idHouse
       );
@@ -37,18 +40,19 @@ function HouseReducer(state, { type, houses, houseSelected, house }) {
       };
     }
     case 'add': {
+      console.log(`Add House: `, house);
       return {
         ...state,
         houses: [...state.houses, house],
       };
     }
     case 'remove': {
+      console.log(`Remove House: `, house);
       return {
         ...state,
         houses: state.houses.filter(i => i !== house),
       };
     }
-
     default: {
       throw new Error(`Unhandled action type: ${type}`);
     }

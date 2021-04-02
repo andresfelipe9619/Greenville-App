@@ -19,7 +19,7 @@ export const getFileSize = fileSize => {
   return exactSize;
 };
 
-const formatOptions = {
+const longFormatOptions = {
   weekday: 'short',
   year: 'numeric',
   month: 'long',
@@ -27,6 +27,14 @@ const formatOptions = {
   hour: 'numeric',
   minute: 'numeric',
 };
+const shortFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+};
 
-export const formatDate = date =>
-  new Date(date).toLocaleString('en-US', formatOptions);
+export const formatDate = (date, long = true) =>
+  new Date(date).toLocaleString(
+    'en-US',
+    long ? longFormatOptions : shortFormatOptions
+  );

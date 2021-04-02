@@ -102,15 +102,17 @@ export default function UpdateHomeForm({ history }) {
                     inputProps={inputProps}
                     dependencies={dependencies}
                   />
-                  <Grid item xs={12}>
-                    <Typography variant="h5" component="h2">
-                      House Status
-                    </Typography>
-                    <HouseStatuses
-                      house={houseSelected}
-                      statuses={dependencies.houseStatuses}
-                    />
-                  </Grid>
+                  {(dependencies.houseStatuses || []).length && (
+                    <Grid item xs={12}>
+                      <Typography variant="h5" component="h2">
+                        House Status
+                      </Typography>
+                      <HouseStatuses
+                        house={houseSelected}
+                        statuses={dependencies.houseStatuses}
+                      />
+                    </Grid>
+                  )}
                   <Divider variant="middle" />
                   <Grid item xs={12}>
                     <FilesFields
@@ -139,11 +141,8 @@ export default function UpdateHomeForm({ history }) {
         }}
       </Formik>
       <CommentsSection
-        {...{
-          isLoading,
-          houseSelected,
-          houseStatuses: dependencies.houseStatuses,
-        }}
+        isLoading={isLoading}
+        houseStatuses={dependencies.houseStatuses}
       />
     </div>
   );

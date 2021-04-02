@@ -22,7 +22,7 @@ export default function HomeFields({
         justify="space-between"
         style={{ backgroundColor: (selectedZone || {}).color }}
       >
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} md={6}>
           <Typography variant="h6" color="primary">
             Address
           </Typography>
@@ -33,7 +33,7 @@ export default function HomeFields({
             {...inputProps}
           />
         </Grid>
-        <Grid item xs={6} sm={3}>
+        <Grid item xs={6} md={3}>
           <CustomSelect
             name="zone"
             label="Zone"
@@ -46,7 +46,7 @@ export default function HomeFields({
           />
         </Grid>
         {showId && (
-          <Grid item xs={6} sm={3}>
+          <Grid item xs={6} md={3}>
             <CustomTextField
               name="idHr"
               label="ID HR"
@@ -60,10 +60,10 @@ export default function HomeFields({
           </Grid>
         )}
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid item xs={12} md={4}>
         <CustomTextField name="lastName" label="Last Name" {...inputProps} />
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid item xs={12} md={4}>
         <CustomSelect
           name="model"
           label="Model"
@@ -71,7 +71,7 @@ export default function HomeFields({
           options={dependencies.models}
         />
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid item xs={12} md={4}>
         <CustomSelect
           name="builder"
           label="Builder"
@@ -79,7 +79,7 @@ export default function HomeFields({
           options={dependencies.builders}
         />
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={6} md={3}>
         <CustomTextField
           type="number"
           name="drywallFootage"
@@ -87,7 +87,7 @@ export default function HomeFields({
           {...inputProps}
         />
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={6} md={3}>
         <CustomTextField
           type="number"
           name="footHouse"
@@ -95,7 +95,7 @@ export default function HomeFields({
           {...inputProps}
         />
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={6} md={3}>
         <CustomTextField
           type="number"
           name="footGarage"
@@ -103,7 +103,7 @@ export default function HomeFields({
           {...inputProps}
         />
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={6} md={3}>
         <CustomTextField
           type="number"
           name="footExterior"

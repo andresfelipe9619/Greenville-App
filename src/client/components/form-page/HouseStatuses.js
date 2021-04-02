@@ -6,6 +6,9 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Check from '@material-ui/icons/Check';
 import StepConnector from '@material-ui/core/StepConnector';
+import Typography from '@material-ui/core/Typography';
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
+import { formatDate } from '../utils';
 
 const QontoConnector = withStyles({
   alternativeLabel: {
@@ -85,18 +88,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function HouseStatuses({ statuses, house }) {
+const findStatus = (status, prop = 'name') => s => s[prop] === status;
+
+function HouseStatuses({ statuses, house, width }) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(null);
+  const { status, comments = [] } = house;
+  const orientation = isWidthUp('md', width) ? 'horizontal' : 'vertical';
 
   useEffect(() => {
-    if (!house.status) return;
-    console.log(`statuses`, statuses);
-    console.log(`house.status`, house.status);
-    const index = statuses.findIndex(s => s.name === house.status);
-    console.log(`index`, index);
-    setActiveStep(index);
-  }, [house, statuses]);
+    console.log(`Statuses: `, statuses);
+    console.log(`House Status: `, status);
+    if (!status) {
+      setActiveStep(0);
+    } else {
+      const index = statuses.findIndex(findStatus(status));
+      console.log(`Status Index: `, index);
+      setActiveStep(index);
+    }
+  }, [house]);
 
   if (Number.isNaN(activeStep) || !statuses.length) return null;
 
@@ -104,17 +114,30 @@ export default function HouseStatuses({ statuses, house }) {
     <div className={classes.root}>
       <Stepper
         alternativeLabel
+        orientation={orientation}
         activeStep={activeStep}
         connector={<QontoConnector />}
       >
-        {statuses.map(status => (
-          <Step key={status.name}>
-            <StepLabel StepIconComponent={QontoStepIcon}>
-              {status.name}
-            </StepLabel>
-          </Step>
-        ))}
+        {statuses.map(s => {
+          const labelProps = {};
+          const comment = comments.find(findStatus(s.name, 'status'));
+          if (comment && comment.statusDate) {
+            labelProps.optional = (
+              <Typography variant="caption">
+                {formatDate(comment.statusDate, false)}
+              </Typography>
+            );
+          }
+          return (
+            <Step key={s.name}>
+              <StepLabel StepIconComponent={QontoStepIcon} {...labelProps}>
+                {s.name}
+              </StepLabel>
+            </Step>
+          );
+        })}
       </Stepper>
     </div>
   );
 }
+export default withWidth()(HouseStatuses);
