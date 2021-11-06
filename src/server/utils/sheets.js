@@ -1,5 +1,5 @@
 const GENERAL_DB =
-  'https://docs.google.com/spreadsheets/d/10dTrDpc9xgfqlvbpZIOXB2fDJ4ZZTHlv5t9bvUuP6_M/edit#gid=0';
+  'https://docs.google.com/spreadsheets/d/1qio9XGofLaBU9wNky720GcAWoKjAHQGUwThRe8n5kD4/edit#gid=0';
 
 const getSheets = () => SpreadsheetApp.getActive().getSheets();
 
