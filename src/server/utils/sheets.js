@@ -19,14 +19,14 @@ function camelCase(string) {
     .replace(/\s/g, '');
 }
 
-export function getSheetFromSpreadSheet(sheet) {
-  const Spreedsheet = SpreadsheetApp.openByUrl(GENERAL_DB);
+export function getSheetFromSpreadSheet(sheet, url) {
+  const Spreedsheet = SpreadsheetApp.openByUrl(url || GENERAL_DB);
   if (sheet) return Spreedsheet.getSheetByName(sheet);
   return null;
 }
 
-export function getRawDataFromSheet(sheet) {
-  const mSheet = getSheetFromSpreadSheet(sheet);
+export function getRawDataFromSheet(sheet, url) {
+  const mSheet = getSheetFromSpreadSheet(sheet, url);
   if (mSheet) {
     return mSheet.getSheetValues(
       1,

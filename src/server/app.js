@@ -107,6 +107,14 @@ export function getComments() {
   return getEntityData('COMMENTS');
 }
 
+function getHousesZoneSheet(zone) {
+  const zones = getZones();
+  const found = zones.find(z => z.name === zone);
+  const sheet = global.getSheetFromSpreadSheet('HOUSES', found.sheet);
+  const headers = global.getHeadersFromSheet(sheet);
+  return { sheet, headers };
+}
+
 export function getCommentsSheet() {
   const sheet = global.getSheetFromSpreadSheet('COMMENTS');
   const headers = global.getHeadersFromSheet(sheet);
@@ -117,12 +125,18 @@ function registerHouse(data) {
   Logger.log('=============Registering HOUSE===========');
   const response = { ok: false, data: null };
   const { sheet, headers } = getHousesSheet();
+  const { sheet: zoneSheet, headers: zoneHeaders } = getHousesZoneSheet(
+    data.zone
+  );
   const currentLastRow = sheet.getLastRow();
+  const zoneLastRow = zoneSheet.getLastRow();
   let lastRowId = 0;
   let lastRowHrId = 0;
   if (currentLastRow > 1) {
     const [ids] = sheet.getSheetValues(currentLastRow, 1, 1, 2);
-    [lastRowId, lastRowHrId] = ids;
+    const [zoneIds] = zoneSheet.getSheetValues(zoneLastRow, 1, 1, 2);
+    [lastRowId] = ids;
+    [lastRowHrId] = zoneIds;
   }
   Logger.log('lastRowId');
   Logger.log(lastRowId);
@@ -133,10 +147,12 @@ function registerHouse(data) {
     date: new Date().toString(),
   };
   const houseValues = global.jsonToSheetValues(houseJSON, headers);
+  const zoneValues = global.jsonToSheetValues(houseJSON, zoneHeaders);
   Logger.log('HOUSE VALUES');
   Logger.log(houseValues);
 
   sheet.appendRow(houseValues);
+  zoneSheet.appendRow(zoneValues);
 
   const rowsAfter = sheet.getLastRow();
   const recordInserted = rowsAfter > currentLastRow;
