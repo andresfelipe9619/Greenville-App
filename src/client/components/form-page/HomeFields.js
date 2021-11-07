@@ -1,14 +1,35 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { CustomSelect, CustomTextField, CustomInput } from './inputs';
+import { CustomSelect, CustomTextField, CustomInput, CustomSearchSelect } from './inputs';
 
 export default function HomeFields({
   inputProps,
   dependencies,
+  setFieldValue,
   showId = false,
 }) {
   let selectedZone = null;
+
+  const handleChangeAutocompleteModel = (event, value, reason) => {
+    console.log('{e,reason}', { value, reason });
+    if (reason === 'select-option') {
+      setFieldValue('model', value);
+    }
+    if (reason === 'create-option') {
+      
+    }
+  };
+  const handleChangeAutocompleteBuilder = (event, value, reason) => {
+    console.log('{e,reason}', { value, reason });
+    if (reason === 'select-option') {
+      setFieldValue('builder', value);
+    }
+    if (reason === 'create-option') {
+      
+    }
+  };
+
   const inputZone = inputProps.values.zone;
   if (inputZone) {
     selectedZone = dependencies.zones.find(z => z.name === inputZone);
@@ -64,18 +85,20 @@ export default function HomeFields({
         <CustomTextField name="lastName" label="Last Name" {...inputProps} />
       </Grid>
       <Grid item xs={12} md={4}>
-        <CustomSelect
+        <CustomSearchSelect
           name="model"
           label="Model"
           {...inputProps}
+          handleChange={handleChangeAutocompleteModel}
           options={dependencies.models}
         />
       </Grid>
       <Grid item xs={12} md={4}>
-        <CustomSelect
+        <CustomSearchSelect
           name="builder"
           label="Builder"
           {...inputProps}
+          handleChange={handleChangeAutocompleteBuilder}
           options={dependencies.builders}
         />
       </Grid>

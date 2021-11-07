@@ -99,6 +99,7 @@ export default function CreateHomeForm() {
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
                   <HomeFields
+                    setFieldValue={setFieldValue}
                     inputProps={inputProps}
                     dependencies={dependencies}
                   />

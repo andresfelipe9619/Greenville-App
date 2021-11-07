@@ -6,6 +6,7 @@ import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 export const CustomInput = ({
   values,
@@ -124,5 +125,60 @@ export const CustomSelect = ({
     <FormHelperText>
       {touched.tematica_ponencia && errors.tematica_ponencia}
     </FormHelperText>
+  </FormControl>
+);
+
+
+export const CustomSearchSelect = ({
+  name,
+  label,
+  classes,
+  errors,
+  style,
+  touched,
+  values,
+  options,
+  InputProps,
+  handleChange,
+  isLoading,
+}) => (
+  <FormControl
+    classes={{ root: classes.formControl }}
+    fullWidth
+    style={style}
+    error={!!(touched[name] && errors[name])}
+  >
+    <Autocomplete
+      options={options}
+      loading={isLoading}
+      className={classes.search}
+      value={values[name] || null}
+      id={name}
+      name={name}
+      InputProps={{
+        name,
+        id: name,
+        ...InputProps,
+      }}
+      onChange={handleChange}
+      getOptionLabel={option => `${option.name}`}
+      renderInput={params => (
+        <TextField
+          {...params}
+          label={label}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {isLoading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
+        />
+      )}
+    />
   </FormControl>
 );
