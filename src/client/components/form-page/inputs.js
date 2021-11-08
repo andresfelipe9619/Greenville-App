@@ -6,7 +6,7 @@ import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const CustomInput = ({
@@ -129,6 +129,9 @@ export const CustomSelect = ({
   </FormControl>
 );
 
+const filterOptions = createFilterOptions({
+  limit: 5,
+});
 
 export const CustomSearchSelect = ({
   name,
@@ -154,6 +157,7 @@ export const CustomSearchSelect = ({
       options={options}
       loading={isLoading}
       className={classes.search}
+      filterOptions={filterOptions}
       value={(values[name] && selected) ? selected : ((values[name]) ? values[name] : null)}
       id={name}
       name={name}
