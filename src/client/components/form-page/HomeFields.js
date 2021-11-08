@@ -2,6 +2,8 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { CustomSelect, CustomTextField, CustomInput, CustomSearchSelect } from './inputs';
+import { useAlertDispatch } from '../../context/Alert';
+import API from '../../api';
 
 export default function HomeFields({
   inputProps,
@@ -12,24 +14,32 @@ export default function HomeFields({
   let selectedZone = null;
   let selectedModel = null;
   let selectedBuilder = null;
+  const { openAlert } = useAlertDispatch();
+
+
+  const handleChangeAutocomplete = async (table, field, createMethod, lengthFields) => {
+    if (field.id == "new") {
+      field.name = field.name.substring(lengthFields).replaceAll('"', '');
+      const { data: element } = await createMethod(
+        JSON.stringify({ name: field.name })
+      );
+      const tablename = table.charAt(0).toUpperCase() + table.slice(1);
+      const [variant, message] = element ? ['success', `${tablename} created correctly`] : ['error', `Error creating ${tablename}`];
+      openAlert({
+        variant: variant,
+        message: message,
+      });
+    }
+    setFieldValue(table, field);
+  };
 
   const handleChangeAutocompleteModel = (event, value, reason) => {
     console.log('{e,reason}', { value, reason });
-    if (reason === 'select-option' || reason === 'clear') {
-      setFieldValue('model', value);
-    }
-    if (reason === 'create-option') {
-      
-    }
+    handleChangeAutocomplete('model', value, API.createModels, 9);
   };
   const handleChangeAutocompleteBuilder = (event, value, reason) => {
     console.log('{e,reason}', { value, reason });
-    if (reason === 'select-option' || reason === 'clear') {
-      setFieldValue('builder', value);
-    }
-    if (reason === 'create-option') {
-      
-    }
+    handleChangeAutocomplete('builder', value, API.createBuilders, 12);
   };
 
   const inputZone = inputProps.values.zone;

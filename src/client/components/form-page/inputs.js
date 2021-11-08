@@ -157,7 +157,19 @@ export const CustomSearchSelect = ({
       options={options}
       loading={isLoading}
       className={classes.search}
-      filterOptions={filterOptions}
+      filterOptions={(options, params) => {
+        const filtered = filterOptions(options, params);
+
+        // Suggest the creation of a new value
+        if (params.inputValue !== '') {
+          filtered.push({
+            id: 'new',
+            name: `Add ${name} "${params.inputValue}"`,
+          });
+        }
+
+        return filtered;
+      }}
       value={(values[name] && selected) ? selected : ((values[name]) ? values[name] : null)}
       id={name}
       name={name}
@@ -167,6 +179,10 @@ export const CustomSearchSelect = ({
         ...InputProps,
       }}
       onChange={handleChange}
+      selectOnFocus
+      clearOnBlur
+      handleHomeEndKeys
+      freeSolo
       getOptionLabel={option => `${option.name}`}
       renderInput={params => (
         <TextField

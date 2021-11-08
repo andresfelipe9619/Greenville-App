@@ -203,6 +203,39 @@ export function registerComment(data) {
   return response;
 }
 
+function registerEntity(table, form) {
+  Logger.log(`=============Registering ${table}===========`);
+  const response = { ok: false, data: null };
+  const sheet = global.getSheetFromSpreadSheet(table);
+  const headers = global.getHeadersFromSheet(sheet);
+
+  const currentLastRow = sheet.getLastRow();
+  let lastRowId = 0;
+  if (currentLastRow > 1) {
+    [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
+  }
+
+  const entityJson = {
+    id: +lastRowId + 1,
+    ...form
+  };
+  const entityValues = global.jsonToSheetValues(entityJson, headers);
+  Logger.log(`${table} VALUES`);
+  Logger.log(entityValues);
+
+  sheet.appendRow(entityValues);
+  const rowsAfter = sheet.getLastRow();
+  const recordInserted = rowsAfter > currentLastRow;
+
+  if (recordInserted) {
+    response.ok = true;
+    response.data = entityJson;
+  }
+  Logger.log(`=============END Registering ${table}===========`);
+  return response;
+}
+
+
 function searchEntity({ name, getEntitySheet, entityId, idGetter }) {
   Logger.log(`=============Searching ${name}===========`);
   const { sheet, headers } = getEntitySheet();
@@ -325,7 +358,41 @@ export function createComment(formString) {
     Logger.log(response);
     return response;
   } catch (error) {
-    Logger.log('Error Registering Student');
+    Logger.log('Error Registering comment');
+    Logger.log(error);
+    return error.toString();
+  }
+}
+
+export function createModels(formString) {
+  const form = JSON.parse(formString);
+  if (!form || !Object.keys(form).length) throw new Error('No data sent');
+  try {
+    Logger.log('Data for registering');
+    Logger.log(form);
+    const response = registerEntity("MODELS", form);
+    Logger.log('Response');
+    Logger.log(response);
+    return response;
+  } catch (error) {
+    Logger.log('Error Registering model');
+    Logger.log(error);
+    return error.toString();
+  }
+}
+
+export function createBuilders(formString) {
+  const form = JSON.parse(formString);
+  if (!form || !Object.keys(form).length) throw new Error('No data sent');
+  try {
+    Logger.log('Data for registering');
+    Logger.log(form);
+    const response = registerEntity("BUILDERS", form);
+    Logger.log('Response');
+    Logger.log(response);
+    return response;
+  } catch (error) {
+    Logger.log('Error Registering builder');
     Logger.log(error);
     return error.toString();
   }
