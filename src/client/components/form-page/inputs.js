@@ -7,6 +7,7 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const CustomInput = ({
   values,
@@ -139,6 +140,7 @@ export const CustomSearchSelect = ({
   values,
   options,
   InputProps,
+  selected,
   handleChange,
   isLoading,
 }) => (
@@ -152,7 +154,7 @@ export const CustomSearchSelect = ({
       options={options}
       loading={isLoading}
       className={classes.search}
-      value={values[name] || null}
+      value={(values[name] && selected) ? selected : ((values[name]) ? values[name] : null)}
       id={name}
       name={name}
       InputProps={{
@@ -180,5 +182,8 @@ export const CustomSearchSelect = ({
         />
       )}
     />
+    <FormHelperText>
+      {touched[name] && errors[name]}
+    </FormHelperText>
   </FormControl>
 );

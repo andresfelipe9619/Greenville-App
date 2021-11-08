@@ -10,10 +10,12 @@ export default function HomeFields({
   showId = false,
 }) {
   let selectedZone = null;
+  let selectedModel = null;
+  let selectedBuilder = null;
 
   const handleChangeAutocompleteModel = (event, value, reason) => {
     console.log('{e,reason}', { value, reason });
-    if (reason === 'select-option') {
+    if (reason === 'select-option' || reason === 'clear') {
       setFieldValue('model', value);
     }
     if (reason === 'create-option') {
@@ -22,7 +24,7 @@ export default function HomeFields({
   };
   const handleChangeAutocompleteBuilder = (event, value, reason) => {
     console.log('{e,reason}', { value, reason });
-    if (reason === 'select-option') {
+    if (reason === 'select-option' || reason === 'clear') {
       setFieldValue('builder', value);
     }
     if (reason === 'create-option') {
@@ -34,6 +36,17 @@ export default function HomeFields({
   if (inputZone) {
     selectedZone = dependencies.zones.find(z => z.name === inputZone);
   }
+
+  const inputModel = inputProps.values.model;
+  if (inputModel && !selectedModel) {
+    selectedModel = dependencies.models.find(m => m.name === inputModel);
+  }
+
+  const inputBuilder = inputProps.values.builder;
+  if (inputBuilder && !selectedBuilder) {
+    selectedBuilder = dependencies.builders.find(b => b.name === inputBuilder);
+  }
+
   return (
     <>
       <Grid
@@ -90,6 +103,7 @@ export default function HomeFields({
           label="Model"
           {...inputProps}
           handleChange={handleChangeAutocompleteModel}
+          selected={selectedModel}
           options={dependencies.models}
         />
       </Grid>
@@ -99,6 +113,7 @@ export default function HomeFields({
           label="Builder"
           {...inputProps}
           handleChange={handleChangeAutocompleteBuilder}
+          selected={selectedBuilder}
           options={dependencies.builders}
         />
       </Grid>
