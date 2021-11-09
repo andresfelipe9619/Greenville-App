@@ -110,6 +110,9 @@ export function getComments() {
 function getHousesZoneSheet(zone, sheetName) {
   const zones = getZones();
   const found = zones.find(z => z.name === zone);
+  if (!found || !found.sheet) {
+    return {sheet: null, headers: null};
+  }
   const sheet = global.getSheetFromSpreadSheet(sheetName, found.sheet);
   const headers = global.getHeadersFromSheet(sheet);
   return { sheet, headers };
@@ -128,6 +131,12 @@ function registerHouse(data) {
   const { sheet: zoneSheet, headers: zoneHeaders } = getHousesZoneSheet(
     data.zone, "HOUSES"
   );
+
+  if(!zoneSheet){
+    response.data =  `The zone ${data.zone} doesn't register sheet`
+    return response
+  }
+
   const currentLastRow = sheet.getLastRow();
   const zoneLastRow = zoneSheet.getLastRow();
   let lastRowId = 0;

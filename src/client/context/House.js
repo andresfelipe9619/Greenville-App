@@ -101,8 +101,9 @@ function HouseContext({ children }) {
 
   const addHouse = useCallback(async ({ house, files }) => {
     console.log('==== CREATING HOUSE ====');
-    const { data } = await API.createHouse(JSON.stringify(house));
-    console.log(`Response Data: `, data);
+    const { ok: ok, data:data } = await API.createHouse(JSON.stringify(house));
+    console.log(`Response Data: `, data); 
+    if(!ok) return { error: data};
     const houseFolder = await getHouseFolder({ house: data, files });
 
     const idHouse = data.idHouse;
