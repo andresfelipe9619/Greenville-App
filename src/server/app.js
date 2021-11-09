@@ -107,10 +107,10 @@ export function getComments() {
   return getEntityData('COMMENTS');
 }
 
-function getHousesZoneSheet(zone) {
+function getHousesZoneSheet(zone, sheetName) {
   const zones = getZones();
   const found = zones.find(z => z.name === zone);
-  const sheet = global.getSheetFromSpreadSheet('HOUSES', found.sheet);
+  const sheet = global.getSheetFromSpreadSheet(sheetName, found.sheet);
   const headers = global.getHeadersFromSheet(sheet);
   return { sheet, headers };
 }
@@ -126,7 +126,7 @@ function registerHouse(data) {
   const response = { ok: false, data: null };
   const { sheet, headers } = getHousesSheet();
   const { sheet: zoneSheet, headers: zoneHeaders } = getHousesZoneSheet(
-    data.zone
+    data.zone, "HOUSES"
   );
   const currentLastRow = sheet.getLastRow();
   const zoneLastRow = zoneSheet.getLastRow();
@@ -153,6 +153,27 @@ function registerHouse(data) {
 
   sheet.appendRow(houseValues);
   zoneSheet.appendRow(zoneValues);
+
+  var valueToExtraSheet = [
+    [ houseJSON.idHr,
+      houseJSON.address ]
+  ];
+
+  const extraSheets = new Array(4);
+  extraSheets.push('ACCOUNT RECIEVABLE')
+  extraSheets.push('HANG&FINISH')
+  extraSheets.push('PAINT')
+  extraSheets.push('CLEANNING')
+  extraSheets.forEach(sheetName => {
+    const { sheet: zoneExtraSheet } = getHousesZoneSheet(
+      data.zone, sheetName
+    );
+    Logger.log('zoneExtraSheet');
+    Logger.log(sheetName);
+    Logger.log(zoneExtraSheet);
+    const range = zoneExtraSheet.getRange(zoneLastRow + 1, 1, 1, 2);
+    range.setValues(valueToExtraSheet);
+  })
 
   const rowsAfter = sheet.getLastRow();
   const recordInserted = rowsAfter > currentLastRow;
