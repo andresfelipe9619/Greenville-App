@@ -101,11 +101,23 @@ function HouseContext({ children }) {
 
   const addHouse = useCallback(async ({ house, files }) => {
     console.log('==== CREATING HOUSE ====');
-    const { data } = await API.createHouse(JSON.stringify(house));
-    console.log(`Response Data: `, data);
+    const { ok: ok, data:data } = await API.createHouse(JSON.stringify(house));
+    console.log(`Response Data: `, data); 
+    if(!ok) return { error: data};
     const houseFolder = await getHouseFolder({ house: data, files });
+
+    const idHouse = data.idHouse;
+    const description = "House Created"
+    const status = "INITIAL"
+    data.status = status
+    const { data: comment } = await API.createComment(
+      JSON.stringify({ idHouse, description, status })
+    );
+    let commentFolder = '';
+    data.comments = [{ ...comment, files: commentFolder }];
     const newHouse = { ...data, files: houseFolder };
     await API.updateHouse(JSON.stringify(newHouse));
+    
     dispatch({ type: 'add', house: newHouse });
     console.log('==== END CREATING HOUSE ====');
     return newHouse;

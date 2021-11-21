@@ -1,18 +1,71 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { CustomSelect, CustomTextField, CustomInput } from './inputs';
+import { CustomSelect, CustomTextField, CustomInput, CustomSearchSelect } from './inputs';
+import { useAlertDispatch } from '../../context/Alert';
+import API from '../../api';
+import { FieldArray } from 'formik';
 
 export default function HomeFields({
   inputProps,
   dependencies,
+  setFieldValue,
   showId = false,
 }) {
   let selectedZone = null;
+  let selectedModel = null;
+  let selectedBuilder = null;
+  const { openAlert } = useAlertDispatch();
+
+
+  const handleChangeAutocomplete = async (table, field, createMethod, lengthFields, reason) => {
+
+    if (reason === 'create-option') {
+      field = {
+        id: "new",
+        name: `Add ${table} "${field}"`,
+      }
+    }
+
+    if (field && field.id == "new") {
+      field.name = field.name.substring(lengthFields).replaceAll('"', '');
+      const { data: element } = await createMethod(
+        JSON.stringify({ name: field.name })
+      );
+      const tablename = table.charAt(0).toUpperCase() + table.slice(1);
+      const [variant, message] = element ? ['success', `${tablename} created correctly`] : ['error', `Error creating ${tablename}`];
+      openAlert({
+        variant: variant,
+        message: message,
+      });
+    }
+    setFieldValue(table, field);
+  };
+
+  const handleChangeAutocompleteModel = (event, value, reason) => {
+    console.log('{e,reason}', { value, reason });
+    handleChangeAutocomplete('model', value, API.createModels, 9, reason);
+  };
+  const handleChangeAutocompleteBuilder = (event, value, reason) => {
+    console.log('{e,reason}', { value, reason });
+    handleChangeAutocomplete('builder', value, API.createBuilders, 12, reason);
+  };
+
   const inputZone = inputProps.values.zone;
   if (inputZone) {
     selectedZone = dependencies.zones.find(z => z.name === inputZone);
   }
+
+  const inputModel = inputProps.values.model;
+  if (inputModel && !selectedModel) {
+    selectedModel = dependencies.models.find(m => m.name === inputModel);
+  }
+
+  const inputBuilder = inputProps.values.builder;
+  if (inputBuilder && !selectedBuilder) {
+    selectedBuilder = dependencies.builders.find(b => b.name === inputBuilder);
+  }
+
   return (
     <>
       <Grid
@@ -64,18 +117,22 @@ export default function HomeFields({
         <CustomTextField name="lastName" label="Last Name" {...inputProps} />
       </Grid>
       <Grid item xs={12} md={4}>
-        <CustomSelect
+        <CustomSearchSelect
           name="model"
           label="Model"
           {...inputProps}
+          handleChange={handleChangeAutocompleteModel}
+          selected={selectedModel}
           options={dependencies.models}
         />
       </Grid>
       <Grid item xs={12} md={4}>
-        <CustomSelect
+        <CustomSearchSelect
           name="builder"
           label="Builder"
           {...inputProps}
+          handleChange={handleChangeAutocompleteBuilder}
+          selected={selectedBuilder}
           options={dependencies.builders}
         />
       </Grid>

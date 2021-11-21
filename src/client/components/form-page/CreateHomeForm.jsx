@@ -35,8 +35,8 @@ export default function CreateHomeForm() {
     resetForm(initialValues);
   }, []);
 
-  const onError = useCallback(e => {
-    const message = 'Something went wrong creating the house';
+  const onError = useCallback((e, msg = "") => {
+    const message = 'Something went wrong creating the house. ' + msg;
     openAlert({
       message,
       variant: 'error',
@@ -54,8 +54,12 @@ export default function CreateHomeForm() {
         files: houseFiles,
         house: formData,
       });
+      if (data.error) {
+        onError("error",data.error);
+      }else{
+        onSuccess({ data, resetForm });
+      }
 
-      onSuccess({ resetForm, data });
     } catch (e) {
       onError(e);
     } finally {
@@ -99,6 +103,7 @@ export default function CreateHomeForm() {
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={4}>
                   <HomeFields
+                    setFieldValue={setFieldValue}
                     inputProps={inputProps}
                     dependencies={dependencies}
                   />
