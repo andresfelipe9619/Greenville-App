@@ -100,6 +100,7 @@ export default function UpdateHomeForm({ history }) {
                   <HomeFields
                     showId
                     inputProps={inputProps}
+                    setFieldValue={setFieldValue}
                     dependencies={dependencies}
                   />
                   {(dependencies.houseStatuses || []).length && (

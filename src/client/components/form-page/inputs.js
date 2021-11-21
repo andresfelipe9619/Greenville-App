@@ -6,7 +6,8 @@ import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const CustomInput = ({
   values,
@@ -128,6 +129,9 @@ export const CustomSelect = ({
   </FormControl>
 );
 
+const filterOptions = createFilterOptions({
+  limit: 5,
+});
 
 export const CustomSearchSelect = ({
   name,
@@ -139,46 +143,71 @@ export const CustomSearchSelect = ({
   values,
   options,
   InputProps,
+  selected,
   handleChange,
   isLoading,
-}) => (
-  <FormControl
-    classes={{ root: classes.formControl }}
-    fullWidth
-    style={style}
-    error={!!(touched[name] && errors[name])}
-  >
-    <Autocomplete
-      options={options}
-      loading={isLoading}
-      className={classes.search}
-      value={values[name] || null}
-      id={name}
-      name={name}
-      InputProps={{
-        name,
-        id: name,
-        ...InputProps,
-      }}
-      onChange={handleChange}
-      getOptionLabel={option => `${option.name}`}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label={label}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {isLoading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
-    />
-  </FormControl>
-);
+}) => {
+  const settedValue = (values[name] && selected) ? selected : ((values[name]) ? values[name] : null);
+  console.log('settedValue', settedValue);
+  return (
+    <FormControl
+      classes={{ root: classes.formControl }}
+      fullWidth
+      style={style}
+      error={!!(touched[name] && errors[name])}
+    >
+      <Autocomplete
+        options={options}
+        loading={isLoading}
+        className={classes.search}
+        filterOptions={(options, params) => {
+          const filtered = filterOptions(options, params);
+
+          // Suggest the creation of a new value
+          if (params.inputValue !== '') {
+            filtered.push({
+              id: 'new',
+              name: `Add ${name} "${params.inputValue}"`,
+            });
+          }
+
+          return filtered;
+        }}
+        value={settedValue}
+        id={name}
+        name={name}
+        InputProps={{
+          name,
+          id: name,
+          ...InputProps,
+        }}
+        onChange={handleChange}
+        selectOnFocus
+        clearOnBlur
+        handleHomeEndKeys
+        freeSolo
+        getOptionLabel={option => `${option.name}`}
+        renderInput={params => (
+          <TextField
+            {...params}
+            label={label}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {isLoading ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+          />
+        )}
+      />
+      <FormHelperText>
+        {touched[name] && errors[name]}
+      </FormHelperText>
+    </FormControl>
+  )
+};
