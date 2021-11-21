@@ -1,6 +1,6 @@
-const ROOT_FOLDER = 'Greenville app (DEV)';
-const FILES_FOLDER = 'Storage';
-const FILES_COMMENTS = 'Comments';
+const ROOT_FOLDER = 'ZONES';
+const FILES_FOLDER = 'STORAGE';
+const FILES_COMMENTS = 'COMMENTS';
 
 function base64ToBlob(fileName, fileData) {
   const contentType = fileData.substring(5, fileData.indexOf(';'));
