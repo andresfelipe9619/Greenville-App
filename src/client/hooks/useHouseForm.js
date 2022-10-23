@@ -40,7 +40,7 @@ export default function useHouseForm() {
 export function getFormData(values) {
   const formData = Object.keys(values).reduce(
     (acc, key) => {
-      let keyValue = values[key];
+      const keyValue = values[key];
       const isFile = Array.isArray(keyValue);
       if (isFile) {
         return {
@@ -48,9 +48,9 @@ export function getFormData(values) {
           houseFiles: [...acc.houseFiles, { group: key, files: [...keyValue] }],
         };
       }
-      if (key == "model" || key == "builder") {
-        keyValue = keyValue.name;
-      }
+      // if (['model', 'builder'].includes(key)) {
+      //   keyValue = keyValue.name;
+      // }
       return { ...acc, formData: { ...acc.formData, [key]: keyValue } };
     },
     { houseFiles: [], formData: {} }

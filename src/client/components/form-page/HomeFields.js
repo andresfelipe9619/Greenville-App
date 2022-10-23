@@ -17,8 +17,6 @@ export default function HomeFields({
   showId = false,
 }) {
   let selectedZone = null;
-  let selectedModel = null;
-  let selectedBuilder = null;
   const { openAlert } = useAlertDispatch();
 
   const handleChangeAutocomplete = async (
@@ -28,18 +26,15 @@ export default function HomeFields({
     lengthFields,
     reason
   ) => {
-    let newField = field;
-    if (reason === 'create-option') {
-      newField = {
-        id: 'new',
-        name: `Add ${table} "${field}"`,
-      };
+    let fieldValue = field || '';
+    if (fieldValue && reason === 'create-option') {
+      fieldValue = `Add ${table} "${field}"`;
     }
 
-    if (field && field.id === 'new') {
-      newField.name = field.name.substring(lengthFields).replaceAll('"', '');
+    if (fieldValue && fieldValue.startsWith(`Add ${table}`)) {
+      fieldValue = fieldValue.substring(lengthFields).replaceAll('"', '');
       const { data: element } = await createMethod(
-        JSON.stringify({ name: field.name })
+        JSON.stringify({ name: fieldValue })
       );
       const tablename = table.charAt(0).toUpperCase() + table.slice(1);
       const [variant, message] = element
@@ -50,7 +45,7 @@ export default function HomeFields({
         message,
       });
     }
-    setFieldValue(table, newField);
+    setFieldValue(table, fieldValue || '');
   };
 
   const handleChangeAutocompleteModel = (event, value, reason) => {
@@ -67,16 +62,6 @@ export default function HomeFields({
     selectedZone = dependencies.zones.find(z => z.name === inputZone);
   }
 
-  const inputModel = inputProps.values.model;
-  if (inputModel && !selectedModel) {
-    selectedModel = dependencies.models.find(m => m.name === inputModel);
-  }
-
-  const inputBuilder = inputProps.values.builder;
-  if (inputBuilder && !selectedBuilder) {
-    selectedBuilder = dependencies.builders.find(b => b.name === inputBuilder);
-  }
-
   return (
     <>
       <Grid
@@ -84,7 +69,7 @@ export default function HomeFields({
         md={12}
         container
         justify="space-between"
-        style={{ backgroundColor: (selectedZone || {}).color }}
+        style={{ backgroundColor: (selectedZone || {}).color, opacity: 0.6 }}
       >
         <Grid item xs={12} md={6}>
           <Typography variant="h6" color="primary">
@@ -133,7 +118,6 @@ export default function HomeFields({
           label="Model"
           {...inputProps}
           handleChange={handleChangeAutocompleteModel}
-          selected={selectedModel}
           options={dependencies.models}
         />
       </Grid>
@@ -143,7 +127,6 @@ export default function HomeFields({
           label="Builder"
           {...inputProps}
           handleChange={handleChangeAutocompleteBuilder}
-          selected={selectedBuilder}
           options={dependencies.builders}
         />
       </Grid>

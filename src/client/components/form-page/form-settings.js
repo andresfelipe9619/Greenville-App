@@ -38,8 +38,8 @@ const defaultSchema = {
   footGarage: Yup.number().required('Obligatory field'),
   footHouse: Yup.number().required('Obligatory field'),
   footExterior: Yup.number().required('Obligatory field'),
-  model: Yup.object().required('Obligatory field'),
-  builder: Yup.object().required('Obligatory field'),
+  model: Yup.string().required('Obligatory field'),
+  builder: Yup.string().required('Obligatory field'),
   zone: Yup.string().required('Obligatory field'),
   lastName: Yup.string().required('Obligatory field'),
 };

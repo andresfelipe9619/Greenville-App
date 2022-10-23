@@ -145,13 +145,10 @@ export const CustomSearchSelect = ({
   values,
   options,
   InputProps,
-  selected,
   handleChange,
   isLoading,
 }) => {
-  const settedValue =
-    values[name] && selected ? selected : values[name] || null;
-  console.log('settedValue', settedValue);
+  const settedValue = values[name] || '';
   return (
     <FormControl
       classes={{ root: classes.formControl }}
@@ -160,21 +157,16 @@ export const CustomSearchSelect = ({
       error={!!(touched[name] && errors[name])}
     >
       <Autocomplete
-        options={options}
+        options={(options || []).map(option => option.name)}
         loading={isLoading}
         disabled={isLoading}
         className={classes.search}
         filterOptions={(opts, params) => {
           const filtered = filterOptions(opts, params);
-
           // Suggest the creation of a new value
           if (params.inputValue !== '') {
-            filtered.push({
-              id: 'new',
-              name: `Add ${name} "${params.inputValue}"`,
-            });
+            filtered.push(`Add ${name} "${params.inputValue}"`);
           }
-
           return filtered;
         }}
         value={settedValue}
@@ -190,7 +182,8 @@ export const CustomSearchSelect = ({
         clearOnBlur
         handleHomeEndKeys
         freeSolo
-        getOptionLabel={option => `${(option || {}).name || ''}`}
+        // getOptionSelected={option => option.name === settedValue}
+        // getOptionLabel={option => option.name}
         renderInput={params => (
           <TextField
             {...params}
