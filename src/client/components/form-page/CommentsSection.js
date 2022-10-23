@@ -91,6 +91,7 @@ export default function CommentsSection({ isLoading, houseStatuses }) {
       });
     } finally {
       setUploading(false);
+      setChecked(false);
       setDescription('');
       setFiles([]);
       setReset(true);

@@ -103,7 +103,7 @@ export default function UpdateHomeForm({ history }) {
                     setFieldValue={setFieldValue}
                     dependencies={dependencies}
                   />
-                  {(dependencies.houseStatuses || []).length && (
+                  {!!(dependencies.houseStatuses || []).length && (
                     <Grid item xs={12}>
                       <Typography variant="h5" component="h2">
                         House Status
