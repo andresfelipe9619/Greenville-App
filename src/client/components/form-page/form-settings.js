@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const FILE_SIZE = 160 * 1024;
+// const FILE_SIZE = 160 * 1024;
 const SUPPORTED_FORMATS = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];

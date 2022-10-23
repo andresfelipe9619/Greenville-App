@@ -6,7 +6,9 @@ import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import Autocomplete, {
+  createFilterOptions,
+} from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const CustomInput = ({
@@ -147,7 +149,8 @@ export const CustomSearchSelect = ({
   handleChange,
   isLoading,
 }) => {
-  const settedValue = (values[name] && selected) ? selected : ((values[name]) ? values[name] : null);
+  const settedValue =
+    values[name] && selected ? selected : values[name] || null;
   console.log('settedValue', settedValue);
   return (
     <FormControl
@@ -159,9 +162,10 @@ export const CustomSearchSelect = ({
       <Autocomplete
         options={options}
         loading={isLoading}
+        disabled={isLoading}
         className={classes.search}
-        filterOptions={(options, params) => {
-          const filtered = filterOptions(options, params);
+        filterOptions={(opts, params) => {
+          const filtered = filterOptions(opts, params);
 
           // Suggest the creation of a new value
           if (params.inputValue !== '') {
@@ -186,7 +190,7 @@ export const CustomSearchSelect = ({
         clearOnBlur
         handleHomeEndKeys
         freeSolo
-        getOptionLabel={option => `${option.name}`}
+        getOptionLabel={option => `${(option || {}).name || ''}`}
         renderInput={params => (
           <TextField
             {...params}
@@ -205,9 +209,7 @@ export const CustomSearchSelect = ({
           />
         )}
       />
-      <FormHelperText>
-        {touched[name] && errors[name]}
-      </FormHelperText>
+      <FormHelperText>{touched[name] && errors[name]}</FormHelperText>
     </FormControl>
-  )
+  );
 };

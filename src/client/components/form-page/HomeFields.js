@@ -1,10 +1,14 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { CustomSelect, CustomTextField, CustomInput, CustomSearchSelect } from './inputs';
+import {
+  CustomSelect,
+  CustomTextField,
+  CustomInput,
+  CustomSearchSelect,
+} from './inputs';
 import { useAlertDispatch } from '../../context/Alert';
 import API from '../../api';
-import { FieldArray } from 'formik';
 
 export default function HomeFields({
   inputProps,
@@ -17,29 +21,36 @@ export default function HomeFields({
   let selectedBuilder = null;
   const { openAlert } = useAlertDispatch();
 
-
-  const handleChangeAutocomplete = async (table, field, createMethod, lengthFields, reason) => {
-
+  const handleChangeAutocomplete = async (
+    table,
+    field,
+    createMethod,
+    lengthFields,
+    reason
+  ) => {
+    let newField = field;
     if (reason === 'create-option') {
-      field = {
-        id: "new",
+      newField = {
+        id: 'new',
         name: `Add ${table} "${field}"`,
-      }
+      };
     }
 
-    if (field && field.id == "new") {
-      field.name = field.name.substring(lengthFields).replaceAll('"', '');
+    if (field && field.id === 'new') {
+      newField.name = field.name.substring(lengthFields).replaceAll('"', '');
       const { data: element } = await createMethod(
         JSON.stringify({ name: field.name })
       );
       const tablename = table.charAt(0).toUpperCase() + table.slice(1);
-      const [variant, message] = element ? ['success', `${tablename} created correctly`] : ['error', `Error creating ${tablename}`];
+      const [variant, message] = element
+        ? ['success', `${tablename} created correctly`]
+        : ['error', `Error creating ${tablename}`];
       openAlert({
-        variant: variant,
-        message: message,
+        variant,
+        message,
       });
     }
-    setFieldValue(table, field);
+    setFieldValue(table, newField);
   };
 
   const handleChangeAutocompleteModel = (event, value, reason) => {

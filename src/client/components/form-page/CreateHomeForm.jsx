@@ -35,8 +35,8 @@ export default function CreateHomeForm() {
     resetForm(initialValues);
   }, []);
 
-  const onError = useCallback((e, msg = "") => {
-    const message = 'Something went wrong creating the house. ' + msg;
+  const onError = useCallback((e, msg = '') => {
+    const message = `Something went wrong creating the house. ${msg}`;
     openAlert({
       message,
       variant: 'error',
@@ -55,11 +55,10 @@ export default function CreateHomeForm() {
         house: formData,
       });
       if (data.error) {
-        onError("error",data.error);
-      }else{
+        onError('error', data.error);
+      } else {
         onSuccess({ data, resetForm });
       }
-
     } catch (e) {
       onError(e);
     } finally {
