@@ -48,9 +48,6 @@ export function getFormData(values) {
           houseFiles: [...acc.houseFiles, { group: key, files: [...keyValue] }],
         };
       }
-      // if (['model', 'builder'].includes(key)) {
-      //   keyValue = keyValue.name;
-      // }
       return { ...acc, formData: { ...acc.formData, [key]: keyValue } };
     },
     { houseFiles: [], formData: {} }

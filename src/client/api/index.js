@@ -41,14 +41,15 @@ async function uplaodFilesGroups({ idHouse, zone, houseFiles = [] }) {
   const [firstGroup, ...restGroups] = houseFiles;
   // Upload first group independently
   // so we can create the folder for the rest of files
-  const result = await uploadFileToHouse({ idHouse, zone, ...firstGroup });
-  if (!restGroups || !restGroups.length) return result;
+  const firstResult = await uploadFileToHouse({ idHouse, zone, ...firstGroup });
+  if (!restGroups || !restGroups.length) return firstResult;
 
-  return Promise.all(
+  await Promise.all(
     restGroups.map(fileGroup =>
       uploadFileToHouse({ idHouse, zone, ...fileGroup })
     )
   );
+  return firstResult;
 }
 
 serverFunctions.uplaodFilesGroups = uplaodFilesGroups;

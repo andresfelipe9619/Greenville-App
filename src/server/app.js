@@ -111,7 +111,7 @@ function getHousesZoneSheet(zone, sheetName) {
   const zones = getZones();
   const found = zones.find(z => z.name === zone);
   if (!found || !found.sheet) {
-    return {sheet: null, headers: null};
+    return { sheet: null, headers: null };
   }
   const sheet = global.getSheetFromSpreadSheet(sheetName, found.sheet);
   const headers = global.getHeadersFromSheet(sheet);
@@ -129,12 +129,13 @@ function registerHouse(data) {
   const response = { ok: false, data: null };
   const { sheet, headers } = getHousesSheet();
   const { sheet: zoneSheet, headers: zoneHeaders } = getHousesZoneSheet(
-    data.zone, "HOUSES"
+    data.zone,
+    'HOUSES'
   );
 
-  if(!zoneSheet){
-    response.data =  `The zone ${data.zone} doesn't register sheet`
-    return response
+  if (!zoneSheet) {
+    response.data = `The zone ${data.zone} doesn't register sheet`;
+    return response;
   }
 
   const currentLastRow = sheet.getLastRow();
@@ -163,26 +164,21 @@ function registerHouse(data) {
   sheet.appendRow(houseValues);
   zoneSheet.appendRow(zoneValues);
 
-  var valueToExtraSheet = [
-    [ houseJSON.idHr,
-      houseJSON.address ]
-  ];
+  const valueToExtraSheet = [[houseJSON.idHr, houseJSON.address]];
 
   const extraSheets = new Array(4);
-  extraSheets.push('ACCOUNT RECIEVABLE')
-  extraSheets.push('HANG&FINISH')
-  extraSheets.push('PAINT')
-  extraSheets.push('CLEANNING')
+  extraSheets.push('ACCOUNT RECIEVABLE');
+  extraSheets.push('HANG&FINISH');
+  extraSheets.push('PAINT');
+  extraSheets.push('CLEANNING');
   extraSheets.forEach(sheetName => {
-    const { sheet: zoneExtraSheet } = getHousesZoneSheet(
-      data.zone, sheetName
-    );
+    const { sheet: zoneExtraSheet } = getHousesZoneSheet(data.zone, sheetName);
     Logger.log('zoneExtraSheet');
     Logger.log(sheetName);
     Logger.log(zoneExtraSheet);
     const range = zoneExtraSheet.getRange(zoneLastRow + 1, 1, 1, 2);
     range.setValues(valueToExtraSheet);
-  })
+  });
 
   const rowsAfter = sheet.getLastRow();
   const recordInserted = rowsAfter > currentLastRow;
@@ -247,7 +243,7 @@ function registerEntity(table, form) {
 
   const entityJson = {
     id: +lastRowId + 1,
-    ...form
+    ...form,
   };
   const entityValues = global.jsonToSheetValues(entityJson, headers);
   Logger.log(`${table} VALUES`);
@@ -264,7 +260,6 @@ function registerEntity(table, form) {
   Logger.log(`=============END Registering ${table}===========`);
   return response;
 }
-
 
 function searchEntity({ name, getEntitySheet, entityId, idGetter }) {
   Logger.log(`=============Searching ${name}===========`);
@@ -400,7 +395,7 @@ export function createModels(formString) {
   try {
     Logger.log('Data for registering');
     Logger.log(form);
-    const response = registerEntity("MODELS", form);
+    const response = registerEntity('MODELS', form);
     Logger.log('Response');
     Logger.log(response);
     return response;
@@ -417,7 +412,7 @@ export function createBuilders(formString) {
   try {
     Logger.log('Data for registering');
     Logger.log(form);
-    const response = registerEntity("BUILDERS", form);
+    const response = registerEntity('BUILDERS', form);
     Logger.log('Response');
     Logger.log(response);
     return response;

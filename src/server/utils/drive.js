@@ -1,4 +1,4 @@
-const ROOT_FOLDER = 'Greenville app (DEV)';
+const ROOT_FOLDER = 'ZONES';
 const FILES_FOLDER = 'Storage';
 const FILES_COMMENTS = 'Comments';
 
