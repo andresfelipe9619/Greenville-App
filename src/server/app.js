@@ -1,4 +1,5 @@
 export const getCurrentUser = () => Session.getActiveUser().getEmail();
+
 export function isAdmin() {
   const guessEmail = getCurrentUser();
   const admins = [
@@ -39,11 +40,11 @@ export function doPost(request) {
 
 function getEntityData(entity) {
   const rawEntities = global.getRawDataFromSheet(entity);
-  const entities = global.sheetValuesToObject(rawEntities);
-  return entities;
+  return global.sheetValuesToObject(rawEntities);
 }
 
 function getHousesSheet() {
+  Logger.log('=============Getting Houses Sheet===========');
   const sheet = global.getSheetFromSpreadSheet('HOUSES');
   const headers = global.getHeadersFromSheet(sheet);
   return { sheet, headers };
@@ -92,22 +93,27 @@ export function getUsers() {
 }
 
 export function getBuilders() {
+  Logger.log('=============Getting Builders===========');
   return getEntityData('BUILDERS');
 }
 
 export function getModels() {
+  Logger.log('=============Getting Models===========');
   return getEntityData('MODELS');
 }
 
 export function getZones() {
+  Logger.log('=============Getting Zones===========');
   return getEntityData('ZONES');
 }
 
 export function getComments() {
+  Logger.log('=============Getting Comments===========');
   return getEntityData('COMMENTS');
 }
 
 function getHousesZoneSheet(zone, sheetName) {
+  Logger.log('=============Getting Houses Zone Sheet===========');
   const zones = getZones();
   const found = zones.find(z => z.name === zone);
   if (!found || !found.sheet) {
@@ -138,6 +144,7 @@ function registerHouse(data) {
     return response;
   }
 
+  Logger.log('=============Reading Last Rows===========');
   const currentLastRow = sheet.getLastRow();
   const zoneLastRow = zoneSheet.getLastRow();
   let lastRowId = 0;
@@ -201,8 +208,7 @@ export function registerComment(data) {
   if (currentLastRow > 1) {
     [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
   }
-  Logger.log('lastRowId');
-  Logger.log(lastRowId);
+  Logger.log('Last Row ID: ' + lastRowId);
   const timestamp = new Date().toString();
   const commentJSON = {
     ...data,
@@ -294,23 +300,21 @@ function searchEntity({ name, getEntitySheet, entityId, idGetter }) {
 }
 
 export function searchComment(idComment) {
-  const result = searchEntity({
+  return searchEntity({
     name: 'Comment',
     entityId: idComment,
     getEntitySheet: getCommentsSheet,
     idGetter: entity => entity.idComment,
   });
-  return result;
 }
 
 export function searchHouse(idHouse) {
-  const result = searchEntity({
+  return searchEntity({
     name: 'House',
     entityId: idHouse,
     getEntitySheet: getHousesSheet,
     idGetter: entity => entity.idHouse,
   });
-  return result;
 }
 
 function updateEntity({
@@ -345,25 +349,23 @@ function updateEntity({
 }
 
 export function updateHouse(serializedData) {
-  const response = updateEntity({
+  return updateEntity({
     serializedData,
     name: 'House',
     findEntity: searchHouse,
     getEntitySheet: getHousesSheet,
     idGetter: entity => entity.idHouse,
   });
-  return response;
 }
 
 export function updateComment(serializedData) {
-  const response = updateEntity({
+  return updateEntity({
     serializedData,
     name: 'House',
     findEntity: searchComment,
     getEntitySheet: getCommentsSheet,
     idGetter: entity => entity.idComment,
   });
-  return response;
 }
 
 // function avoidCollisionsInConcurrentAccessess() {
@@ -435,7 +437,7 @@ export function createHouse(formString) {
     Logger.log(response);
     return response;
   } catch (error) {
-    Logger.log('Error Registering Student');
+    Logger.log('Error Registering House');
     Logger.log(error);
     return error.toString();
   }

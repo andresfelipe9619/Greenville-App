@@ -19,14 +19,14 @@ function camelCase(string) {
     .replace(/\s/g, '');
 }
 
-export function getSheetFromSpreadSheet(sheet, url) {
-  const Spreedsheet = SpreadsheetApp.openByUrl(url || GENERAL_DB);
-  if (sheet) return Spreedsheet.getSheetByName(sheet);
+export function getSheetFromSpreadSheet(sheet, url = GENERAL_DB) {
+  const Spreadsheet = SpreadsheetApp.openByUrl(url || GENERAL_DB);
+  if (sheet) return Spreadsheet.getSheetByName(sheet);
   return null;
 }
 
-export function getRawDataFromSheet(sheet, url) {
-  const mSheet = getSheetFromSpreadSheet(sheet, url);
+export function getRawDataFromSheet(sheet, url = GENERAL_DB) {
+  const mSheet = getSheetFromSpreadSheet(sheet, url || GENERAL_DB);
   if (mSheet) {
     return mSheet.getSheetValues(
       1,
@@ -68,17 +68,17 @@ export const setActiveSheet = sheetName => {
   return getSheetsData();
 };
 
-export function findText({ sheet, text }) {
+export function findText({sheet, text}) {
   let index = -1;
   const textFinder = sheet.createTextFinder(text).matchEntireCell(true);
   const textFound = textFinder.findNext();
-  if (!textFound) return { index, data: null };
+  if (!textFound) return {index, data: null};
   const row = textFound.getRow();
   const col = textFound.getColumn();
   const isHouseIdCol = col === 1;
   if (isHouseIdCol) index = row;
   const data = textFound;
-  return { index, data };
+  return {index, data};
 }
 
 function addHeadings(sheetValues, headings) {
@@ -97,9 +97,7 @@ export function sheetValuesToObject(values, headers) {
   const headings = headers || values[0];
   let sheetValues = null;
   if (values) sheetValues = headers ? values : values.slice(1);
-  const objectWithHeadings = addHeadings(sheetValues, headings.map(camelCase));
-
-  return objectWithHeadings;
+  return addHeadings(sheetValues, headings.map(camelCase));
 }
 
 export function getHeadersFromSheet(sheet) {
