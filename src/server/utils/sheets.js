@@ -68,17 +68,17 @@ export const setActiveSheet = sheetName => {
   return getSheetsData();
 };
 
-export function findText({sheet, text}) {
+export function findText({ sheet, text }) {
   let index = -1;
   const textFinder = sheet.createTextFinder(text).matchEntireCell(true);
   const textFound = textFinder.findNext();
-  if (!textFound) return {index, data: null};
+  if (!textFound) return { index, data: null };
   const row = textFound.getRow();
   const col = textFound.getColumn();
   const isHouseIdCol = col === 1;
   if (isHouseIdCol) index = row;
   const data = textFound;
-  return {index, data};
+  return { index, data };
 }
 
 function addHeadings(sheetValues, headings) {

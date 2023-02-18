@@ -47,13 +47,13 @@ function getHousesSheet() {
   Logger.log('=============Getting Houses Sheet===========');
   const sheet = global.getSheetFromSpreadSheet('HOUSES');
   const headers = global.getHeadersFromSheet(sheet);
-  return {sheet, headers};
+  return { sheet, headers };
 }
 
 export function getHouseFiles(house) {
   if (!house.files) return house;
-  const newHouse = {...house};
-  const {idHouse, address, zone} = newHouse;
+  const newHouse = { ...house };
+  const { idHouse, address, zone } = newHouse;
   Logger.log(`newHouse`, newHouse);
   const folder = global.getHouseFolder({
     zone,
@@ -68,7 +68,7 @@ export function getHouseFiles(house) {
     const files = [];
     while (groupFiles.hasNext()) {
       const file = groupFiles.next();
-      files.push({name: file.getName(), url: file.getUrl()});
+      files.push({ name: file.getName(), url: file.getUrl() });
     }
     houseFiles[groupName] = files;
   }
@@ -119,26 +119,26 @@ function getHousesZoneSheet(zone, sheetName) {
   Logger.log(zones);
   const found = zones.find(z => z.name === zone);
   if (!found || !found.sheet) {
-    return {sheet: null, headers: null};
+    return { sheet: null, headers: null };
   }
   Logger.log('zone found:');
   Logger.log(found);
   const sheet = global.getSheetFromSpreadSheet(sheetName, found.sheet);
   const headers = global.getHeadersFromSheet(sheet);
-  return {sheet, headers};
+  return { sheet, headers };
 }
 
 export function getCommentsSheet() {
   const sheet = global.getSheetFromSpreadSheet('COMMENTS');
   const headers = global.getHeadersFromSheet(sheet);
-  return {sheet, headers};
+  return { sheet, headers };
 }
 
 function registerHouse(data) {
   Logger.log('=============Registering HOUSE===========');
-  const response = {ok: false, data: null};
-  const {sheet, headers} = getHousesSheet();
-  const {sheet: zoneSheet, headers: zoneHeaders} = getHousesZoneSheet(
+  const response = { ok: false, data: null };
+  const { sheet, headers } = getHousesSheet();
+  const { sheet: zoneSheet, headers: zoneHeaders } = getHousesZoneSheet(
     data.zone,
     'HOUSES'
   );
@@ -183,7 +183,7 @@ function registerHouse(data) {
   extraSheets.push('PAINT');
   extraSheets.push('CLEANNING');
   extraSheets.forEach(sheetName => {
-    const {sheet: zoneExtraSheet} = getHousesZoneSheet(data.zone, sheetName);
+    const { sheet: zoneExtraSheet } = getHousesZoneSheet(data.zone, sheetName);
     Logger.log('zoneExtraSheet');
     Logger.log(sheetName);
     Logger.log(zoneExtraSheet);
@@ -205,14 +205,14 @@ function registerHouse(data) {
 
 export function registerComment(data) {
   Logger.log('=============Registering COMMENT===========');
-  const response = {ok: false, data: null};
-  const {sheet, headers} = getCommentsSheet();
+  const response = { ok: false, data: null };
+  const { sheet, headers } = getCommentsSheet();
   const currentLastRow = sheet.getLastRow();
   let lastRowId = 0;
   if (currentLastRow > 1) {
     [lastRowId] = sheet.getSheetValues(currentLastRow, 1, 1, 1);
   }
-  Logger.log('Last Row ID: ' + lastRowId);
+  Logger.log(`Last Row ID: ${lastRowId}`);
   const timestamp = new Date().toString();
   const commentJSON = {
     ...data,
@@ -241,7 +241,7 @@ export function registerComment(data) {
 
 function registerEntity(table, form) {
   Logger.log(`=============Registering ${table}===========`);
-  const response = {ok: false, data: null};
+  const response = { ok: false, data: null };
   const sheet = global.getSheetFromSpreadSheet(table);
   const headers = global.getHeadersFromSheet(sheet);
 
@@ -271,14 +271,14 @@ function registerEntity(table, form) {
   return response;
 }
 
-function searchEntity({name, getEntitySheet, entityId, idGetter}) {
+function searchEntity({ name, getEntitySheet, entityId, idGetter }) {
   Logger.log(`=============Searching ${name}===========`);
-  const {sheet, headers} = getEntitySheet();
+  const { sheet, headers } = getEntitySheet();
   const result = {
     index: -1,
     data: null,
   };
-  const {index: entityIndex} = global.findText({sheet, text: entityId});
+  const { index: entityIndex } = global.findText({ sheet, text: entityId });
   Logger.log(`${name} Index ${entityIndex}`);
   if (entityIndex <= -1) return result;
 
@@ -322,22 +322,22 @@ export function searchHouse(idHouse) {
 }
 
 function updateEntity({
-                        name,
-                        idGetter,
-                        findEntity,
-                        serializedData,
-                        getEntitySheet,
-                      }) {
+  name,
+  idGetter,
+  findEntity,
+  serializedData,
+  getEntitySheet,
+}) {
   try {
-    const response = {ok: false, data: null};
+    const response = { ok: false, data: null };
     const form = JSON.parse(serializedData);
     Logger.log(`Submitted Form ${name} Data`);
     Logger.log(form);
-    const {data, index} = findEntity(idGetter(form));
+    const { data, index } = findEntity(idGetter(form));
     if (!index) throw new Error(`${name} does not exists`);
-    const {sheet, headers} = getEntitySheet();
+    const { sheet, headers } = getEntitySheet();
     const entityRange = sheet.getRange(+index, 1, 1, sheet.getLastColumn());
-    const entityData = global.jsonToSheetValues({...data, ...form}, headers);
+    const entityData = global.jsonToSheetValues({ ...data, ...form }, headers);
     Logger.log(`${name} Data`);
     Logger.log(entityData);
 
