@@ -91,6 +91,9 @@ export function getFilesGroups() {
 export function getUsers() {
   return getEntityData('USERS');
 }
+export function getReportData() {
+  return getEntityData('REPORT');
+}
 
 export function getBuilders() {
   Logger.log('=============Getting Builders===========');

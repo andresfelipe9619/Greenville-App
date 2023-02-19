@@ -18,6 +18,7 @@ global.createBuilders = publicMainFunction.createBuilders;
 global.createModels = publicMainFunction.createModels;
 global.getFilesGroups = publicMainFunction.getFilesGroups;
 global.getUsers = publicMainFunction.getUsers;
+global.getReportData = publicMainFunction.getReportData;
 global.getBuilders = publicMainFunction.getBuilders;
 global.getModels = publicMainFunction.getModels;
 global.getZones = publicMainFunction.getZones;
