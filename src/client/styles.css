@@ -1,3 +1,11 @@
 .thumbnail-wrapper > img {
     max-height: 180px;
 }
+
+.card-items-container {
+    height: 10em;
+}
+
+.MuiCardActionArea-root {
+    height: 100%;
+}
