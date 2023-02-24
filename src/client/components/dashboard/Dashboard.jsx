@@ -16,6 +16,7 @@ import {
 import Paper from '@material-ui/core/Paper';
 import API from '../../api';
 import { useHouse } from '../../context/House';
+import { useHistory } from 'react-router-dom';
 
 export default function Dashboard() {
   const [statuses, setStatuses] = useState([]);
@@ -59,15 +60,15 @@ export default function Dashboard() {
   console.log({ statuses, report });
   const selectedReport = (report[selected] || {}).data || [];
   return (
-    <Grid container justify={'center'} spacing={3}>
+    <Grid container justify={'center'} spacing={2}>
       {loading && <CircularProgress sx={{ mt: 12 }} size={80} />}
       {!loading &&
         statuses.map(status => {
           const { name } = status;
           const statusReport = report[name] || {};
           return (
-            <Grid key={name} item md={3}>
-              <Card width={'100%'}>
+            <Grid key={name} item xs={12} sm={6} md={3}>
+              <Card width={'100%'} className="card-items-container">
                 <CardActionArea onClick={handleSelect(name)}>
                   <CardContent>
                     <Typography variant={'h3'} align={'center'}>
@@ -112,6 +113,20 @@ const columns = [
 ];
 
 function HouseList({ data }) {
+  
+  const history = useHistory();
+  const [{ houses }, { setHouses, setHouseSelected }] = useHouse();
+
+  //eveent click
+  let handleClick = (e) => {
+
+    let id_house = (e.currentTarget.id).split('-')[1];
+    const data_house = data.filter((house) => house.idHouse === Number(id_house));
+    history.push(`/update/${id_house}`);
+    setHouseSelected(data_house[0]);
+       
+  };  
+
   return (
     <TableContainer component={Paper} sx={{ m: 2, width: '100%' }}>
       <Table sx={{ maxWidth: 640 }} size="small" aria-label="a dense table">
@@ -126,14 +141,21 @@ function HouseList({ data }) {
         </TableHead>
         <TableBody>
           {(data || []).map((row, index) => (
-            <TableRow
-              key={index}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              {columns.map(({ name }) => (
-                <TableCell key={name}>{row[name]}</TableCell>
-              ))}
-            </TableRow>
+           
+              <TableRow
+                key={index}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                style={{ cursor: "pointer" }}
+                id={`home-${row.idHouse}`}
+                onClick={handleClick}
+              >
+                {columns.map(({ name } , index_j) => (
+                  <TableCell key={name}> 
+                          {row[name]}
+                  </TableCell>
+                ))}
+              </TableRow>
+           
           ))}
         </TableBody>
       </Table>
